@@ -25,6 +25,7 @@ As of January 2nd, 2026, I wasn't able to find any existing benchmarking tool th
 - Supports configurable prompt length (`--pp`), generation length (`--tg`), and context depth (`--depth`).
 - Can run multiple iterations (`--runs`) and report mean ± std.
 - Uses HuggingFace tokenizers for accurate token counts.
+- Correctly handles multi-token prediction (MTP) chunks.
 - Downloads a book from Project Gutenberg to use as source text for prompts to ensure better benchmarking of spec.decoding/MTP models.
 - Supports executing a command after each run (e.g., to clear cache).
 - Configurable latency measurement mode.

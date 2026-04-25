@@ -250,7 +250,7 @@ class LLMClient:
                                         elif tokenizer is not None:
                                             global _warned_about_fallback
                                             if not _warned_about_fallback:
-                                                print("⚠️  No token_ids in response, using local tokenization")
+                                                print("  No token_ids in response, using local tokenization")
                                                 _warned_about_fallback = True
                                             
                                             full_content = content or reasoning_content or reasoning
