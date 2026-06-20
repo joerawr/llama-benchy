@@ -1,4 +1,99 @@
+import json
+
+import pytest
+
 from llama_benchy.client import LLMClient
+
+
+_MISSING = object()
+
+
+class _FakeContent:
+    def __init__(self, events):
+        self._events = events
+
+    async def iter_any(self):
+        for event in self._events:
+            yield event
+
+
+class _FakeResponse:
+    def __init__(self, events):
+        self.status = 200
+        self.content = _FakeContent(events)
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        return None
+
+    async def text(self):
+        return ""
+
+
+class _FakeSession:
+    def __init__(self, events):
+        self._events = events
+
+    def post(self, *args, **kwargs):
+        return _FakeResponse(self._events)
+
+
+class _ChunkBoundaryTokenizer:
+    def __init__(self):
+        self.calls = []
+
+    def encode(self, text, add_special_tokens=False):
+        self.calls.append((text, add_special_tokens))
+        tokens_by_text = {
+            "Hel": [1],
+            "lo": [2],
+            " world": [3],
+            "Hello world": [15496, 995],
+        }
+        return tokens_by_text[text]
+
+
+def _sse_event(payload):
+    if payload == "[DONE]":
+        return b"data: [DONE]\n\n"
+    return f"data: {json.dumps(payload)}\n\n".encode()
+
+
+def _content_event(content, token_ids=_MISSING):
+    choice = {
+        "index": 0,
+        "delta": {"content": content},
+        "finish_reason": None,
+    }
+    if token_ids is not _MISSING:
+        choice["token_ids"] = token_ids
+    return {"choices": [choice]}
+
+
+def _usage_event(completion_tokens):
+    return {
+        "choices": [],
+        "usage": {
+            "prompt_tokens": 16,
+            "completion_tokens": completion_tokens,
+            "total_tokens": 16 + completion_tokens,
+        },
+    }
+
+
+async def _run_stream(events, tokenizer=None):
+    client = LLMClient("http://example.test/v1", "EMPTY", "model")
+    session = _FakeSession([_sse_event(event) for event in events])
+    return await client.run_generation(
+        session,
+        context_text="",
+        prompt_text="hello",
+        max_tokens=8,
+        no_cache=False,
+        tokenizer=tokenizer,
+    )
 
 
 def test_generation_payload_defaults():
@@ -46,3 +141,51 @@ def test_exact_tg_forces_min_tokens_and_ignore_eos():
     assert payload["max_tokens"] == 128
     assert payload["min_tokens"] == 128
     assert payload["ignore_eos"] is True
+
+
+@pytest.mark.asyncio
+async def test_streaming_uses_final_usage_when_token_ids_are_missing():
+    tokenizer = _ChunkBoundaryTokenizer()
+
+    result = await _run_stream([
+        _content_event("Hel"),
+        _content_event("lo"),
+        _content_event(" world"),
+        _usage_event(2),
+        "[DONE]",
+    ], tokenizer=tokenizer)
+
+    assert result.prompt_tokens == 16
+    assert result.total_tokens == 2
+    assert len(result.token_timestamps) == 2
+    assert tokenizer.calls == []
+
+
+@pytest.mark.asyncio
+async def test_streaming_local_fallback_tokenizes_concatenated_content_once():
+    tokenizer = _ChunkBoundaryTokenizer()
+
+    result = await _run_stream([
+        _content_event("Hel"),
+        _content_event("lo"),
+        _content_event(" world"),
+        "[DONE]",
+    ], tokenizer=tokenizer)
+
+    assert result.total_tokens == 2
+    assert len(result.token_timestamps) == 2
+    assert tokenizer.calls == [("Hello world", False)]
+
+
+@pytest.mark.asyncio
+async def test_streaming_token_ids_take_precedence_over_final_usage():
+    result = await _run_stream([
+        _content_event("Hel", token_ids=[1]),
+        _content_event("lo", token_ids=[2, 3]),
+        _usage_event(99),
+        "[DONE]",
+    ])
+
+    assert result.prompt_tokens == 16
+    assert result.total_tokens == 3
+    assert len(result.token_timestamps) == 3
