@@ -371,6 +371,14 @@ llama-benchy --base-url http://localhost:8000/v1 --model … \
 Default behavior is unchanged when `--emit-progress` is omitted. Schema
 spec: [`docs/progress-schema.md`](docs/progress-schema.md).
 
+When the server returns `token_ids`, per-chunk `tokens.count` values are
+exact. When token IDs are unavailable, `tokens` events are marked
+`estimated: true` and should be treated as live progress hints; use
+`request_end.total_tokens` as the authoritative generated-token total.
+
+Thanks to [@alexziskind1](https://github.com/alexziskind1) for contributing
+the progress stream functionality and reference visualizer integration.
+
 ## Development
 
 ### Running Integration Tests
