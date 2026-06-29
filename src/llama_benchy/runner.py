@@ -8,7 +8,7 @@ import aiohttp
 
 from ._version import __version__
 from .config import BenchmarkConfig
-from .client import LLMClient
+from .client import CONTEXT_LOAD_USER_MESSAGE, LLMClient
 from .prompts import PromptGenerator
 from .results import BenchmarkResults, BenchmarkMetadata
 
@@ -136,7 +136,7 @@ class BenchmarkRunner:
                                             load_tasks.append(self.client.run_generation(
                                                 session,
                                                 context_text=context,
-                                                prompt_text="",
+                                                prompt_text=CONTEXT_LOAD_USER_MESSAGE,
                                                 max_tokens=tg,
                                                 no_cache=self.config.no_cache,
                                                 tokenizer=tokenizer,

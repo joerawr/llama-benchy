@@ -9,6 +9,11 @@ from typing import Optional, List, Dict, Any
 
 _warned_about_fallback = False
 
+# vLLM's Rust frontend rejects empty user content, so context preloads use a
+# tiny probe turn instead.
+CONTEXT_LOAD_USER_MESSAGE = "."
+
+
 def _warn_once(message: str):
     global _warned_about_fallback
     if not _warned_about_fallback:
@@ -63,6 +68,12 @@ class LLMClient:
             payload["ignore_eos"] = True
 
         return payload
+
+    @staticmethod
+    def _non_empty_user_content(content: str) -> str:
+        if content.strip():
+            return content
+        return CONTEXT_LOAD_USER_MESSAGE
 
     @staticmethod
     def _append_observed_token_timestamps(result: RequestResult, chunk_time: float, token_count: int):
@@ -245,15 +256,15 @@ class LLMClient:
 
             if tokenizer:
                 # 2. Context Only
-                payload_sys_empty = {
+                payload_sys_probe = {
                     "model": self.model_name,
                     "messages": [
                         {"role": "system", "content": warmup_text},
-                        {"role": "user", "content": ""}
+                        {"role": "user", "content": CONTEXT_LOAD_USER_MESSAGE}
                     ],
                     "max_tokens": 1
                 }
-                async with session.post(f"{self.base_url}/chat/completions", json=payload_sys_empty, headers=self.headers) as response:
+                async with session.post(f"{self.base_url}/chat/completions", json=payload_sys_probe, headers=self.headers) as response:
                     if response.status != 200:
                         error_text = await response.text()
                         print(f"Warmup failed: HTTP {response.status}: {error_text}")
@@ -262,8 +273,9 @@ class LLMClient:
                     if 'usage' in response_json:
                         prompt_tokens = response_json['usage']['prompt_tokens']
                         local_tokens = len(tokenizer.encode(warmup_text, add_special_tokens=False))
-                        delta_context = prompt_tokens - local_tokens
-                        print(f"Warmup (System+Empty) complete. Delta: {delta_context} tokens (Server: {prompt_tokens}, Local: {local_tokens})")
+                        probe_tokens = len(tokenizer.encode(CONTEXT_LOAD_USER_MESSAGE, add_special_tokens=False))
+                        delta_context = prompt_tokens - local_tokens - probe_tokens
+                        print(f"Warmup (System+Probe) complete. Delta: {delta_context} tokens (Server: {prompt_tokens}, Local context: {local_tokens}, Probe: {probe_tokens})")
                     else:
                         delta_context = delta_user
         except Exception as e:
@@ -286,7 +298,7 @@ class LLMClient:
         messages = []
         if context_text:
             messages.append({"role": "system", "content": context_text})
-        messages.append({"role": "user", "content": prompt_text})
+        messages.append({"role": "user", "content": self._non_empty_user_content(prompt_text)})
         
         result = RequestResult()
         

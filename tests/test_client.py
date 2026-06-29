@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from llama_benchy.client import LLMClient
+from llama_benchy.client import CONTEXT_LOAD_USER_MESSAGE, LLMClient
 
 
 _MISSING = object()
@@ -18,9 +18,10 @@ class _FakeContent:
 
 
 class _FakeResponse:
-    def __init__(self, events):
-        self.status = 200
+    def __init__(self, events, json_body=None, status=200):
+        self.status = status
         self.content = _FakeContent(events)
+        self._json_body = json_body or {}
 
     async def __aenter__(self):
         return self
@@ -31,13 +32,20 @@ class _FakeResponse:
     async def text(self):
         return ""
 
+    async def json(self):
+        return self._json_body
+
 
 class _FakeSession:
-    def __init__(self, events):
+    def __init__(self, events, json_bodies=None):
         self._events = events
+        self._json_bodies = list(json_bodies or [])
+        self.requests = []
 
     def post(self, *args, **kwargs):
-        return _FakeResponse(self._events)
+        self.requests.append({"args": args, "kwargs": kwargs})
+        json_body = self._json_bodies.pop(0) if self._json_bodies else None
+        return _FakeResponse(self._events, json_body=json_body)
 
 
 class _ChunkBoundaryTokenizer:
@@ -53,6 +61,15 @@ class _ChunkBoundaryTokenizer:
             "Hello world": [15496, 995],
         }
         return tokens_by_text[text]
+
+
+class _WarmupTokenizer:
+    def encode(self, text, add_special_tokens=False):
+        if text == "Warmup " * 10:
+            return list(range(10))
+        if text == CONTEXT_LOAD_USER_MESSAGE:
+            return [99]
+        raise AssertionError(f"Unexpected text to tokenize: {text!r}")
 
 
 class _RecordingProgress:
@@ -160,6 +177,50 @@ def test_exact_tg_forces_min_tokens_and_ignore_eos():
     assert payload["max_tokens"] == 128
     assert payload["min_tokens"] == 128
     assert payload["ignore_eos"] is True
+
+
+@pytest.mark.asyncio
+async def test_run_generation_replaces_empty_user_message_with_context_probe():
+    client = LLMClient("http://example.test/v1", "EMPTY", "model")
+    session = _FakeSession([_sse_event("[DONE]")])
+
+    await client.run_generation(
+        session,
+        context_text="cached context",
+        prompt_text="",
+        max_tokens=1,
+        no_cache=False,
+    )
+
+    messages = session.requests[0]["kwargs"]["json"]["messages"]
+    assert messages == [
+        {"role": "system", "content": "cached context"},
+        {"role": "user", "content": CONTEXT_LOAD_USER_MESSAGE},
+    ]
+    assert messages[-1]["content"].strip()
+
+
+@pytest.mark.asyncio
+async def test_warmup_uses_context_probe_and_excludes_it_from_delta():
+    client = LLMClient("http://example.test/v1", "EMPTY", "model")
+    session = _FakeSession(
+        [],
+        json_bodies=[
+            {"usage": {"prompt_tokens": 22}},
+            {"usage": {"prompt_tokens": 24}},
+        ],
+    )
+
+    delta_user, delta_context = await client.warmup(session, _WarmupTokenizer())
+
+    assert delta_user == 12
+    assert delta_context == 13
+    messages = session.requests[1]["kwargs"]["json"]["messages"]
+    assert messages == [
+        {"role": "system", "content": "Warmup " * 10},
+        {"role": "user", "content": CONTEXT_LOAD_USER_MESSAGE},
+    ]
+    assert messages[-1]["content"].strip()
 
 
 @pytest.mark.asyncio

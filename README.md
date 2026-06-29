@@ -235,7 +235,7 @@ The script attempts to estimate network or processing latency to provide "server
 
 When `--enable-prefix-caching` is used (with `--depth` > 0), the script performs a two-step process for each run to measure the impact of prefix caching:
 
-1.  **Context Load**: Sends the context tokens (as a system message) with an empty user message. This forces the server to process and cache the context.
+1.  **Context Load**: Sends the context tokens (as a system message) with a minimal user probe message. This forces the server to process and cache the context while staying compatible with frontends that reject empty user messages.
     -   Reported as `ctx_pp @ d{depth}` (Context Prompt Processing) and `ctx_tg @ d{depth}`.
 2.  **Inference**: Sends the same context (system message) followed by the actual prompt (user message). The server should reuse the cached context.
     -   Reported as standard `pp{tokens} @ d{depth}` and `tg{tokens} @ d{depth}`.
