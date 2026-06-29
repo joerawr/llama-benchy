@@ -113,7 +113,10 @@ between `request_first_token` and `request_end`.
 
 A single `tokens` event may carry multiple tokens when the server streams
 multi-token chunks (e.g. speculative decoding / MTP). Consumers computing
-tok/s should sum `count` across events, not assume one-per-event.
+tok/s should sum `count` across events where `estimated` is absent or false,
+not assume one-per-event. Consumers SHOULD treat `estimated: true` counts as
+arrival/progress hints only and use `request_end.total_tokens` as the
+authoritative total.
 
 ### `request_end`
 

@@ -55,6 +55,23 @@ class _ChunkBoundaryTokenizer:
         return tokens_by_text[text]
 
 
+class _RecordingProgress:
+    def __init__(self):
+        self.events = []
+
+    def request_first_response(self, **fields):
+        self.events.append(("request_first_response", fields))
+
+    def request_first_token(self, **fields):
+        self.events.append(("request_first_token", fields))
+
+    def tokens(self, **fields):
+        self.events.append(("tokens", fields))
+
+    def request_end(self, **fields):
+        self.events.append(("request_end", fields))
+
+
 def _sse_event(payload):
     if payload == "[DONE]":
         return b"data: [DONE]\n\n"
@@ -83,7 +100,7 @@ def _usage_event(completion_tokens):
     }
 
 
-async def _run_stream(events, tokenizer=None):
+async def _run_stream(events, tokenizer=None, progress=None, request_id=None):
     client = LLMClient("http://example.test/v1", "EMPTY", "model")
     session = _FakeSession([_sse_event(event) for event in events])
     return await client.run_generation(
@@ -93,6 +110,8 @@ async def _run_stream(events, tokenizer=None):
         max_tokens=8,
         no_cache=False,
         tokenizer=tokenizer,
+        progress=progress,
+        request_id=request_id,
     )
 
 
@@ -189,3 +208,48 @@ async def test_streaming_token_ids_take_precedence_over_final_usage():
     assert result.prompt_tokens == 16
     assert result.total_tokens == 3
     assert len(result.token_timestamps) == 3
+
+
+@pytest.mark.asyncio
+async def test_progress_marks_missing_token_ids_as_estimated_and_ends_with_authoritative_total():
+    progress = _RecordingProgress()
+    tokenizer = _ChunkBoundaryTokenizer()
+
+    result = await _run_stream([
+        _content_event("Hel"),
+        _content_event("lo"),
+        _content_event(" world"),
+        _usage_event(2),
+        "[DONE]",
+    ], tokenizer=tokenizer, progress=progress, request_id=7)
+
+    token_events = [fields for event, fields in progress.events if event == "tokens"]
+    assert token_events == [
+        {"request_id": 7, "count": 1, "snippet": "Hel", "estimated": True},
+        {"request_id": 7, "count": 1, "snippet": "lo", "estimated": True},
+        {"request_id": 7, "count": 1, "snippet": " world", "estimated": True},
+    ]
+
+    end_event = progress.events[-1]
+    assert end_event[0] == "request_end"
+    assert end_event[1]["request_id"] == 7
+    assert end_event[1]["total_tokens"] == 2
+    assert result.total_tokens == 2
+
+
+@pytest.mark.asyncio
+async def test_progress_token_ids_are_exact_not_estimated():
+    progress = _RecordingProgress()
+
+    await _run_stream([
+        _content_event("Hel", token_ids=[1]),
+        _content_event("lo", token_ids=[2, 3]),
+        _usage_event(99),
+        "[DONE]",
+    ], progress=progress, request_id=11)
+
+    token_events = [fields for event, fields in progress.events if event == "tokens"]
+    assert token_events == [
+        {"request_id": 11, "count": 1, "snippet": "Hel", "estimated": False},
+        {"request_id": 11, "count": 2, "snippet": "lo", "estimated": False},
+    ]
