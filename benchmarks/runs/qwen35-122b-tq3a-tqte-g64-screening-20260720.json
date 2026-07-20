@@ -1,0 +1,41 @@
+{
+  "model": "manjunathshiva/Qwen3.5-122B-A10B-tq3a-tqTe-g64",
+  "format": "TurboQuant MLX Safetensors",
+  "hardware": "64GB Apple Silicon Mac",
+  "date": "2026-07-20",
+  "suite": "two-test screening",
+  "backend": "turboquant-mlx-full 0.15.1",
+  "planner": {
+    "context": 65536,
+    "projected_peak_gib": 39.2,
+    "projected_headroom_gib": 18.4,
+    "verdict": "resident"
+  },
+  "observed_memory": {
+    "process_gib": 45.91,
+    "swap_used_gib": 4.97,
+    "note": "Observed during screening; subsequent restart still showed approximately 5.08 GiB swap allocated."
+  },
+  "results": {
+    "apache": {
+      "deterministic": "8/10",
+      "semantic": "7/10",
+      "elapsed_seconds": 1254.848,
+      "prompt_tokens": 48795,
+      "completion_tokens": 881
+    },
+    "compression": {
+      "deterministic": "10/12",
+      "semantic": "11/12",
+      "elapsed_seconds": 250.435,
+      "prompt_tokens": 3377,
+      "completion_tokens": 638
+    }
+  },
+  "decision": "rejected from full-suite follow-up: semantic Apache score below gate and long-context latency was impractical",
+  "artifacts": [
+    "results/qwen35-122b-a10b-tq3a-tqte-g64-screen-apache.json",
+    "results/long-compression-qwen35-122b-a10b-tq3a-tqte-g64.json",
+    "results/qwen35-122b-semantic-screen/"
+  ]
+}
