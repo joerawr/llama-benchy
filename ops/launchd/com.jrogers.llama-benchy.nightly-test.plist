@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.jrogers.llama-benchy.nightly-test</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-lc</string>
+    <string>export PATH="/Users/jrogers/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"; cd /Users/jrogers/code/github/llama-benchy &amp;&amp; ./ops/nightly-scout.sh</string>
+  </array>
+
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>2</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/jrogers/code/github/llama-benchy</string>
+
+  <key>StandardOutPath</key>
+  <string>/Users/jrogers/code/github/llama-benchy/benchy-state/nightly-test.out.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/jrogers/code/github/llama-benchy/benchy-state/nightly-test.err.log</string>
+</dict>
+</plist>

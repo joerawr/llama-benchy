@@ -1,0 +1,39 @@
+{
+  "leaderboard": "64gb-m1-max",
+  "suite_version": "llama-benchy-local-comparison@1.0",
+  "hardware": "64GB M1 Max",
+  "ranking_policy": ["quality", "memory_headroom", "generation_throughput", "prompt_processing_throughput"],
+  "entries": [
+    {
+      "rank": 1,
+      "model": "Gemma 4 26B A4B QAT",
+      "quant": "Q4_K_XL",
+      "role": "Fast/log-heavy default candidate",
+      "memory_64k_gib": 14.96,
+      "generation_tok_s": {"short": 62.9, "medium_2k": 59.7, "context_4k": 56.8},
+      "evidence": {"apache": "8/10", "access": "7/7", "compression": "11/12"},
+      "source": "benchy-state/leaderboard-64gb-m1-max.md"
+    },
+    {
+      "rank": 2,
+      "model": "Gemma 4 26B A4B",
+      "quant": "Q4_K_S",
+      "role": "Compression-quality default candidate",
+      "memory_64k_gib": 16.95,
+      "generation_tok_s": {"short": 52.3, "medium_2k": 46.7, "context_4k": 45.3},
+      "evidence": {"finance": "9/12", "access": "7/7", "compression": "12/12"},
+      "source": "benchy-state/leaderboard-64gb-m1-max.md"
+    },
+    {
+      "rank": 3,
+      "model": "Qwen APEX-MTP Balanced",
+      "quant": "Balanced",
+      "role": "Analytical/report specialist",
+      "memory_64k_gib": 25.56,
+      "generation_tok_s": {"short": 27.9, "medium_2k": 43.2, "context_4k": 35.9},
+      "evidence": {"finance": "11/12", "compression": "11/12"},
+      "source": "benchy-state/leaderboard-64gb-m1-max.md"
+    }
+  ],
+  "status": "baseline; update only with curated, versioned run records"
+}

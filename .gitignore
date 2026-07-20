@@ -76,3 +76,25 @@ coverage.xml
 *.swo
 *~
 examples/*.json
+
+# Local benchmark secrets
+benchy-state/*.env
+
+# Local benchmark execution output. Curated artifacts belong under
+# benchmarks/runs/ or leaderboards/data/.
+.DS_Store
+.bench-pinchbench-skill/
+results/*
+!results/
+!results/README.md
+benchy-state/*.log
+benchy-state/*.pid
+benchy-state/campaign.lock
+benchy-state/telegram.env
+benchy-state/serving-current.json
+benchy-state/serving-current.json.*
+benchy-state/tested-models.json
+
+# Keep the checked-in leaderboard and maintenance documents visible.
+!benchy-state/leaderboard-*.md
+!benchy-state/current-rankings.md

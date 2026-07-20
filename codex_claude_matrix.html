@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex and Claude Benchmark Matrix</title>
+  <style>
+    :root { color-scheme: light; --ink:#20252b; --muted:#66717d; --line:#d9dee5; --panel:#f5f7f9; --blue:#e7f0fb; --green:#e7f5ec; --amber:#fff4d6; --red:#fde9e7; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#fff; }
+    header { padding:24px 28px 16px; border-bottom:1px solid var(--line); }
+    h1 { margin:0 0 5px; font-size:22px; }
+    header p { margin:0; color:var(--muted); }
+    .controls { display:flex; flex-wrap:wrap; gap:10px; padding:14px 28px; background:var(--panel); border-bottom:1px solid var(--line); }
+    label { color:var(--muted); font-size:12px; font-weight:600; }
+    select,input { display:block; margin-top:3px; padding:7px 9px; border:1px solid #cbd2da; border-radius:4px; background:#fff; color:var(--ink); }
+    .summary { display:flex; gap:22px; flex-wrap:wrap; padding:14px 28px; border-bottom:1px solid var(--line); }
+    .metric strong { display:block; font-size:19px; }
+    .metric span { color:var(--muted); font-size:12px; }
+    .wrap { overflow:auto; padding:0 28px 28px; }
+    table { border-collapse:separate; border-spacing:0; min-width:1760px; width:100%; }
+    th,td { padding:9px 10px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); text-align:left; vertical-align:top; white-space:nowrap; }
+    th { position:sticky; top:0; z-index:3; background:#eef1f4; font-size:12px; }
+    th small { display:block; font-weight:400; color:var(--muted); }
+    td.model, th.model { position:sticky; left:0; z-index:2; background:#fff; min-width:185px; }
+    td.effort, th.effort { position:sticky; left:185px; z-index:2; background:#fff; min-width:72px; }
+    th.model, th.effort { z-index:4; background:#eef1f4; }
+    tr:hover td { background:#fafbfd; }
+    tr:hover td.model,tr:hover td.effort { background:#fafbfd; }
+    .provider { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+    .pill { display:inline-block; min-width:22px; padding:2px 6px; border-radius:10px; text-align:center; font-weight:700; font-size:12px; }
+    .yes { background:var(--green); color:#176331; } .partial { background:var(--amber); color:#7b5900; } .no { background:var(--red); color:#8a211b; } .na { background:#eceff2; color:#69737d; }
+    .score { font-variant-numeric:tabular-nums; }
+    .score .old { color:#4c5660; } .score .new { color:#155ca8; font-weight:700; }
+    .score .sep { color:#a2aab3; padding:0 3px; }
+    .score em { display:block; color:var(--muted); font-size:11px; font-style:normal; }
+    th.sortable { cursor:pointer; user-select:none; }
+    th.sortable:hover { background:#e2e7ec; }
+    th.sortable::after { content:attr(data-sort-state); color:var(--muted); font-size:10px; margin-left:5px; }
+    .note { max-width:330px; white-space:normal; color:#4d5863; }
+    .legend { margin:14px 28px 0; color:var(--muted); font-size:12px; }
+    code { font-size:12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Codex, Claude, and Local Benchmark Matrix</h1>
+    <p>Shared seven-test scale: Finance /12, Apache /10, Access /7, Compression /12, Family /6, Checklist /7, Text /8, Combined /62.</p>
+  </header>
+  <section class="controls">
+    <label>Provider<select id="provider"><option value="all">All</option><option>Codex</option><option>Claude</option><option>Local</option></select></label>
+    <label>Tested<select id="tested"><option value="all">All</option><option value="y">Yes</option><option value="p">Partial</option><option value="n">No</option></select></label>
+    <label>Rescored<select id="rescored"><option value="all">All</option><option value="y">Yes</option><option value="p">Partial</option><option value="n">No</option><option value="-">N/A</option></select></label>
+    <label>Search<input id="search" placeholder="model or note"></label>
+  </section>
+  <section class="summary" id="summary"></section>
+  <p class="legend"><b>Score cells:</b> semantic score only. A dash means no semantic score is available. Deterministic scores remain in the page data for provenance but are hidden from this view.</p>
+  <div class="wrap"><table><thead><tr>
+    <th class="model">Model<small>provider</small></th><th class="effort">Effort</th><th>Tested</th><th>Rescored</th><th>Valid / expected</th><th>Provenance</th>
+    <th class="sortable" data-score-index="0">Finance<small>/12</small></th><th class="sortable" data-score-index="1">Apache<small>/10</small></th><th class="sortable" data-score-index="2">Access<small>/7</small></th><th class="sortable" data-score-index="3">Compression<small>/12</small></th><th class="sortable" data-score-index="4">Family<small>/6</small></th><th class="sortable" data-score-index="5">Checklist<small>/7</small></th><th class="sortable" data-score-index="6">Text<small>/8</small></th><th class="sortable" data-score-index="7">Combined<small>/62</small></th><th>Retest / interpretation</th>
+  </tr></thead><tbody id="rows"></tbody></table></div>
+  <script>
+    const rows = [
+      // provider, model, effort, tested, rescored, valid/expected, provenance, scores, combined, note
+      ["Codex","gpt-5.4-mini","low","y","y","7 semantic / 7 retained","recovered event artifacts",["11.00/10.00","8.00/8.00","7.00/7.00","11.00/12.00","6.00/6.00","7.00/7.00","6.00/7.00"],"56.00/57.00","One complete suite pass recovered from durable event artifacts; semantic rescore completed with gpt-5.6-luna low."],
+      ["Local","Gemma QAT MLX 4-bit","mlx-4bit","y","y","21 semantic / 21 retained; 7/7 tasks","archived + new local runs",["8.00/8.00","7.00/8.33","7.00/7.00","11.00/11.33","5.00/5.00","7.00/7.00","8.00/8.00"],"53.00/54.66","Three passes across the complete seven-test suite. Apache semantic scores varied 10/10, 7/10, and 8/10; displayed value is the mean."],
+      ["Local","Qwen3.6 APEX I-Quality","gguf","y","y","21 semantic / 21 retained; 7/7 tasks","new local runs",["8.00/9.00","9.00/9.33","5.00/6.00","10.00/11.00","5.00/5.00","6.00/5.67","8.00/8.00"],"51.00/54.00","Three passes across the complete seven-test suite. Values are means; semantic judging improved Finance, Apache, Access, and Compression, but reduced Checklist slightly."],
+      ["Local","Qwen3.6 APEX I-Balanced","gguf","y","y","21 semantic / 21 retained; 7/7 tasks","new local runs",["6.00/8.67","7.00/6.33","7.00/6.00","10.00/11.00","5.00/5.00","6.00/6.00","8.00/8.00"],"49.00/51.00","Three passes across the complete seven-test suite. Values are means; Apache answers reached the output limit and semantic scoring penalized incomplete coverage."],
+      ["Codex","Sol","low","y","y","32 semantic / 32 retained","archived",["8.00/11.00","7.67/8.67","7.00/7.00","11.00/11.00","6.00/5.67","7.33/7.00","7.00/8.00"],"54.00/58.34","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Sol","medium","y","y","16 semantic / 16 retained","archived",["9.00/11.00","8.33/8.67","7.00/7.00","11.00/10.50","6.00/6.00","7.00/-","7.00/8.00"],"55.33/-","Semantic rescore complete for retained records; Checklist has no retained semantic judgment, so combined semantic score is omitted."],
+      ["Codex","Sol","high","y","y","16 semantic / 16 retained","archived",["8.00/11.00","9.00/9.33","7.00/7.00","10.67/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.33","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Terra","low","y","y","31 semantic / 31 retained","archived",["9.00/10.33","7.67/7.67","7.00/7.00","9.67/11.00","6.00/5.67","7.00/7.00","7.00/8.00"],"53.34/56.67","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Terra","medium","y","y","31 semantic / 31 retained","archived",["10.67/10.67","7.33/6.33","7.00/7.00","9.67/11.00","5.67/5.67","7.00/7.00","7.00/8.00"],"54.34/55.67","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Terra","high","y","y","31 semantic / 31 retained","archived",["10.33/11.33","6.67/9.00","7.00/7.00","9.33/10.67","6.00/5.67","7.00/7.00","7.00/8.00"],"53.33/58.67","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Terra","xhigh","y","y","16 semantic / 16 retained","archived",["11.00/11.00","6.67/8.67","7.00/7.00","10.00/11.00","5.67/5.67","7.00/7.00","7.00/8.00"],"54.34/58.33","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","low","y","y","31 semantic / 31 retained","archived",["8.00/11.00","8.00/6.00","7.00/7.00","10.33/11.00","5.67/5.33","6.67/6.67","7.00/8.00"],"52.67/55.00","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","medium","y","y","31 semantic / 31 retained","archived",["9.00/9.67","8.33/7.33","7.00/7.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"55.33/56.00","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","high","y","y","31 semantic / 31 retained","archived",["11.33/11.00","7.67/7.33","7.00/7.00","9.67/10.67","6.00/6.00","7.00/7.00","7.00/8.00"],"55.67/57.00","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","xhigh","y","y","17 semantic / 17 retained","fresh + archived",["8.67/11.00","8.33/9.00","7.00/7.00","10.67/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.00","Semantic rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","max","y","y","7 semantic / 7 pass","fresh one-pass",["-/11.00","-/9.00","-/7.00","-/11.00","-/6.00","-/6.00","-/8.00"],"-/58.00","One pass completed. No improvement over Luna xhigh; second pass intentionally deferred."],
+      ["Claude","Sonnet","low","y","y","18 semantic / 18 retained","archived",["11.00/10.50","9.00/9.50","6.67/5.33","11.33/11.00","4.67/4.67","6.33/6.33","7.00/8.00"],"56.00/55.33","Semantic rescore complete across all seven displayed tasks."],
+      ["Claude","Sonnet","medium","y","y","16 semantic / 16 retained","archived",["11.00/10.00","9.00/8.50","7.00/6.00","11.00/11.33","5.33/5.33","7.00/7.00","7.00/8.00"],"57.33/56.17","Semantic rescore complete across all seven displayed tasks."],
+      ["Claude","Sonnet","high","p","y","11 semantic / 11 retained","archived + fresh",["11.67/11.00","5.00/10.00","7.00/6.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.00","Latest Apache pass scored 10/10. Historical average was 6.67/10 because it included one prior harness-failure answer."],
+      ["Claude","Sonnet","xhigh","y","y","8 semantic / 8 retained + clean Apache run","archived + fresh",["10.00/11.00","9.00/10.00","7.00/6.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"57.00/59.00","Prior Apache tool-use failures are excluded from active scoring. Clean run 4 used an empty tool allowlist and scored 9/10 deterministic, 10/10 semantic."],
+      ["Claude","Sonnet","max","n","-","0/7","none",["-","-","-","-","-","-","-"],"-","Waiting for authentication/quota and a valid pass."],
+      ["Claude","Opus","low","y","y","14 semantic / 14 retained","archived",["11.00/10.00","9.00/8.50","7.00/7.00","10.00/11.00","4.00/4.50","7.00/7.00","8.00/8.00"],"56.00/56.00","Semantic rescore complete across all seven displayed tasks."],
+      ["Claude","Opus","medium","y","y","17 semantic / 17 retained","archived",["11.00/10.00","9.00/9.00","7.00/7.00","10.33/11.00","4.33/4.33","7.00/7.00","7.67/8.00"],"56.33/56.33","Semantic rescore complete across all seven displayed tasks."],
+      ["Claude","Opus","high","y","y","15 semantic / 15 retained","archived",["11.00/10.00","9.00/9.50","7.00/7.00","10.00/11.00","6.00/6.00","7.00/7.00","7.67/8.00"],"57.67/58.50","Semantic rescore complete across all seven displayed tasks."],
+      ["Claude","Opus","xhigh","n","-","0/7","none",["-","-","-","-","-","-","-"],"-","Not run; intentionally omitted before quota reset."],
+      ["Claude","Fable","low","y","y","16 semantic / 16 retained","archived",["11.33/10.00","9.00/9.50","7.00/7.00","11.00/11.33","6.00/6.00","7.00/7.00","7.00/8.00"],"58.33/58.83","Semantic rescore complete across all seven displayed tasks."],
+      ["Claude","Fable","medium","y","y","7 semantic / 7 retained","fresh",["12.00/10.00","8.00/9.00","7.00/7.00","12.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"59.00/58.00","Semantic rescore complete across all seven displayed tasks."],
+      ["Claude","Fable","high","y","y","7 semantic / 7 retained","fresh",["10.00/11.00","9.00/10.00","7.00/7.00","12.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"58.00/60.00","Semantic rescore complete across all seven displayed tasks."],
+    ];
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function pill(value) { const cls = value==='y'?'yes':value==='p'?'partial':value==='n'?'no':'na'; return `<span class="pill ${cls}">${esc(value)}</span>`; }
+    function score(value) {
+      if (!value || value==='-') return '<span class="score">-</span>';
+      const [old, newer] = value.split('/');
+      return newer && newer!=='-' ? `<span class="score"><span class="new">${esc(newer)}</span></span>` : '<span class="score">-</span>';
+    }
+    let sortScoreIndex = null;
+    let sortDirection = -1;
+    function semanticNumber(value) {
+      if (!value || value === '-') return null;
+      const newer = String(value).split('/')[1];
+      if (!newer || newer === '-') return null;
+      const number = Number(newer);
+      return Number.isFinite(number) ? number : null;
+    }
+    function render() {
+      const provider=document.getElementById('provider').value, tested=document.getElementById('tested').value, rescored=document.getElementById('rescored').value, search=document.getElementById('search').value.toLowerCase();
+      const visible=rows.filter(r => (provider==='all'||r[0]===provider) && (tested==='all'||r[3]===tested) && (rescored==='all'||r[4]===rescored) && (!search||r.join(' ').toLowerCase().includes(search)));
+      if (sortScoreIndex !== null) {
+        visible.sort((a,b) => {
+          const av=semanticNumber(sortScoreIndex === 7 ? a[8] : a[7][sortScoreIndex]);
+          const bv=semanticNumber(sortScoreIndex === 7 ? b[8] : b[7][sortScoreIndex]);
+          if (av === null && bv === null) return 0;
+          if (av === null) return 1;
+          if (bv === null) return -1;
+          return (av - bv) * sortDirection;
+        });
+      }
+      document.getElementById('rows').innerHTML=visible.map(r=>`<tr><td class="model"><b>${esc(r[1])}</b><div class="provider">${esc(r[0])}</div></td><td class="effort"><b>${esc(r[2])}</b></td><td>${pill(r[3])}</td><td>${pill(r[4])}</td><td>${esc(r[5])}</td><td>${esc(r[6])}</td>${(r[7] instanceof Array?r[7]:[]).map(value=>`<td>${score(value)}</td>`).join('')}<td>${score(r[8])}</td><td class="note">${esc(r[9])}</td></tr>`).join('');
+      const testedCount=rows.filter(r=>r[3]==='y').length, partial=rows.filter(r=>r[3]==='p').length, rescoredCount=rows.filter(r=>r[4]==='y').length, partialRescored=rows.filter(r=>r[4]==='p').length;
+      document.getElementById('summary').innerHTML=`<div class="metric"><strong>${rows.length}</strong><span>tracked configurations</span></div><div class="metric"><strong>${testedCount}</strong><span>complete tested</span></div><div class="metric"><strong>${partial}</strong><span>partial tested</span></div><div class="metric"><strong>${rescoredCount+partialRescored}</strong><span>with semantic rescoring</span></div><div class="metric"><strong>${visible.length}</strong><span>visible</span></div>`;
+    }
+    ['provider','tested','rescored','search'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+    document.querySelectorAll('th[data-score-index]').forEach(header => header.addEventListener('click', () => {
+      const index = Number(header.dataset.scoreIndex);
+      if (sortScoreIndex === index) sortDirection *= -1;
+      else { sortScoreIndex = index; sortDirection = -1; }
+      document.querySelectorAll('th[data-score-index]').forEach(item => {
+        item.dataset.sortState = Number(item.dataset.scoreIndex) === sortScoreIndex ? (sortDirection === -1 ? '[desc]' : '[asc]') : '';
+        item.setAttribute('aria-sort', Number(item.dataset.scoreIndex) === sortScoreIndex ? (sortDirection === -1 ? 'descending' : 'ascending') : 'none');
+      });
+      render();
+    }));
+    render();
+  </script>
+</body>
+</html>
