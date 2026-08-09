@@ -91,6 +91,8 @@ benchy-state/*.log
 benchy-state/*.pid
 benchy-state/campaign.lock
 benchy-state/telegram.env
+benchy-state/nightly-lock-*
+benchy-state/nightly-state-*.json
 benchy-state/serving-current.json
 benchy-state/serving-current.json.*
 benchy-state/tested-models.json

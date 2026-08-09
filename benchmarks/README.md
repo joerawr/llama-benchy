@@ -8,7 +8,7 @@ Benchmark definitions are versioned inputs. A result must identify the suite ver
 - Create a new suite version when behavior changes.
 - Keep public fixtures and prompts under `benchmarks/suites/`.
 - Keep private research notes out of Git; record their filename and SHA-256 in the run manifest.
-- Record deterministic and semantic scores separately.
+- Record semantic score as the only public quality score. Preserve deterministic rubric checks only as internal diagnostic evidence for the judge.
 - Record prompt-processing and generation throughput separately.
 - Record memory measurements and the exact workload shape.
 - Preserve historical results; do not silently rewrite scores after a methodology change.

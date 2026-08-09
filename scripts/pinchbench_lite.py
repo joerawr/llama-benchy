@@ -5,6 +5,7 @@ import json
 import math
 import re
 import statistics
+import sys
 import time
 from dataclasses import dataclass
 from datetime import date
@@ -12,6 +13,10 @@ from pathlib import Path
 from typing import Any
 
 import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from grader.semantic_judge import judge_answer  # noqa: E402
 
 
 DEFAULT_PINCHBENCH_DIR = Path(".bench-pinchbench-skill")
@@ -22,7 +27,7 @@ class TaskResult:
     task_id: str
     elapsed_s: float
     answer: str
-    grade: dict[str, Any]
+    diagnostic_grade: dict[str, Any]
     usage: dict[str, Any]
     finish_reason: str | None
 
@@ -672,17 +677,20 @@ def run_task(
         print(f"{task_id} run {index + 1}/{runs}: prompt chars={len(prompt)}", flush=True)
         result = run_once(base_url, model, prompt, max_tokens, timeout)
         result["run"] = index + 1
-        result["grade"] = grader(result["answer"])
+        result["diagnostic_grade"] = grader(result["answer"])
+        result["semantic_grade"], result["semantic_judge"] = judge_answer(
+            result["answer"], result["diagnostic_grade"], task_id
+        )
         print(
-            f"  score={result['grade']['score']}/{result['grade']['max_score']} "
+            f"  semantic={result['semantic_grade']['score']}/{result['semantic_grade']['max_score']} "
             f"elapsed={result['elapsed_s']:.2f}s finish={result['finish_reason']} "
-            f"words={result['grade']['word_count']}",
+            f"words={result['diagnostic_grade']['word_count']}",
             flush=True,
         )
         print(f"  answer={result['answer'][:180]!r}", flush=True)
         task_results.append(result)
 
-    scores = [result["grade"]["score"] for result in task_results]
+    scores = [result["semantic_grade"]["score"] for result in task_results]
     return {
         "task_id": task_id,
         "model": model,
@@ -691,7 +699,7 @@ def run_task(
             "min": min(scores),
             "max": max(scores),
             "avg": sum(scores) / len(scores),
-            "max_score": task_results[0]["grade"]["max_score"],
+            "max_score": task_results[0]["semantic_grade"]["max_score"],
         },
     }
 

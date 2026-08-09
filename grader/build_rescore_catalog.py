@@ -18,7 +18,7 @@ def load_json(path: Path) -> dict:
 
 
 def add_record(records: list[dict], provider: str, source: Path, record: dict, model: str | None = None, effort: str | None = None) -> None:
-    grade = record.get("grade", {})
+    grade = record.get("diagnostic_grade", record.get("grade", {}))
     answer = record.get("answer") or ""
     if not answer or not grade.get("max_score") or grade.get("error"):
         return
@@ -33,8 +33,8 @@ def add_record(records: list[dict], provider: str, source: Path, record: dict, m
         "effort": resolved_effort,
         "task_id": record.get("task_id"),
         "run": record.get("run"),
-        "score": grade.get("score"),
-        "max_score": grade.get("max_score"),
+        "diagnostic_score": grade.get("score"),
+        "diagnostic_max_score": grade.get("max_score"),
         "checks": grade.get("checks", []),
         "answer": answer,
         "reference": grade.get("reference", {}),
@@ -77,7 +77,7 @@ def main() -> None:
 
     retained: list[dict] = []
     for key, group in sorted(groups.items()):
-        ordered = sorted(group, key=lambda item: (float(item["score"]), int(item.get("run") or 0), item["fingerprint"]))
+        ordered = sorted(group, key=lambda item: (float(item["diagnostic_score"]), int(item.get("run") or 0), item["fingerprint"]))
         if len(ordered) >= 4:
             chosen = [ordered[0], ordered[-1]]
             for record in chosen:

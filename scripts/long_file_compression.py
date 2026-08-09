@@ -2,11 +2,16 @@
 import argparse
 import json
 import re
+import sys
 import time
 from pathlib import Path
 from typing import Any
 
 import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from grader.semantic_judge import judge_answer  # noqa: E402
 
 
 PROMPT_TEMPLATE = """/no_think
@@ -181,7 +186,6 @@ def run_once(base_url: str, model: str, prompt: str, timeout: int, max_tokens: i
     return {
         "elapsed_s": elapsed,
         "answer": answer,
-        "grade": grade(answer),
         "usage": usage,
         "finish_reason": choice.get("finish_reason"),
     }
@@ -208,17 +212,21 @@ def main() -> None:
         print(f"run {index + 1}/{args.runs}: prompt chars={len(prompt)}", flush=True)
         result = run_once(args.base_url, args.model, prompt, args.timeout, args.max_tokens)
         result["run"] = index + 1
-        grade_result = result["grade"]
+        result["diagnostic_grade"] = grade(result["answer"])
+        result["semantic_grade"], result["semantic_judge"] = judge_answer(
+            result["answer"], result["diagnostic_grade"], "compression"
+        )
+        grade_result = result["semantic_grade"]
         print(
-            f"  score={grade_result['score']}/{grade_result['max_score']} "
-            f"structure={grade_result['structure_pass']} elapsed={result['elapsed_s']:.2f}s "
+            f"  semantic={grade_result['score']}/{grade_result['max_score']} "
+            f"structure={result['diagnostic_grade']['structure_pass']} elapsed={result['elapsed_s']:.2f}s "
             f"finish={result['finish_reason']}",
             flush=True,
         )
         print(f"  answer={result['answer'][:180]!r}", flush=True)
         results.append(result)
 
-    scores = [result["grade"]["score"] for result in results]
+    scores = [result["semantic_grade"]["score"] for result in results]
     report = {
         "label": args.label,
         "model": args.model,
@@ -230,6 +238,7 @@ def main() -> None:
             "min": min(scores) if scores else None,
             "max": max(scores) if scores else None,
             "avg": sum(scores) / len(scores) if scores else None,
+            "max_score": results[0]["semantic_grade"]["max_score"] if results else None,
         },
     }
 

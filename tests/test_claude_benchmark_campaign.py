@@ -94,9 +94,11 @@ class SessionLimitBlockerTest(unittest.TestCase):
         run_once.side_effect = fake_run
         args = SimpleNamespace(
             only_config=["opus:low", "opus:medium", "fable:low", "opus:high"],
+            only_task=None,
             retry_failures=True,
             force_three=False,
             passes=2,
+            start_run=1,
         )
 
         run_campaign(args)

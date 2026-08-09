@@ -2,11 +2,17 @@
 import argparse
 import json
 import re
+import sys
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Callable
 
 import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from grader.semantic_judge import judge_answer  # noqa: E402
 
 
 @dataclass(frozen=True)
@@ -443,14 +449,17 @@ def run_task(base_url: str, model: str, label: str, task: Task, run_index: int, 
     started = time.time()
     answer, usage, finish_reason = chat_completion(base_url, model, task.prompt, timeout, max_tokens)
     elapsed_s = time.time() - started
-    grade = task.grader(answer)
+    diagnostic_grade = task.grader(answer)
+    semantic_grade, semantic_meta = judge_answer(answer, diagnostic_grade, task.task_id)
     return {
         "label": label,
         "task_id": task.task_id,
         "run": run_index,
         "elapsed_s": round(elapsed_s, 3),
         "answer": answer,
-        "grade": grade,
+        "diagnostic_grade": diagnostic_grade,
+        "semantic_grade": semantic_grade,
+        "semantic_judge": semantic_meta,
         "usage": usage,
         "finish_reason": finish_reason,
     }
@@ -462,13 +471,13 @@ def summarize(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
         task_results = [result for result in results if result["task_id"] == task.task_id]
         if not task_results:
             continue
-        total_score = sum(result["grade"]["score"] for result in task_results)
-        total_max = sum(result["grade"]["max_score"] for result in task_results)
+        total_score = sum(result["semantic_grade"]["score"] for result in task_results)
+        total_max = sum(result["semantic_grade"]["max_score"] for result in task_results)
         rows.append(
             {
                 "task_id": task.task_id,
                 "runs": len(task_results),
-                "passes": sum(1 for result in task_results if result["grade"]["pass"]),
+                "passes": sum(1 for result in task_results if result["semantic_grade"]["pass"]),
                 "score": total_score,
                 "max_score": total_max,
                 "score_pct": round(total_score / total_max * 100, 1) if total_max else 0,

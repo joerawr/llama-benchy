@@ -136,17 +136,26 @@ def download_command(c:dict[str,Any])->list[str]|None:
     if not c.get("repo_id"): raise FileNotFoundError(f"missing candidate and no repo_id: {p}")
     # exact repo/file, never a shell or arbitrary manifest command
     return ["hf","download",c["repo_id"],c.get("repo_file",p.name),"--local-dir",str(p.parent if c["backend"]=="llama" else p)]
+def semantic_scores(tasks:list[dict[str,Any]])->list[float]:
+    return [
+        float(run["semantic_grade"]["score"])
+        for task in tasks
+        for run in task.get("runs", [])
+        if isinstance(run.get("semantic_grade"), dict)
+        and isinstance(run["semantic_grade"].get("score"), (int, float))
+    ]
 def apache_weak(path:str)->bool:
     try:
-        data=load_json(Path(path)); text=json.dumps(data).lower()
-        # Runner output has evolved; absence of a numeric score is conservative weak.
-        scores=re.findall(r'"(?:score|quality_score)"\s*:\s*([0-9.]+)',text)
+        data=load_json(Path(path)); apache=[task for task in data.get("tasks", []) if task.get("task_id")=="task_log_apache_error_summary"]
+        scores=semantic_scores(apache)
+        # Runner output has evolved; absence of a semantic score is conservative weak.
         return len(scores)>=2 and sum(float(x)<APACHE_CREDIBLE_MIN for x in scores[:2])>=2
     except Exception: return False
 def quality_score(c:dict[str,Any])->tuple[float,float,float]:
     score=0.0
     try:
-        data=load_json(Path(c["results"]["quality"])); vals=re.findall(r'"(?:score|quality_score)"\s*:\s*([0-9.]+)',json.dumps(data)); score=sum(map(float,vals))/len(vals) if vals else 0.0
+        data=load_json(Path(c["results"]["quality"])); vals=semantic_scores(data.get("tasks", []))
+        score=sum(vals)/len(vals) if vals else 0.0
     except Exception: pass
     fit=1.0 if c["phases"].get("64k_gate",{}).get("status")=="completed" else 0.0
     speed=0.0

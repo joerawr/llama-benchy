@@ -44,52 +44,60 @@
 </head>
 <body>
   <header>
-    <h1>Codex, Claude, and Local Benchmark Matrix</h1>
+    <h1>Codex, Claude, OpenRouter, and Local Benchmark Matrix</h1>
     <p>Shared seven-test scale: Finance /12, Apache /10, Access /7, Compression /12, Family /6, Checklist /7, Text /8, Combined /62.</p>
   </header>
   <section class="controls">
-    <label>Provider<select id="provider"><option value="all">All</option><option>Codex</option><option>Claude</option><option>Local</option></select></label>
+    <label>Provider<select id="provider"><option value="all">All</option><option>Codex</option><option>Claude</option><option>OpenRouter</option><option>Local</option></select></label>
     <label>Tested<select id="tested"><option value="all">All</option><option value="y">Yes</option><option value="p">Partial</option><option value="n">No</option></select></label>
-    <label>Rescored<select id="rescored"><option value="all">All</option><option value="y">Yes</option><option value="p">Partial</option><option value="n">No</option><option value="-">N/A</option></select></label>
     <label>Search<input id="search" placeholder="model or note"></label>
   </section>
   <section class="summary" id="summary"></section>
-  <p class="legend"><b>Score cells:</b> semantic score only. A dash means no semantic score is available. Deterministic scores remain in the page data for provenance but are hidden from this view.</p>
+  <p class="legend"><b>Score cells:</b> semantic score only. A dash means no semantic score is available. Diagnostic rubric checks are retained only in source artifacts.</p>
   <div class="wrap"><table><thead><tr>
-    <th class="model">Model<small>provider</small></th><th class="effort">Effort</th><th>Tested</th><th>Rescored</th><th>Valid / expected</th><th>Provenance</th>
-    <th class="sortable" data-score-index="0">Finance<small>/12</small></th><th class="sortable" data-score-index="1">Apache<small>/10</small></th><th class="sortable" data-score-index="2">Access<small>/7</small></th><th class="sortable" data-score-index="3">Compression<small>/12</small></th><th class="sortable" data-score-index="4">Family<small>/6</small></th><th class="sortable" data-score-index="5">Checklist<small>/7</small></th><th class="sortable" data-score-index="6">Text<small>/8</small></th><th class="sortable" data-score-index="7">Combined<small>/62</small></th><th>Retest / interpretation</th>
+    <th class="model">Model<small>provider</small></th><th class="effort">Effort</th><th>Tested</th><th>Passes</th>
+    <th class="sortable" data-score-index="0">Finance<small>/12</small></th><th class="sortable" data-score-index="1">Apache<small>/10</small></th><th class="sortable" data-score-index="2">Access<small>/7</small></th><th class="sortable" data-score-index="3">Compression<small>/12</small></th><th class="sortable" data-score-index="4">Family<small>/6</small></th><th class="sortable" data-score-index="5">Checklist<small>/7</small></th><th class="sortable" data-score-index="6">Text<small>/8</small></th><th class="sortable" data-score-index="7">Combined<small>/62</small></th><th>Notes</th>
   </tr></thead><tbody id="rows"></tbody></table></div>
   <script>
     const rows = [
-      // provider, model, effort, tested, rescored, valid/expected, provenance, scores, combined, note
-      ["Codex","gpt-5.4-mini","low","y","y","7 semantic / 7 retained","recovered event artifacts",["11.00/10.00","8.00/8.00","7.00/7.00","11.00/12.00","6.00/6.00","7.00/7.00","6.00/7.00"],"56.00/57.00","One complete suite pass recovered from durable event artifacts; semantic rescore completed with gpt-5.6-luna low."],
-      ["Local","Gemma QAT MLX 4-bit","mlx-4bit","y","y","21 semantic / 21 retained; 7/7 tasks","archived + new local runs",["8.00/8.00","7.00/8.33","7.00/7.00","11.00/11.33","5.00/5.00","7.00/7.00","8.00/8.00"],"53.00/54.66","Three passes across the complete seven-test suite. Apache semantic scores varied 10/10, 7/10, and 8/10; displayed value is the mean."],
-      ["Local","Qwen3.6 APEX I-Quality","gguf","y","y","21 semantic / 21 retained; 7/7 tasks","new local runs",["8.00/9.00","9.00/9.33","5.00/6.00","10.00/11.00","5.00/5.00","6.00/5.67","8.00/8.00"],"51.00/54.00","Three passes across the complete seven-test suite. Values are means; semantic judging improved Finance, Apache, Access, and Compression, but reduced Checklist slightly."],
-      ["Local","Qwen3.6 APEX I-Balanced","gguf","y","y","21 semantic / 21 retained; 7/7 tasks","new local runs",["6.00/8.67","7.00/6.33","7.00/6.00","10.00/11.00","5.00/5.00","6.00/6.00","8.00/8.00"],"49.00/51.00","Three passes across the complete seven-test suite. Values are means; Apache answers reached the output limit and semantic scoring penalized incomplete coverage."],
-      ["Codex","Sol","low","y","y","32 semantic / 32 retained","archived",["8.00/11.00","7.67/8.67","7.00/7.00","11.00/11.00","6.00/5.67","7.33/7.00","7.00/8.00"],"54.00/58.34","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Sol","medium","y","y","16 semantic / 16 retained","archived",["9.00/11.00","8.33/8.67","7.00/7.00","11.00/10.50","6.00/6.00","7.00/-","7.00/8.00"],"55.33/-","Semantic rescore complete for retained records; Checklist has no retained semantic judgment, so combined semantic score is omitted."],
-      ["Codex","Sol","high","y","y","16 semantic / 16 retained","archived",["8.00/11.00","9.00/9.33","7.00/7.00","10.67/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.33","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Terra","low","y","y","31 semantic / 31 retained","archived",["9.00/10.33","7.67/7.67","7.00/7.00","9.67/11.00","6.00/5.67","7.00/7.00","7.00/8.00"],"53.34/56.67","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Terra","medium","y","y","31 semantic / 31 retained","archived",["10.67/10.67","7.33/6.33","7.00/7.00","9.67/11.00","5.67/5.67","7.00/7.00","7.00/8.00"],"54.34/55.67","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Terra","high","y","y","31 semantic / 31 retained","archived",["10.33/11.33","6.67/9.00","7.00/7.00","9.33/10.67","6.00/5.67","7.00/7.00","7.00/8.00"],"53.33/58.67","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Terra","xhigh","y","y","16 semantic / 16 retained","archived",["11.00/11.00","6.67/8.67","7.00/7.00","10.00/11.00","5.67/5.67","7.00/7.00","7.00/8.00"],"54.34/58.33","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Luna","low","y","y","31 semantic / 31 retained","archived",["8.00/11.00","8.00/6.00","7.00/7.00","10.33/11.00","5.67/5.33","6.67/6.67","7.00/8.00"],"52.67/55.00","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Luna","medium","y","y","31 semantic / 31 retained","archived",["9.00/9.67","8.33/7.33","7.00/7.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"55.33/56.00","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Luna","high","y","y","31 semantic / 31 retained","archived",["11.33/11.00","7.67/7.33","7.00/7.00","9.67/10.67","6.00/6.00","7.00/7.00","7.00/8.00"],"55.67/57.00","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Luna","xhigh","y","y","17 semantic / 17 retained","fresh + archived",["8.67/11.00","8.33/9.00","7.00/7.00","10.67/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.00","Semantic rescore complete across all seven displayed tasks."],
-      ["Codex","Luna","max","y","y","7 semantic / 7 pass","fresh one-pass",["-/11.00","-/9.00","-/7.00","-/11.00","-/6.00","-/6.00","-/8.00"],"-/58.00","One pass completed. No improvement over Luna xhigh; second pass intentionally deferred."],
-      ["Claude","Sonnet","low","y","y","18 semantic / 18 retained","archived",["11.00/10.50","9.00/9.50","6.67/5.33","11.33/11.00","4.67/4.67","6.33/6.33","7.00/8.00"],"56.00/55.33","Semantic rescore complete across all seven displayed tasks."],
-      ["Claude","Sonnet","medium","y","y","16 semantic / 16 retained","archived",["11.00/10.00","9.00/8.50","7.00/6.00","11.00/11.33","5.33/5.33","7.00/7.00","7.00/8.00"],"57.33/56.17","Semantic rescore complete across all seven displayed tasks."],
-      ["Claude","Sonnet","high","p","y","11 semantic / 11 retained","archived + fresh",["11.67/11.00","5.00/10.00","7.00/6.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.00","Latest Apache pass scored 10/10. Historical average was 6.67/10 because it included one prior harness-failure answer."],
-      ["Claude","Sonnet","xhigh","y","y","8 semantic / 8 retained + clean Apache run","archived + fresh",["10.00/11.00","9.00/10.00","7.00/6.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"57.00/59.00","Prior Apache tool-use failures are excluded from active scoring. Clean run 4 used an empty tool allowlist and scored 9/10 deterministic, 10/10 semantic."],
-      ["Claude","Sonnet","max","n","-","0/7","none",["-","-","-","-","-","-","-"],"-","Waiting for authentication/quota and a valid pass."],
-      ["Claude","Opus","low","y","y","14 semantic / 14 retained","archived",["11.00/10.00","9.00/8.50","7.00/7.00","10.00/11.00","4.00/4.50","7.00/7.00","8.00/8.00"],"56.00/56.00","Semantic rescore complete across all seven displayed tasks."],
-      ["Claude","Opus","medium","y","y","17 semantic / 17 retained","archived",["11.00/10.00","9.00/9.00","7.00/7.00","10.33/11.00","4.33/4.33","7.00/7.00","7.67/8.00"],"56.33/56.33","Semantic rescore complete across all seven displayed tasks."],
-      ["Claude","Opus","high","y","y","15 semantic / 15 retained","archived",["11.00/10.00","9.00/9.50","7.00/7.00","10.00/11.00","6.00/6.00","7.00/7.00","7.67/8.00"],"57.67/58.50","Semantic rescore complete across all seven displayed tasks."],
-      ["Claude","Opus","xhigh","n","-","0/7","none",["-","-","-","-","-","-","-"],"-","Not run; intentionally omitted before quota reset."],
-      ["Claude","Fable","low","y","y","16 semantic / 16 retained","archived",["11.33/10.00","9.00/9.50","7.00/7.00","11.00/11.33","6.00/6.00","7.00/7.00","7.00/8.00"],"58.33/58.83","Semantic rescore complete across all seven displayed tasks."],
-      ["Claude","Fable","medium","y","y","7 semantic / 7 retained","fresh",["12.00/10.00","8.00/9.00","7.00/7.00","12.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"59.00/58.00","Semantic rescore complete across all seven displayed tasks."],
-      ["Claude","Fable","high","y","y","7 semantic / 7 retained","fresh",["10.00/11.00","9.00/10.00","7.00/7.00","12.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"58.00/60.00","Semantic rescore complete across all seven displayed tasks."],
+      // provider, model, effort, tested, rescored, pass totals, provenance, scores, combined, note
+      ["Codex","gpt-5.4-mini","low","y","y","57","recovered event artifacts",["11.00/10.00","8.00/8.00","7.00/7.00","11.00/12.00","6.00/6.00","7.00/7.00","6.00/7.00"],"56.00/57.00","One complete suite pass recovered from durable event artifacts; rescore completed with gpt-5.6-luna low."],
+      ["Local","Gemma QAT MLX 4-bit","mlx-4bit","y","y","-","archived + new local runs",["8.00/8.00","7.00/8.33","7.00/7.00","11.00/11.33","5.00/5.00","7.00/7.00","8.00/8.00"],"53.00/54.66","Three passes across the complete seven-test suite. Apache scores varied 10/10, 7/10, and 8/10; displayed value is the mean. Exact per-pass totals are not retained."],
+      ["Local","Gemma 4 31B QAT OptiQ 4-bit","mlx-4bit","y","y","55","fresh one-pass suite",["-/8.00","-/8.00","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/55.00","One complete suite pass. Output rate: Finance 3.45, Apache 0.55, Access 2.96, Compression 3.94, Family 3.99, Checklist 5.39, Text 3.92 tok/s. Apache took 26.5 minutes."],
+      ["Local","Qwen3.5 122B APEX I-Mini","q3.5-122b","y","y","53/54","fresh two-pass suite; files removed",["-/9.00","-/8.50","-/5.00","-/11.50","-/5.50","-/6.00","-/8.00"],"-/53.50","Historical two-pass result across all seven tasks. Apache scored 9/10 and 8/10; Compression scored 11/12 and 12/12. Apache generated about 11.4 tok/s; Compression about 16.5 tok/s. Model files removed after failing the 55/62 retention threshold."],
+      ["Local","Qwen3.6 27B OptiQ","mlx-4bit","y","y","54","fresh one-pass suite",["-/9.00","-/9.00","-/4.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/54.00","One complete suite pass. Apache took about 16.8 minutes and generated about 8.4 tok/s; the model remains on disk as a comparison point."],
+      ["Local","Qwen3.6 APEX I-Quality","gguf","y","y","-","new local runs",["8.00/9.00","9.00/9.33","5.00/6.00","10.00/11.00","5.00/5.00","6.00/5.67","8.00/8.00"],"51.00/54.00","Three passes across the complete seven-test suite. Values are means; judging improved Finance, Apache, Access, and Compression, but reduced Checklist slightly. Exact per-pass totals are not retained."],
+      ["Local","Qwen3.6 APEX I-Balanced","gguf","y","y","-","new local runs",["6.00/8.67","7.00/6.33","7.00/6.00","10.00/11.00","5.00/5.00","6.00/6.00","8.00/8.00"],"49.00/51.00","Three passes across the complete seven-test suite. Values are means; Apache answers reached the output limit and scoring penalized incomplete coverage. Exact per-pass totals are not retained."],
+      ["OpenRouter","GLM 5.2","xhigh","y","y","58","fresh + archived",["-/10.00","-/9.00","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/58.00","One complete maximum-reasoning pass. OpenRouter supports high and xhigh only; xhigh is max. Finance was rerun uncapped at 10/12 in 6.4 minutes; the other six xhigh records were retained. Total model-call time about 8.9 minutes; cost $0.1769."],
+      ["OpenRouter","Kimi K3","max","y","y","61","fresh + retained",["-/11.00","-/10.00","-/7.00","-/12.00","-/6.00","-/7.00","-/8.00"],"-/61.00","First complete max pass at 61/62. Finance 11/12 and Apache 10/10 were uncapped reruns; Compression retained at 12/12. Total model-call time about 25.0 minutes; cost $0.9954."],
+      ["OpenRouter","Mercury 2","Nitro","y","y","57/59/56/56","four complete full-suite passes",["-/9.25","-/8.75","-/7.00","-/11.50","-/5.75","-/7.00","-/7.75"],"-/57.00","Displayed score is the real mean of four complete full-suite passes: 57/62, 59/62, 56/62, and 56/62. Contrived per-test hero is 60/62: Finance 10, Apache 10, Access 7, Compression 12, Family 6, Checklist 7, Text 8. Focused follow-ups were Finance 9/9/7 and Apache 9/9/9."],
+      ["Codex","Sol","low","y","y","55/54","archived",["8.00/11.00","7.67/8.67","7.00/7.00","11.00/11.00","6.00/5.67","7.33/7.00","7.00/8.00"],"54.00/58.34","Rescore complete across all seven displayed tasks."],
+      ["Codex","Sol","medium","y","y","53/58","archived",["9.00/11.00","8.33/8.67","7.00/7.00","11.00/10.50","6.00/6.00","7.00/-","7.00/8.00"],"55.33/-","Rescore complete for retained records; Checklist has no retained score, so combined score is omitted."],
+      ["Codex","Sol","high","y","y","56/54","archived",["8.00/11.00","9.00/9.33","7.00/7.00","10.67/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.33","Rescore complete across all seven displayed tasks."],
+      ["Codex","Terra","low","y","y","51/52","archived",["9.00/10.33","7.67/7.67","7.00/7.00","9.67/11.00","6.00/5.67","7.00/7.00","7.00/8.00"],"53.34/56.67","Rescore complete across all seven displayed tasks."],
+      ["Codex","Terra","medium","y","y","54/52","archived",["10.67/10.67","7.33/6.33","7.00/7.00","9.67/11.00","5.67/5.67","7.00/7.00","7.00/8.00"],"54.34/55.67","Rescore complete across all seven displayed tasks."],
+      ["Codex","Terra","high","y","y","53/53","archived",["10.33/11.33","6.67/9.00","7.00/7.00","9.33/10.67","6.00/5.67","7.00/7.00","7.00/8.00"],"53.33/58.67","Rescore complete across all seven displayed tasks."],
+      ["Codex","Terra","xhigh","y","y","54/53","archived",["11.00/11.00","6.67/8.67","7.00/7.00","10.00/11.00","5.67/5.67","7.00/7.00","7.00/8.00"],"54.34/58.33","Rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","low","y","y","51/55","archived",["8.00/11.00","8.00/6.00","7.00/7.00","10.33/11.00","5.67/5.33","6.67/6.67","7.00/8.00"],"52.67/55.00","Rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","medium","y","y","57","archived",["9.00/9.67","8.33/7.33","7.00/7.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"55.33/56.00","Rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","high","y","y","56/56","archived",["11.33/11.00","7.67/7.33","7.00/7.00","9.67/10.67","6.00/6.00","7.00/7.00","7.00/8.00"],"55.67/57.00","Rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","xhigh","y","y","55/54","fresh + archived",["8.67/11.00","8.33/9.00","7.00/7.00","10.67/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.00","Rescore complete across all seven displayed tasks."],
+      ["Codex","Luna","max","y","y","58","fresh one-pass",["-/11.00","-/9.00","-/7.00","-/11.00","-/6.00","-/6.00","-/8.00"],"-/58.00","One pass completed. No improvement over Luna xhigh; second pass intentionally deferred."],
+      ["Claude","Sonnet","low","y","y","55/57","archived",["11.00/10.50","9.00/9.50","6.67/5.33","11.33/11.00","4.67/4.67","6.33/6.33","7.00/8.00"],"56.00/55.33","Rescore complete across all seven displayed tasks."],
+      ["Claude","Sonnet","medium","y","y","56/59","archived",["11.00/10.00","9.00/8.50","7.00/6.00","11.00/11.33","5.33/5.33","7.00/7.00","7.00/8.00"],"57.33/56.17","Rescore complete across all seven displayed tasks."],
+      ["Claude","Sonnet","high","p","y","51","archived + fresh",["11.67/11.00","5.00/10.00","7.00/6.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/59.00","Latest Apache pass scored 10/10. Historical average was 6.67/10 because it included one prior harness-failure answer."],
+      ["Claude","Sonnet","xhigh","y","y","50","archived + fresh",["10.00/11.00","9.00/10.00","7.00/6.00","11.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"57.00/59.00","Prior Apache tool-use failures are excluded from active scoring. Clean run 4 used an empty tool allowlist and scored 10/10."],
+      ["Claude","Sonnet","max","n","-","-","none",["-","-","-","-","-","-","-"],"-","Waiting for authentication/quota and a valid pass."],
+      ["Claude","Opus 4.8","low","y","y","56/56","archived",["11.00/10.00","9.00/8.50","7.00/7.00","10.00/11.00","4.00/4.50","7.00/7.00","8.00/8.00"],"56.00/56.00","Rescore complete across all seven displayed tasks."],
+      ["Claude","Opus 4.8","medium","y","y","56/57","archived",["11.00/10.00","9.00/9.00","7.00/7.00","10.33/11.00","4.33/4.33","7.00/7.00","7.67/8.00"],"56.33/56.33","Rescore complete across all seven displayed tasks."],
+      ["Claude","Opus 4.8","high","y","y","57/58","archived",["11.00/10.00","9.00/9.50","7.00/7.00","10.00/11.00","6.00/6.00","7.00/7.00","7.67/8.00"],"57.67/58.50","Rescore complete across all seven displayed tasks."],
+      ["Claude","Opus 4.8","xhigh","n","-","-","none",["-","-","-","-","-","-","-"],"-","Not run; intentionally omitted before quota reset."],
+      ["Claude","Opus 5","low","y","y","56/57","fresh two-pass suite",["-/8.50","-/10.00","-/7.00","-/11.00","-/5.00","-/7.00","-/8.00"],"-/56.50","Two-pass average using claude-opus-5. Average 26.80 seconds/task; total cost $1.1300."],
+      ["Claude","Opus 5","medium","y","y","57/59","fresh two-pass suite",["-/9.50","-/10.00","-/6.50","-/11.00","-/6.00","-/7.00","-/8.00"],"-/58.00","Two-pass average using claude-opus-5. Average 33.79 seconds/task; total cost $1.9598."],
+      ["Claude","Opus 5","high","y","y","60","fresh one-pass suite",["-/11.00","-/10.00","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/60.00","Fresh one-pass run using claude-opus-5. Average 85.66 seconds/task; total cost $2.2850; average output rate 56.63 tok/s."],
+      ["Claude","Fable","low","y","y","58/58","archived",["11.33/10.00","9.00/9.50","7.00/7.00","11.00/11.33","6.00/6.00","7.00/7.00","7.00/8.00"],"58.33/58.83","Rescore complete across all seven displayed tasks."],
+      ["Claude","Fable","medium","y","y","58","fresh",["12.00/10.00","8.00/9.00","7.00/7.00","12.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"59.00/58.00","Rescore complete across all seven displayed tasks."],
+      ["Claude","Fable","high","y","y","60","fresh",["10.00/11.00","9.00/10.00","7.00/7.00","12.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"58.00/60.00","Rescore complete across all seven displayed tasks."],
     ];
     const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     function pill(value) { const cls = value==='y'?'yes':value==='p'?'partial':value==='n'?'no':'na'; return `<span class="pill ${cls}">${esc(value)}</span>`; }
@@ -108,8 +116,8 @@
       return Number.isFinite(number) ? number : null;
     }
     function render() {
-      const provider=document.getElementById('provider').value, tested=document.getElementById('tested').value, rescored=document.getElementById('rescored').value, search=document.getElementById('search').value.toLowerCase();
-      const visible=rows.filter(r => (provider==='all'||r[0]===provider) && (tested==='all'||r[3]===tested) && (rescored==='all'||r[4]===rescored) && (!search||r.join(' ').toLowerCase().includes(search)));
+      const provider=document.getElementById('provider').value, tested=document.getElementById('tested').value, search=document.getElementById('search').value.toLowerCase();
+      const visible=rows.filter(r => (provider==='all'||r[0]===provider) && (tested==='all'||r[3]===tested) && (!search||r.join(' ').toLowerCase().includes(search)));
       if (sortScoreIndex !== null) {
         visible.sort((a,b) => {
           const av=semanticNumber(sortScoreIndex === 7 ? a[8] : a[7][sortScoreIndex]);
@@ -120,11 +128,11 @@
           return (av - bv) * sortDirection;
         });
       }
-      document.getElementById('rows').innerHTML=visible.map(r=>`<tr><td class="model"><b>${esc(r[1])}</b><div class="provider">${esc(r[0])}</div></td><td class="effort"><b>${esc(r[2])}</b></td><td>${pill(r[3])}</td><td>${pill(r[4])}</td><td>${esc(r[5])}</td><td>${esc(r[6])}</td>${(r[7] instanceof Array?r[7]:[]).map(value=>`<td>${score(value)}</td>`).join('')}<td>${score(r[8])}</td><td class="note">${esc(r[9])}</td></tr>`).join('');
+      document.getElementById('rows').innerHTML=visible.map(r=>`<tr><td class="model"><b>${esc(r[1])}</b><div class="provider">${esc(r[0])}</div></td><td class="effort"><b>${esc(r[2])}</b></td><td>${pill(r[3])}</td><td>${esc(r[5])}</td>${(r[7] instanceof Array?r[7]:[]).map(value=>`<td>${score(value)}</td>`).join('')}<td>${score(r[8])}</td><td class="note">${esc(r[9])}</td></tr>`).join('');
       const testedCount=rows.filter(r=>r[3]==='y').length, partial=rows.filter(r=>r[3]==='p').length, rescoredCount=rows.filter(r=>r[4]==='y').length, partialRescored=rows.filter(r=>r[4]==='p').length;
       document.getElementById('summary').innerHTML=`<div class="metric"><strong>${rows.length}</strong><span>tracked configurations</span></div><div class="metric"><strong>${testedCount}</strong><span>complete tested</span></div><div class="metric"><strong>${partial}</strong><span>partial tested</span></div><div class="metric"><strong>${rescoredCount+partialRescored}</strong><span>with semantic rescoring</span></div><div class="metric"><strong>${visible.length}</strong><span>visible</span></div>`;
     }
-    ['provider','tested','rescored','search'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+    ['provider','tested','search'].forEach(id=>document.getElementById(id).addEventListener('input',render));
     document.querySelectorAll('th[data-score-index]').forEach(header => header.addEventListener('click', () => {
       const index = Number(header.dataset.scoreIndex);
       if (sortScoreIndex === index) sortDirection *= -1;

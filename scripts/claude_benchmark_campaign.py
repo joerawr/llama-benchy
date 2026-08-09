@@ -49,7 +49,15 @@ CONFIGS = [
     ("fable", "medium"),
     ("fable", "high"),
     ("opus", "high"),
+    ("opus5", "low"),
+    ("opus5", "medium"),
+    ("opus5", "high"),
 ]
+
+MODEL_IDS = {
+    "opus": "claude-opus-4-8",
+    "opus5": "claude-opus-5",
+}
 
 TASK_NAMES = [
     "finance",
@@ -171,7 +179,7 @@ def run_once(model: str, effort: str, task: Any, run: int) -> dict[str, Any]:
         "--output-format",
         "json",
         "--model",
-        model,
+        MODEL_IDS.get(model, model),
         "--effort",
         effort,
         "--allowed-tools",
@@ -203,14 +211,14 @@ def run_once(model: str, effort: str, task: Any, run: int) -> dict[str, Any]:
             and bool(answer)
             and bool(body.get("usage"))
         )
-        grade = task.grader(answer) if successful else {
+        diagnostic_grade = task.grader(answer) if successful else {
             "score": 0,
             "max_score": 0,
             "pass": False,
             "error": body.get("result") or "Claude did not return a successful JSON result",
         }
-        semantic_grade, semantic_meta = semantic_judge(answer, grade, task.task_id) if successful else ({
-            "score": 0, "max_score": grade.get("max_score", 0), "error": "no answer to judge"
+        semantic_grade, semantic_meta = semantic_judge(answer, diagnostic_grade, task.task_id) if successful else ({
+            "score": 0, "max_score": diagnostic_grade.get("max_score", 0), "error": "no answer to judge"
         }, {})
         return {
             "model": model,
@@ -221,7 +229,7 @@ def run_once(model: str, effort: str, task: Any, run: int) -> dict[str, Any]:
             "elapsed_s": elapsed,
             "exit_code": result.returncode,
             "answer": answer,
-            "grade": grade,
+            "diagnostic_grade": diagnostic_grade,
             "semantic_grade": semantic_grade,
             "semantic_judge": semantic_meta,
             "usage": usage_summary(body, elapsed),
@@ -243,7 +251,7 @@ def run_once(model: str, effort: str, task: Any, run: int) -> dict[str, Any]:
             "elapsed_s": round(time.monotonic() - started, 3),
             "exit_code": None,
             "answer": "",
-            "grade": {"score": 0, "max_score": 0, "pass": False, "error": str(exc)},
+            "diagnostic_grade": {"score": 0, "max_score": 0, "pass": False, "error": str(exc)},
             "usage": {},
             "json_path": str(json_path),
             "answer_path": str(answer_path),
@@ -257,7 +265,7 @@ def pause_for_blocker(
 ) -> bool:
     blocker = record.get("blocker")
     if not blocker:
-        error = record.get("grade", {}).get("error")
+        error = record.get("diagnostic_grade", record.get("grade", {})).get("error")
         body = {"is_error": True, "result": error}
         blocker = session_limit_blocker(body) or authentication_blocker(body)
     if not blocker:
@@ -291,7 +299,7 @@ def execute_run(
 ) -> bool:
     key = record_key(model, effort, task.task_id, run)
     existing = state["records"].get(key)
-    if args.retry_failures and existing and existing.get("grade", {}).get("error"):
+    if args.retry_failures and existing and existing.get("diagnostic_grade", existing.get("grade", {})).get("error"):
         state.setdefault("failed_attempt_history", []).append(existing)
         del state["records"][key]
         save_state(state)
