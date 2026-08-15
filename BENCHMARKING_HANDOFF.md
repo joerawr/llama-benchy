@@ -217,6 +217,17 @@ codex_claude_matrix.html
 
 Use the same suite version, hardware profile, score policy, and pass policy in all views. Do not silently rewrite an old result after rescoring or a methodology change; add provenance and preserve the original artifact.
 
+### Push successful chart additions immediately
+
+After every verified addition to `codex_claude_matrix.html`, push that chart change to the configured remote immediately. Do not batch successful chart rows for a later push. Stage only the intended chart, curated leaderboard, and documentation files; preserve unrelated worktree changes.
+
+```bash
+git diff --check
+git add codex_claude_matrix.html
+git commit -m "Add MODEL benchmark to chart"
+git push
+```
+
 ## Verification checklist
 
 Before reporting completion:
