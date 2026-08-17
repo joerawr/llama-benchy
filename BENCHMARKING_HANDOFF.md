@@ -45,7 +45,8 @@ The canonical task assembly is `scripts/codex_gap_campaign.py:build_tasks`. The 
 
 - Semantic score is the only public quality score.
 - `diagnostic_grade` and deterministic rubric checks are internal evidence for the semantic judge. Do not put them on the leaderboard.
-- Successful answers are judged by `grader/semantic_judge.py` using `grader/AGENTS.md`.
+- Successful answers are judged by `grader/semantic_judge.py` using `grader/AGENTS.md`, Luna `xhigh`, and the `source-aware-v2` protocol.
+- The semantic judge receives the original task prompt/source evidence, explicit natural-language requirements for every rubric check, and reference facts. It judges only the delivered answer; hidden reasoning is retained separately for diagnostics and never scored.
 - An empty answer, provider failure, timeout, or semantic-judge failure is incomplete, not a zero-quality score. Preserve the failure evidence and display `-` for the missing score.
 - Run at least two passes for a comparison. Run a third pass when grader signatures differ or a run fails. A cheap model may receive extra focused passes, but those are not complete-suite passes.
 - Never cherry-pick per-task highs into the real combined score. A per-task envelope may be recorded in Notes as a contrived hero number.
@@ -109,6 +110,35 @@ $PY scripts/long_file_compression.py \
 ```
 
 The local campaign also measures memory and throughput. Record prompt processing separately from generation throughput. For a 64GB comparison, record the exact context size, usually 64K, and whether the model remained resident or used swap.
+
+### Archive models before local deletion
+
+Do not discard a downloaded model directly from `/Users/jrogers/models`. First copy it to the 2TB RPi archive at `rpi:media/models/`, preserving its path relative to `/Users/jrogers/models`. For example, `mlx-community/Muse-Glimmer-30B-OptiQ-4bit` stays under the `mlx-community` directory on the NAS.
+
+Run the copy from the local model root. `MODEL_REL` may name a complete model directory or one GGUF file:
+
+```bash
+cd /Users/jrogers/models
+MODEL_REL=mlx-community/Muse-Glimmer-30B-OptiQ-4bit
+
+ssh rpi 'mkdir -p /home/jrogers/media/models'
+rsync -a --partial --info=progress2 --relative "./$MODEL_REL" rpi:media/models/
+rsync -aicn --relative "./$MODEL_REL" rpi:media/models/
+ssh rpi "du -sh /home/jrogers/media/models/$MODEL_REL"
+du -sh "$MODEL_REL"
+```
+
+The checksum dry run must report no changed files, and the remote/local sizes must be plausible, before local deletion. Archive the whole model directory when tokenizer, configuration, projector, or other companion files are required. If SSH, rsync, capacity, or verification fails, leave the local copy untouched. Local deletion remains manual and must target only the exact verified path; keeper and currently served models are never deleted automatically.
+
+Current local state and MLX warning:
+
+- Port `1234` is intentionally stopped. Do not restart it until the user selects a model.
+- The failed Muse-Glimmer-30B MLX 8-bit trial is documented in `results/muse-glimmer-30b-mlx8bit-run-failed-20260813.md`. It caused a macOS `IOGPUFamily` panic (`completeMemory() prepare count underflow`) in the MLX Python process. Do not relaunch that Q8 workload on this machine without a different MLX/runtime or macOS configuration.
+- The failed Q8 model is no longer on disk; it was removed before the RPi archival policy was adopted and has no quality score.
+- The stable Muse reference is the GGUF Q6 model at `/Users/jrogers/models/unsloth/Muse-Glimmer-30B-GGUF/Muse-Glimmer-30B-UD-Q6_K_XL.gguf`, with two complete 57/62 passes.
+- `scripts/pinchbench_lite.py`, `scripts/long_file_compression.py`, and `scripts/ifeval_lite.py` now support `--reasoning-off`; this sends `reasoning=false`, `reasoning_effort=off`, and (for the first two) `chat_template_kwargs.enable_thinking=false`. Muse Q8 ignored the first two controls in practice and still exhausted its generation budget.
+- Completion defaults were raised to 16K in the local quality runners. Do not lower the cap merely to force a score; a capped or empty answer is an incomplete result. For a new model, use a short smoke request first to establish whether it can return a usable answer under the selected cap.
+- Qwen3.8 is the next likely trial. Download it only after checking disk space, stop any current local server, use port `18081`, and monitor memory pressure and swap.
 
 ## Codex workflow
 
@@ -197,6 +227,7 @@ For a new model whose public semantic score is `57.00/62`, use this style:
 Rules for the row:
 
 - Put only semantic scores in the displayed/new side of each score cell. The `-/<score>` form means there is no old score and the new semantic score is displayed.
+- The chart's `Needs regrading` column shows `X` until every displayed answer for that configuration has been rescored with Luna `xhigh` under `source-aware-v2`. Add the configuration key to `sourceAwareRegraded` only after verifying all seven task aggregates against saved rescore artifacts.
 - `passes` contains complete pass totals separated by `/`, for example `57/59/56`. Use `-` for an incomplete pass rather than treating it as zero.
 - The combined score must be the mean or single-pass total represented by the row, not a sum of best scores from different runs.
 - Notes should state pass count, model/quant, memory, PP/TG speed, cost or token usage when available, and any retry or incomplete-task explanation.

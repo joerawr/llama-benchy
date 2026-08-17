@@ -63,7 +63,7 @@ Rules:
 - Python/scripts may gather metadata, but you make the selection using the history and guidelines.
 - $candidate_profile
 - Download candidates only under $scratch.
-- Clean up rejected downloads under $scratch.
+- Do not delete downloaded models. A rejected download must first be copied to rpi:media/models/_nightly-candidates/ with its relative subdirectory preserved and checksum-verified; if that cannot be completed, leave it local for manual follow-up.
 - Do not delete keeper models outside $scratch.
 - Do not modify benchy-state/serving-current.json.
 - Minimum quantization is Q4. Do not download or test Q3 or lower, including IQ1/IQ2/IQ3, Q2, Q3, UD-Q2, or UD-Q3 files.

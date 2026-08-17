@@ -244,10 +244,10 @@ def rank_and_cleanup(state:dict[str,Any],state_path:Path,root:Path)->None:
         if c["id"] in keep: c["cleanup"]={"decision":"retained"}; continue
         p=Path(c["path"]).resolve(); target=p if p.is_dir() else p.parent
         if c.get("terminal") in {"tested","failed","skipped"} and c.get("terminal") and c.get("results") and inside(target,root) and c["id"] not in keep:
-            # Failed/skipped candidates need terminal evidence; only delete a directory after a report/result exists.
             evidence=any(Path(x).exists() for x in c["results"].values())
             if evidence and target.exists():
-                import shutil; shutil.rmtree(target); c["cleanup"]={"decision":"deleted","path":str(target)}
+                relative=target.relative_to(root)
+                c["cleanup"]={"decision":"archive_required","path":str(target),"destination":f"rpi:media/models/_nightly-candidates/{relative}"}
             else: c["cleanup"]={"decision":"not_deleted_no_result_evidence"}
     persist(state_path,state)
 

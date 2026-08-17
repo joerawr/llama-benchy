@@ -140,3 +140,32 @@ def test_resume_rejects_changed_manifest_hash(tmp_path):
     data["retain_top_n"] = 3; path.write_text(json.dumps(data))
     with pytest.raises(ValueError, match="manifest hash"):
         worker.run_campaign(path, state, lock, execute=False, dry_run=True, no_telegram=True, resume=True, candidate_root=tmp_path / "candidates")
+
+
+def test_non_keeper_is_marked_for_archive_without_deletion(tmp_path):
+    root = tmp_path / "candidates"
+    candidates = []
+    for candidate_id, score in (("keeper", 7), ("other", 5)):
+        model_dir = root / candidate_id
+        model_dir.mkdir(parents=True)
+        gate = tmp_path / f"{candidate_id}-gate.json"
+        quality = tmp_path / f"{candidate_id}-quality.json"
+        gate.write_text("{}")
+        quality.write_text(json.dumps({"tasks": [{"semantic_grade": {"score": score}}]}))
+        candidates.append({
+            "id": candidate_id,
+            "path": str(model_dir),
+            "terminal": "tested",
+            "phases": {"64k_gate": {"status": "completed"}},
+            "results": {"64k_gate": str(gate), "quality": str(quality), "throughput_short": ""},
+        })
+
+    state = {"retain_top_n": 1, "candidates": candidates}
+    worker.rank_and_cleanup(state, tmp_path / "state.json", root)
+
+    assert (root / "other").is_dir()
+    assert candidates[1]["cleanup"] == {
+        "decision": "archive_required",
+        "path": str(root / "other"),
+        "destination": "rpi:media/models/_nightly-candidates/other",
+    }

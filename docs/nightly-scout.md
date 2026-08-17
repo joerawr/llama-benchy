@@ -54,6 +54,7 @@ NIGHTLY_TARGET=main64 NIGHTLY_DRY_RUN=1 NIGHTLY_SCOUT_LIMIT=8 NIGHTLY_FILE_LIMIT
 
 - The selector chooses at most one candidate/quant per run.
 - Candidate downloads must stay under `/Users/jrogers/models/_nightly-candidates`.
-- Only rejected downloads under that scratch directory may be deleted.
+- Rejected downloads must be copied to `rpi:media/models/_nightly-candidates/`, preserving their relative subdirectory, and checksum-verified before any local deletion.
+- If the RPi archive is unavailable or verification fails, retain the local download. Local deletion is manual.
 - Keeper models and the serving configuration are never changed automatically.
 - Telegram delivery is handled by `ops/telegram-report.sh`; do not print its credential file.

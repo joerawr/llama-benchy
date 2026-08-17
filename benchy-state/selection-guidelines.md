@@ -46,6 +46,7 @@ The two scheduled scouts are deliberately separate. A report must name its lane 
 - Duplicate quants that do not answer a specific question.
 - Filling disk with multiple candidates in one run.
 - Deleting or replacing keeper models automatically.
+- Deleting any tested or rejected model before its exact relative path has been copied to and verified under `rpi:media/models/`.
 
 ## Memory Targets
 
@@ -55,4 +56,4 @@ The two scheduled scouts are deliberately separate. A report must name its lane 
 ## Decision Policy
 
 The nightly job may recommend a promotion but must not change `benchy-state/serving-current.json`.
-The nightly job may delete only files under `/Users/jrogers/models/_nightly-candidates`.
+The nightly job must preserve rejected downloads under `/Users/jrogers/models/_nightly-candidates` until they are archived to `rpi:media/models/_nightly-candidates/` and verified. If the archive is unavailable or verification fails, leave the local files untouched. Local deletion is manual.
