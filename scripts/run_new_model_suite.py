@@ -16,10 +16,13 @@ PORT = 18081
 BASE_URL = f"http://127.0.0.1:{PORT}"
 API_URL = f"{BASE_URL}/v1"
 
-NEEDLE = "/Users/jrogers/rcave/OBnotes/ZEN30 Double Switch VER. 1.05 Advanced Settings.md"
+NEEDLE = (
+    Path(__file__).resolve().parents[1]
+    / "benchmarks-files/needle/zen30-double-switch-ver-1.05-advanced-settings.md"
+)
 COMPRESSION_NOTE = (
-    "/Users/jrogers/rcave/OBnotes/"
-    "AI Frontier Access Risk - Fable GPT-5.6 GLM-5.2 Sovereign AI - 2026-06-26.md"
+    Path(__file__).resolve().parents[1]
+    / "benchmarks-files/compression/ai-frontier-access-risk-fable-gpt56-glm52-2026-06-26.md"
 )
 
 MODELS: list[dict[str, Any]] = [

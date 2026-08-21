@@ -4,6 +4,8 @@ This directory contains the exact task inputs sent to models. It is part of
 the benchmark, not disposable setup data.
 
 - `compression/` contains the research note used by the Compression task.
+- `needle/` contains the ZEN30 document used by the auxiliary needle-retrieval
+  suite.
 - `pinchbench/` contains the pinned PinchBench inputs used by Finance, Apache,
   and Access anomaly.
 
