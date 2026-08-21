@@ -104,10 +104,15 @@ $PY scripts/ifeval_lite.py \
 
 $PY scripts/long_file_compression.py \
   --base-url "$BASE" --model SERVED_MODEL --label "$LABEL" \
-  --note "/Users/jrogers/rcave/OBnotes/AI Frontier Access Risk - Fable GPT-5.6 GLM-5.2 Sovereign AI - 2026-06-26.md" \
+  --note "benchmarks-files/compression/ai-frontier-access-risk-fable-gpt56-glm52-2026-06-26.md" \
   --runs 2 --timeout 1200 \
   --out "results/$LABEL-compression.json"
 ```
+
+The exact benchmark inputs are checked into `benchmarks-files/`. Do not run a
+benchmark from a private external copy and then push only the code: copy the
+input into this directory first, record its hash in the benchmark notes, and
+include it in the same commit as the chart addition.
 
 The local campaign also measures memory and throughput. Record prompt processing separately from generation throughput. For a 64GB comparison, record the exact context size, usually 64K, and whether the model remained resident or used swap.
 

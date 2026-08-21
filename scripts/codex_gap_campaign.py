@@ -19,11 +19,9 @@ sys.path.insert(0, str(ROOT))
 RESULTS = ROOT / "results"
 STATE_PATH = Path(os.environ.get("CODEX_CAMPAIGN_STATE", RESULTS / "codex-apples-gap-campaign-20260714.json"))
 EVENT_DIR = Path(os.environ.get("CODEX_CAMPAIGN_EVENTS", RESULTS / "codex-apples-gap-events-20260714"))
-PINCH = ROOT / ".bench-pinchbench-skill"
-NOTE_PATH = Path(
-    "/Users/jrogers/rcave/OBnotes/"
-    "AI Frontier Access Risk - Fable GPT-5.6 GLM-5.2 Sovereign AI - 2026-06-26.md"
-)
+BENCHMARK_FILES = ROOT / "benchmarks-files"
+PINCH = BENCHMARK_FILES / "pinchbench"
+NOTE_PATH = BENCHMARK_FILES / "compression" / "ai-frontier-access-risk-fable-gpt56-glm52-2026-06-26.md"
 NEUTRAL_WRAPPER = (
     "You are completing a benchmark. Return only the requested final answer. "
     "Do not explain your process, mention tools, edit files, or add a preface.\n\n"
@@ -283,7 +281,9 @@ def run_once(
             "pass": False,
             "error": "missing successful answer or turn.completed usage",
         }
-        semantic_grade, semantic_meta = semantic_judge(answer, diagnostic_grade, task.task_id) if successful else ({
+        semantic_grade, semantic_meta = semantic_judge(
+            answer, diagnostic_grade, task.task_id, task_prompt=task.prompt
+        ) if successful else ({
             "score": 0, "max_score": diagnostic_grade.get("max_score", 0), "error": "no answer to judge"
         }, {})
         return {

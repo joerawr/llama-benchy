@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from grader.semantic_judge import judge_answer  # noqa: E402
 
 
-DEFAULT_PINCHBENCH_DIR = Path(".bench-pinchbench-skill")
+DEFAULT_PINCHBENCH_DIR = Path(__file__).resolve().parents[1] / "benchmarks-files" / "pinchbench"
 
 
 @dataclass
@@ -607,7 +607,14 @@ def grade_log(answer: str) -> dict[str, Any]:
     }
 
 
-def run_once(base_url: str, model: str, prompt: str, max_tokens: int, timeout: int) -> dict[str, Any]:
+def run_once(
+    base_url: str,
+    model: str,
+    prompt: str,
+    max_tokens: int,
+    timeout: int,
+    reasoning_off: bool = False,
+) -> dict[str, Any]:
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
@@ -616,6 +623,10 @@ def run_once(base_url: str, model: str, prompt: str, max_tokens: int, timeout: i
         "stream": False,
         "cache_prompt": False,
     }
+    if reasoning_off:
+        payload["reasoning"] = False
+        payload["reasoning_effort"] = "off"
+        payload["chat_template_kwargs"] = {"enable_thinking": False}
     start = time.perf_counter()
     response = requests.post(
         f"{base_url.rstrip('/')}/chat/completions",
@@ -629,10 +640,11 @@ def run_once(base_url: str, model: str, prompt: str, max_tokens: int, timeout: i
     message = choice.get("message", {})
     content = message.get("content") or ""
     reasoning = message.get("reasoning") or message.get("reasoning_content") or ""
-    answer = "\n".join(part for part in [reasoning.strip(), content.strip()] if part)
+    answer = content.strip()
     return {
         "elapsed_s": elapsed,
         "answer": answer,
+        "reasoning": reasoning.strip(),
         "usage": body.get("usage") or {},
         "finish_reason": choice.get("finish_reason"),
     }
@@ -645,6 +657,8 @@ def run_task(
     pinchbench_dir: Path,
     runs: int,
     timeout: int,
+    max_tokens_override: int | None = None,
+    reasoning_off: bool = False,
 ) -> dict[str, Any]:
     assets = pinchbench_dir / "assets"
     if task_id == "task_csv_finance_report":
@@ -652,34 +666,37 @@ def run_task(
         csv_text = csv_path.read_text(encoding="utf-8")
         ref = finance_reference(load_csv_rows(csv_path))
         prompt = build_finance_prompt(csv_text)
-        max_tokens = 2800
+        max_tokens = 16384
         grader = lambda answer: grade_finance(answer, ref)
     elif task_id == "task_log_apache_error_summary":
         log_text = (assets / "logs" / "apache_error.log").read_text(encoding="utf-8", errors="replace")
         prompt = build_log_prompt(log_text)
-        max_tokens = 3000
+        max_tokens = 16384
         grader = grade_log
     elif task_id == "task_access_log_anomaly":
         access_csv = load_access_events_csv(pinchbench_dir)
         prompt = build_access_anomaly_prompt(access_csv)
-        max_tokens = 800
+        max_tokens = 16384
         grader = grade_access_anomaly
     elif task_id == "task_csv_iris_outliers":
         iris_text = (assets / "csvs" / "iris_flowers.csv").read_text(encoding="utf-8")
         prompt = build_iris_prompt(iris_text)
-        max_tokens = 1800
+        max_tokens = 16384
         grader = grade_iris
     else:
         raise ValueError(f"unsupported task: {task_id}")
 
+    if max_tokens_override is not None:
+        max_tokens = max_tokens_override
+
     task_results: list[dict[str, Any]] = []
     for index in range(runs):
         print(f"{task_id} run {index + 1}/{runs}: prompt chars={len(prompt)}", flush=True)
-        result = run_once(base_url, model, prompt, max_tokens, timeout)
+        result = run_once(base_url, model, prompt, max_tokens, timeout, reasoning_off)
         result["run"] = index + 1
         result["diagnostic_grade"] = grader(result["answer"])
         result["semantic_grade"], result["semantic_judge"] = judge_answer(
-            result["answer"], result["diagnostic_grade"], task_id
+            result["answer"], result["diagnostic_grade"], task_id, task_prompt=prompt
         )
         print(
             f"  semantic={result['semantic_grade']['score']}/{result['semantic_grade']['max_score']} "
@@ -723,6 +740,13 @@ def main() -> None:
     parser.add_argument("--pinchbench-dir", default=str(DEFAULT_PINCHBENCH_DIR))
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--timeout", type=int, default=1200)
+    parser.add_argument(
+        "--max-tokens",
+        type=int,
+        default=None,
+        help="Override the task-specific completion cap for reasoning models.",
+    )
+    parser.add_argument("--reasoning-off", action="store_true")
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
@@ -732,7 +756,16 @@ def main() -> None:
         raise FileNotFoundError(f"PinchBench directory not found: {pinchbench_dir}")
 
     reports = [
-        run_task(task, args.base_url, args.model, pinchbench_dir, args.runs, args.timeout)
+        run_task(
+            task,
+            args.base_url,
+            args.model,
+            pinchbench_dir,
+            args.runs,
+            args.timeout,
+            args.max_tokens,
+            args.reasoning_off,
+        )
         for task in tasks
     ]
     report = {
