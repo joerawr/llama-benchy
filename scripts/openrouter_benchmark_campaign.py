@@ -52,6 +52,7 @@ CONFIGS = [
     ("kimi-k3", "moonshotai/kimi-k3", "high"),
     ("kimi-k3", "moonshotai/kimi-k3", "max"),
     ("mercury-2", "inception/mercury-2:nitro", None),
+    ("mercury-2.5-preview", "inception/mercury-2.5-preview", None),
 ]
 TASK_NAMES = [
     "finance",
