@@ -120,7 +120,7 @@ def project(command:list[str], log:Path, controller:Controller, timeout:int=1800
 def current(action:str, controller:Controller, log:Path)->dict[str,Any]: return project([sys.executable,str(ROOT/"scripts/current_server.py"),action],log,controller,900)
 def server_command(c:dict[str,Any])->list[str]:
     path=str(candidate_path(c))
-    if c["backend"]=="mlx": return ["mlx_lm.server","--model",path,"--host","127.0.0.1","--port","18081","--temp","0","--max-tokens","4096","--chat-template-args",'{"enable_thinking": false}']
+    if c["backend"]=="mlx": return ["mlx_lm.server","--model",path,"--host","127.0.0.1","--port","18081","--temp","0","--max-tokens","16384","--chat-template-args",'{"enable_thinking": false}']
     cmd=["llama-server","-m",path,"--host","127.0.0.1","--port","18081","-c","65536","-np","1","-ngl","99","--reasoning","off","--reasoning-budget","0","-lv","4"]
     if c.get("mmproj"): cmd += ["--mmproj",c["mmproj"]]
     return cmd

@@ -43,6 +43,13 @@ As of January 2nd, 2026, I wasn't able to find any existing benchmarking tool th
 
 Using `uv` is recommended. You can install `uv` here: https://docs.astral.sh/uv/getting-started/installation/
 
+If this checkout was copied from another operating system or architecture,
+do not reuse its `.venv`; recreate it with `uv sync --all-extras --dev` so the
+interpreter and native Python wheels match the current machine. Local model
+serving is a separate dependency: ARM Linux needs a native `llama-server` and
+GGUF model, while MLX/Metal model directories from Apple Silicon do not carry
+over. See [ARM Linux model testing](docs/arm-linux-model-testing.md).
+
 ### Option 1: Run without installation using `uvx`
 
 Run the release version from PyPI:

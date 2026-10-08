@@ -10,20 +10,20 @@ Read these files before changing a benchmark or leaderboard:
 
 ## Environment
 
-Repository:
-
-```text
-/Users/jrogers/code/github/llama-benchy
-```
-
-Use the project interpreter. Do not use bare Homebrew Python and do not globally install packages.
+Use the project interpreter. Do not use a virtual environment copied from a
+different operating system, bare system/Homebrew Python, or global package
+installs. On a fresh checkout or a checkout copied from macOS, rebuild the
+environment first:
 
 ```bash
-cd /Users/jrogers/code/github/llama-benchy
-PY=/Users/jrogers/code/github/llama-benchy/.venv/bin/python3
+cd /path/to/llama-benchy
+uv sync --all-extras --dev
+PY="$PWD/.venv/bin/python"
 ```
 
-`uv run python` is also acceptable when its cache is working.
+`uv run python` is also acceptable when its cache is working. See
+`docs/arm-linux-model-testing.md` for the ARM Linux local-server replacement
+and OpenRouter recipes.
 
 ## Canonical quality suite
 
@@ -53,6 +53,13 @@ The canonical task assembly is `scripts/codex_gap_campaign.py:build_tasks`. The 
 - Preserve all raw results locally. Curated leaderboard records must not contain raw answers, credentials, server logs, temporary stack traces, or unnecessary absolute paths.
 
 ## Local model workflow
+
+The benchmark client is platform-independent, but the local inference server
+is not. On ARM Linux, rebuild/install a native `llama-server` and use GGUF
+models. MLX model directories, `mlx_lm.server`, Metal flags, and copied macOS
+binaries must be replaced; see `docs/arm-linux-model-testing.md`. The current
+`benchy-state/serving-current.json` still points at a macOS `/Users/...` MLX
+model and must be edited before `./ops/serve-current.sh` can work here.
 
 Only one local model server may run at a time. Port `1234` is the Hermes-facing current server. Port `18081` is the isolated trial port used by the local campaign scripts.
 
@@ -118,12 +125,16 @@ The local campaign also measures memory and throughput. Record prompt processing
 
 ### Archive models before local deletion
 
-Do not discard a downloaded model directly from `/Users/jrogers/models`. First copy it to the 2TB RPi archive at `rpi:media/models/`, preserving its path relative to `/Users/jrogers/models`. For example, `mlx-community/Muse-Glimmer-30B-OptiQ-4bit` stays under the `mlx-community` directory on the NAS.
+Do not discard a downloaded model directly from the local model root. Set
+`MODEL_ROOT` to the machine's actual model directory and first copy it to the
+2TB RPi archive at `rpi:media/models/`, preserving its path relative to that
+root. MLX directories are archival only on Linux; they cannot be served here.
 
 Run the copy from the local model root. `MODEL_REL` may name a complete model directory or one GGUF file:
 
 ```bash
-cd /Users/jrogers/models
+MODEL_ROOT="${LLAMA_BENCHY_MODEL_ROOT:-$HOME/models}"
+cd "$MODEL_ROOT"
 MODEL_REL=mlx-community/Muse-Glimmer-30B-OptiQ-4bit
 
 ssh rpi 'mkdir -p /home/jrogers/media/models'
@@ -137,12 +148,17 @@ The checksum dry run must report no changed files, and the remote/local sizes mu
 
 Current local state and MLX warning:
 
-- Port `1234` is intentionally stopped. Do not restart it until the user selects a model.
+- The copied port `1234` configuration is not Linux-ready: it points to a
+  `/Users/...` MLX model. Do not restart it until a real Linux GGUF model and
+  native `llama-server` have been selected.
+- The `ops/launchd/*.plist` job is macOS-only. Use a Linux service/scheduler
+  only after the interactive local smoke test is stable.
 - The failed Muse-Glimmer-30B MLX 8-bit trial is documented in `results/muse-glimmer-30b-mlx8bit-run-failed-20260813.md`. It caused a macOS `IOGPUFamily` panic (`completeMemory() prepare count underflow`) in the MLX Python process. Do not relaunch that Q8 workload on this machine without a different MLX/runtime or macOS configuration.
 - The failed Q8 model is no longer on disk; it was removed before the RPi archival policy was adopted and has no quality score.
 - The stable Muse reference is the GGUF Q6 model at `/Users/jrogers/models/unsloth/Muse-Glimmer-30B-GGUF/Muse-Glimmer-30B-UD-Q6_K_XL.gguf`, with two complete 57/62 passes.
 - `scripts/pinchbench_lite.py`, `scripts/long_file_compression.py`, and `scripts/ifeval_lite.py` now support `--reasoning-off`; this sends `reasoning=false`, `reasoning_effort=off`, and (for the first two) `chat_template_kwargs.enable_thinking=false`. Muse Q8 ignored the first two controls in practice and still exhausted its generation budget.
-- Completion defaults were raised to 16K in the local quality runners. Do not lower the cap merely to force a score; a capped or empty answer is an incomplete result. For a new model, use a short smoke request first to establish whether it can return a usable answer under the selected cap.
+- The 16K completion setting in older local quality runners is an operational safeguard, not a benchmark requirement. It bounds runaway reasoning, wall time, and KV/Metal memory, but it can truncate a legitimate reasoning trace. Never treat a capped or empty answer as a zero-quality result: preserve the `finish_reason`, classify the task as incomplete, and display `-`.
+- Do not silently lower the cap to manufacture a score. If hardware requires a cap, record it with the run and keep that run out of the standard comparison unless the same cap is part of the declared protocol. Prefer a timeout and preserved failure evidence over silently scoring a truncated answer.
 - Qwen3.8 is the next likely trial. Download it only after checking disk space, stop any current local server, use port `18081`, and monitor memory pressure and swap.
 
 ## Codex workflow
@@ -286,3 +302,14 @@ $PY -m unittest discover -s tests
 ./ops/status-current.sh
 ./ops/smoke-current.sh
 ```
+
+## Checklist prompt versions
+
+Suite 1.1 remains the default and keeps its original checklist prompt.
+Suite 1.2 (`benchmarks/suites/suite-v1.2.json`) adds the explicit `- ` Markdown
+bullet requirement and is selected with `scripts/ifeval_lite.py --suite-version 1.2`.
+Do not combine 1.1 and 1.2 passes or substitute a 1.2 retry into a 1.1 total.
+Source-aware-v2 changes the judge protocol separately from the task version;
+retain the original score and the saved prompt hash when recording a rescore.
+Local incomplete outputs have a null quality score and display `-`.
+Historical files without matching task hashes remain unverified observations.

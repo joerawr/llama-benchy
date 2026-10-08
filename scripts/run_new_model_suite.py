@@ -15,6 +15,13 @@ import requests
 PORT = 18081
 BASE_URL = f"http://127.0.0.1:{PORT}"
 API_URL = f"{BASE_URL}/v1"
+MODEL_ROOT = Path(
+    os.environ.get("LLAMA_BENCHY_MODEL_ROOT", str(Path.home() / "models"))
+).expanduser()
+
+
+def model_path(relative_path: str) -> str:
+    return str(MODEL_ROOT / relative_path)
 
 NEEDLE = (
     Path(__file__).resolve().parents[1]
@@ -27,52 +34,57 @@ COMPRESSION_NOTE = (
 
 MODELS: list[dict[str, Any]] = [
     {
+        "label": "gemma4-e4b-q4xl",
+        "path": model_path("unsloth/gemma-4-E4B-it-GGUF/gemma-4-E4B-it-UD-Q4_K_XL.gguf"),
+        "served": "gemma-4-E4B-it-UD-Q4_K_XL.gguf",
+    },
+    {
         "label": "gemma4-26b-a4b-q6xl",
-        "path": "/Users/jrogers/models/gemma4/unsloth/gemma-4-26B-A4B-it-GGUF/gemma-4-26B-A4B-it-UD-Q6_K_XL.gguf",
+        "path": model_path("gemma4/unsloth/gemma-4-26B-A4B-it-GGUF/gemma-4-26B-A4B-it-UD-Q6_K_XL.gguf"),
         "served": "gemma-4-26B-A4B-it-UD-Q6_K_XL.gguf",
     },
     {
         "label": "qwen-apex-mtp-balanced",
-        "path": "/Users/jrogers/models/mudler/qwen36-apex-mtp/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Balanced.gguf",
+        "path": model_path("mudler/qwen36-apex-mtp/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Balanced.gguf"),
         "served": "Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Balanced.gguf",
         "server_args": ["--spec-type", "draft-mtp"],
     },
     {
         "label": "qwen-apex-mtp-quality",
-        "path": "/Users/jrogers/models/mudler/qwen36-apex-mtp/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Quality.gguf",
+        "path": model_path("mudler/qwen36-apex-mtp/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Quality.gguf"),
         "served": "Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Quality.gguf",
         "server_args": ["--spec-type", "draft-mtp"],
     },
     {
         "label": "gemma4-26b-a4b-qat-q4xl",
-        "path": "/Users/jrogers/models/gemma4/unsloth/gemma-4-26B-A4B-it-qat-GGUF/gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf",
+        "path": model_path("gemma4/unsloth/gemma-4-26B-A4B-it-qat-GGUF/gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf"),
         "served": "gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf",
     },
     {
         "label": "gemma4-12b-qat-q4xl",
-        "path": "/Users/jrogers/models/gemma4/unsloth/gemma-4-12b-it-qat-GGUF/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf",
+        "path": model_path("gemma4/unsloth/gemma-4-12b-it-qat-GGUF/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf"),
         "served": "gemma-4-12B-it-qat-UD-Q4_K_XL.gguf",
     },
     {
         "label": "qwen35-9b-q4km",
-        "path": "/Users/jrogers/models/lmstudio-community/Qwen3.5-9B-GGUF/Qwen3.5-9B-Q4_K_M.gguf",
+        "path": model_path("lmstudio-community/Qwen3.5-9B-GGUF/Qwen3.5-9B-Q4_K_M.gguf"),
         "served": "Qwen3.5-9B-Q4_K_M.gguf",
     },
     {
         "label": "qwythos-9b-q6k",
-        "path": "/Users/jrogers/models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q6_K.gguf",
+        "path": model_path("empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q6_K.gguf"),
         "served": "Qwythos-9B-Claude-Mythos-5-1M-Q6_K.gguf",
     },
     {
         "label": "qwopus36-35b-mxfp8-mlx",
-        "path": "/Users/jrogers/models/Shiftedx/qwopus3.6-35b-a3b-coder-mxfp8-vision-mlx",
-        "served": "/Users/jrogers/models/Shiftedx/qwopus3.6-35b-a3b-coder-mxfp8-vision-mlx",
+        "path": model_path("Shiftedx/qwopus3.6-35b-a3b-coder-mxfp8-vision-mlx"),
+        "served": "qwopus3.6-35b-a3b-coder-mxfp8-vision-mlx",
         "backend": "mlx",
         "server_args": [
             "--temp",
             "0",
             "--max-tokens",
-            "4096",
+            "16384",
             "--chat-template-args",
             '{"enable_thinking": false}',
         ],
@@ -147,6 +159,10 @@ def run_suite_for_model(model: dict[str, Any], env: dict[str, str]) -> None:
         raise FileNotFoundError(path)
 
     backend = model.get("backend", "llama")
+    if backend == "mlx" and sys.platform != "darwin":
+        raise RuntimeError(
+            f"{label} uses MLX/Metal and cannot run on {sys.platform}; use a GGUF model with llama-server"
+        )
     if backend == "mlx":
         server_cmd = [
             "mlx_lm.server",
@@ -266,7 +282,7 @@ def run_suite_for_model(model: dict[str, Any], env: dict[str, str]) -> None:
                 "--label",
                 label,
                 "--needle",
-                NEEDLE,
+                str(NEEDLE),
                 "--runs",
                 "3",
                 "--out",
@@ -286,7 +302,7 @@ def run_suite_for_model(model: dict[str, Any], env: dict[str, str]) -> None:
                 "--label",
                 label,
                 "--note",
-                COMPRESSION_NOTE,
+                str(COMPRESSION_NOTE),
                 "--runs",
                 "3",
                 "--out",

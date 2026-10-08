@@ -1,0 +1,11 @@
+{
+  "suite_id": "llama-benchy-thinking-comparison",
+  "version": "1.0",
+  "base_task_suite": "llama-benchy-local-comparison@1.1",
+  "purpose": "Diagnostic thinking/sampling experiments; not pooled with the standard comparison.",
+  "task_changes": {
+    "long_file_compression": "Remove the leading /no_think directive; retain all source and final-answer requirements."
+  },
+  "judging_protocol": "source-aware-v2",
+  "comparison_policy": "Match model sampling, context, completion cap and task prompt hashes before comparison; preserve failures and incomplete passes."
+}
