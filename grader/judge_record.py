@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 from semantic_judge import judge_answer
+from task_context import resolve_task_context
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,17 +38,20 @@ def main() -> None:
     parser.add_argument("--run", required=True, type=int)
     parser.add_argument("--model")
     parser.add_argument("--judge-model", default="gpt-5.6-luna")
-    parser.add_argument("--judge-effort", default="low", choices=("low", "medium"))
+    parser.add_argument("--judge-effort", default="xhigh", choices=("low", "medium", "high", "xhigh"))
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
     source = json.loads(args.source.read_text(encoding="utf-8"))
     record = find_record(source, args)
-    diagnostic_grade = record.get("diagnostic_grade", record.get("grade", {}))
+    task = resolve_task_context(args.task, record)
+    diagnostic_grade = task.grader(record.get("answer", ""))
     semantic_grade, semantic_meta = judge_answer(
         record.get("answer", ""), diagnostic_grade, args.task,
+        task_prompt=task.prompt, finish_reason=record.get("finish_reason"),
         judge_model=args.judge_model, judge_effort=args.judge_effort,
     )
+    semantic_meta["source_context_status"] = "matched_saved_hash" if record.get("semantic_judge", {}).get("task_prompt_sha256") else "reconstructed_1.1_unverified_original"
     output = {
         "source": str(args.source),
         "task": args.task,

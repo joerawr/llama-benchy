@@ -1,0 +1,11 @@
+Write a short Markdown checklist for a family member who wants two backups of personal files.
+
+Rules:
+- Use exactly these two headings in order:
+## Why it matters
+## What to do
+- Put exactly 2 bullets under each heading.
+- Each bullet must be 8 to 12 words.
+- The word "backup" must appear exactly twice total.
+- Do not use "always", "never", "critical", or "best".
+- Do not add any other lines.

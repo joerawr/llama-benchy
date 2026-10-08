@@ -330,10 +330,11 @@ def run_once(base_url: str, model: str, prompt: str, timeout: int, max_tokens: i
     message = choice.get("message", {})
     content = message.get("content") or ""
     reasoning = message.get("reasoning") or message.get("reasoning_content") or ""
-    answer = "\n".join(part for part in [reasoning.strip(), content.strip()] if part)
+    answer = content.strip()
     return {
         "elapsed_s": elapsed,
         "answer": answer,
+        "reasoning": reasoning.strip(),
         "usage": body.get("usage") or {},
         "finish_reason": choice.get("finish_reason"),
     }

@@ -18,3 +18,14 @@ Benchmark definitions are versioned inputs. A result must identify the suite ver
 The current apples-to-apples comparison suite is defined in `suites/suite-v1.json`. It contains Finance, Apache, Access anomaly, Compression, Family note, Checklist, and Text lines.
 
 The implementation currently lives in the repository scripts referenced by that manifest. Future changes should move canonical prompts and graders into versioned suite directories rather than relying only on runner source code.
+
+## Checklist prompt versions
+
+Suite 1.1 remains the default and keeps its original checklist prompt.
+Suite 1.2 (`benchmarks/suites/suite-v1.2.json`) adds the explicit `- ` Markdown
+bullet requirement and is selected with `scripts/ifeval_lite.py --suite-version 1.2`.
+Do not combine 1.1 and 1.2 passes or substitute a 1.2 retry into a 1.1 total.
+Source-aware-v2 changes the judge protocol separately from the task version;
+retain the original score and the saved prompt hash when recording a rescore.
+Local incomplete outputs have a null quality score and display `-`.
+Historical files without matching task hashes remain unverified observations.

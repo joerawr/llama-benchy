@@ -1,0 +1,9 @@
+{
+  "protocol": "source-aware-v2",
+  "judge_model": "gpt-5.6-luna",
+  "judge_effort": "xhigh",
+  "task_evidence": "Original versioned prompt, source evidence, explicit rubric requirements and reference facts.",
+  "score_policy": "Only delivered answers; empty, capped, filtered, provider/judge failure is incomplete, never zero.",
+  "historical_policy": "Record rescoring as a new observation; retain original score and prompt hash.",
+  "instructions_sha256": "8c1bde201b540c30ce8c414a44777b86eb0858693026aaf7cbba25f00c5a49ff"
+}

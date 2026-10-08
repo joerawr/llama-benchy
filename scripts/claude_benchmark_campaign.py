@@ -217,8 +217,10 @@ def run_once(model: str, effort: str, task: Any, run: int) -> dict[str, Any]:
             "pass": False,
             "error": body.get("result") or "Claude did not return a successful JSON result",
         }
-        semantic_grade, semantic_meta = semantic_judge(answer, diagnostic_grade, task.task_id) if successful else ({
-            "score": 0, "max_score": diagnostic_grade.get("max_score", 0), "error": "no answer to judge"
+        semantic_grade, semantic_meta = semantic_judge(
+            answer, diagnostic_grade, task.task_id, task_prompt=task.prompt
+        ) if successful else ({
+            "score": None, "max_score": diagnostic_grade.get("max_score", 0), "error": "no answer to judge"
         }, {})
         return {
             "model": model,

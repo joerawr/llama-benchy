@@ -14,7 +14,7 @@ from scripts.openrouter_benchmark_campaign import (
 class OpenRouterCampaignTest(unittest.TestCase):
     def test_requested_effort_matrix_is_explicit(self):
         self.assertEqual(
-            [(model, effort) for model, _, effort in CONFIGS],
+            [(model, effort) for model, _, effort in CONFIGS if effort is not None or model == "mercury-2"],
             [
                 ("glm-5.2", "high"),
                 ("glm-5.2", "xhigh"),
@@ -24,6 +24,12 @@ class OpenRouterCampaignTest(unittest.TestCase):
                 ("mercury-2", None),
             ],
         )
+
+    def test_provider_default_configs_are_unique_and_have_model_ids(self):
+        keys = [(model, effort) for model, _, effort in CONFIGS]
+        self.assertEqual(len(keys), len(set(keys)))
+        self.assertTrue(all("/" in model_id for _, model_id, _ in CONFIGS))
+        self.assertTrue(all(effort is None for model, _, effort in CONFIGS if model not in {"glm-5.2", "kimi-k3"}))
 
     def test_env_value_removes_matching_quotes(self):
         self.assertEqual(_env_value('"secret"'), "secret")

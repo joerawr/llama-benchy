@@ -18,80 +18,97 @@ PORT = 18081
 BASE_URL = f"http://127.0.0.1:{PORT}"
 API_URL = f"{BASE_URL}/v1"
 
+MODEL_ROOT = Path(os.environ.get("LLAMA_BENCHY_MODEL_ROOT", str(Path.home() / "models"))).expanduser()
+
 MODELS: list[dict[str, Any]] = [
+    {
+        "label": "ornith15-35b-mlx8",
+        "name": "Ornith 1.5 35B-A3B MLX 8-bit",
+        "path": str(MODEL_ROOT / "ornith-ai/Ornith-1.5-35B-A3B-MLX-8bit"),
+        "served": str(MODEL_ROOT / "ornith-ai/Ornith-1.5-35B-A3B-MLX-8bit"),
+        "backend": "mlx",
+    },
+    {
+        "label": "ornith15-9b-mlx8",
+        "name": "Ornith 1.5 9B MLX 8-bit",
+        "path": str(MODEL_ROOT / "ornith-ai/Ornith-1.5-9B-MLX-8bit"),
+        "served": str(MODEL_ROOT / "ornith-ai/Ornith-1.5-9B-MLX-8bit"),
+        "backend": "mlx",
+        "server_args": ["--chat-template-args", "{\"enable_thinking\": false}"],
+    },
     {
         "label": "ornith",
         "name": "Ornith Q8_0",
-        "path": "/Users/jrogers/models/deepreinforce-ai/ornith-1.0-35b/ornith-1.0-35b-Q8_0.gguf",
+        "path": str(MODEL_ROOT / "deepreinforce-ai/ornith-1.0-35b/ornith-1.0-35b-Q8_0.gguf"),
         "served": "ornith-1.0-35b-Q8_0.gguf",
     },
     {
         "label": "qwen-apex",
         "name": "Qwen APEX Balanced",
-        "path": "/Users/jrogers/models/mudler/qwen36-apex/Qwen3.6-35B-A3B-APEX-I-Balanced.gguf",
+        "path": str(MODEL_ROOT / "mudler/qwen36-apex/Qwen3.6-35B-A3B-APEX-I-Balanced.gguf"),
         "served": "Qwen3.6-35B-A3B-APEX-I-Balanced.gguf",
     },
     {
         "label": "gemma4-26b-a4b",
         "name": "Gemma Q4_K_S",
-        "path": "/Users/jrogers/models/gemma4/unsloth/gemma-4-26B-A4B-it-GGUF/gemma-4-26B-A4B-it-UD-Q4_K_S.gguf",
+        "path": str(MODEL_ROOT / "gemma4/unsloth/gemma-4-26B-A4B-it-GGUF/gemma-4-26B-A4B-it-UD-Q4_K_S.gguf"),
         "served": "gemma-4-26B-A4B-it-UD-Q4_K_S.gguf",
     },
     {
         "label": "gemma4-26b-a4b-q6xl",
         "name": "Gemma Q6_K_XL",
-        "path": "/Users/jrogers/models/gemma4/unsloth/gemma-4-26B-A4B-it-GGUF/gemma-4-26B-A4B-it-UD-Q6_K_XL.gguf",
+        "path": str(MODEL_ROOT / "gemma4/unsloth/gemma-4-26B-A4B-it-GGUF/gemma-4-26B-A4B-it-UD-Q6_K_XL.gguf"),
         "served": "gemma-4-26B-A4B-it-UD-Q6_K_XL.gguf",
     },
     {
         "label": "qwen-apex-mtp-balanced",
         "name": "Qwen APEX-MTP Balanced",
-        "path": "/Users/jrogers/models/mudler/qwen36-apex-mtp/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Balanced.gguf",
+        "path": str(MODEL_ROOT / "mudler/qwen36-apex-mtp/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Balanced.gguf"),
         "served": "Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Balanced.gguf",
         "server_args": ["--spec-type", "draft-mtp"],
     },
     {
         "label": "qwen-apex-mtp-quality",
         "name": "Qwen APEX-MTP Quality",
-        "path": "/Users/jrogers/models/mudler/qwen36-apex-mtp/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Quality.gguf",
+        "path": str(MODEL_ROOT / "mudler/qwen36-apex-mtp/Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Quality.gguf"),
         "served": "Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-I-Quality.gguf",
         "server_args": ["--spec-type", "draft-mtp"],
     },
     {
         "label": "gemma4-26b-a4b-qat-q4xl",
         "name": "Gemma QAT Q4_K_XL",
-        "path": "/Users/jrogers/models/gemma4/unsloth/gemma-4-26B-A4B-it-qat-GGUF/gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf",
+        "path": str(MODEL_ROOT / "gemma4/unsloth/gemma-4-26B-A4B-it-qat-GGUF/gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf"),
         "served": "gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf",
     },
     {
         "label": "gemma4-12b-qat-q4xl",
         "name": "Gemma 12B QAT Q4_K_XL",
-        "path": "/Users/jrogers/models/gemma4/unsloth/gemma-4-12b-it-qat-GGUF/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf",
+        "path": str(MODEL_ROOT / "gemma4/unsloth/gemma-4-12b-it-qat-GGUF/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf"),
         "served": "gemma-4-12B-it-qat-UD-Q4_K_XL.gguf",
     },
     {
         "label": "qwen35-9b-q4km",
         "name": "Qwen3.5 9B Q4_K_M",
-        "path": "/Users/jrogers/models/lmstudio-community/Qwen3.5-9B-GGUF/Qwen3.5-9B-Q4_K_M.gguf",
+        "path": str(MODEL_ROOT / "lmstudio-community/Qwen3.5-9B-GGUF/Qwen3.5-9B-Q4_K_M.gguf"),
         "served": "Qwen3.5-9B-Q4_K_M.gguf",
     },
     {
         "label": "qwythos-9b-q6k",
         "name": "Qwythos 9B Q6_K",
-        "path": "/Users/jrogers/models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q6_K.gguf",
+        "path": str(MODEL_ROOT / "empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q6_K.gguf"),
         "served": "Qwythos-9B-Claude-Mythos-5-1M-Q6_K.gguf",
     },
     {
         "label": "qwopus36-35b-mxfp8-mlx",
         "name": "Qwopus3.6 35B A3B MXFP8 MLX",
-        "path": "/Users/jrogers/models/Shiftedx/qwopus3.6-35b-a3b-coder-mxfp8-vision-mlx",
-        "served": "/Users/jrogers/models/Shiftedx/qwopus3.6-35b-a3b-coder-mxfp8-vision-mlx",
+        "path": str(MODEL_ROOT / "Shiftedx/qwopus3.6-35b-a3b-coder-mxfp8-vision-mlx"),
+        "served": str(MODEL_ROOT / "Shiftedx/qwopus3.6-35b-a3b-coder-mxfp8-vision-mlx"),
         "backend": "mlx",
         "server_args": [
             "--temp",
             "0",
             "--max-tokens",
-            "4096",
+            "16384",
             "--chat-template-args",
             '{"enable_thinking": false}',
         ],
@@ -220,6 +237,8 @@ def run_one_model(model: dict[str, Any], args: argparse.Namespace, env: dict[str
         raise FileNotFoundError(path)
 
     backend = model.get("backend", "llama")
+    if backend == "mlx" and sys.platform != "darwin":
+        raise RuntimeError("MLX requires macOS/Metal; choose a GGUF model on Linux")
     if backend == "mlx":
         server_cmd = [
             "mlx_lm.server",
@@ -287,6 +306,10 @@ def run_one_model(model: dict[str, Any], args: argparse.Namespace, env: dict[str
         ]
         for task in args.task:
             cmd.extend(["--task", task])
+        if args.max_tokens is not None:
+            cmd.extend(["--max-tokens", str(args.max_tokens)])
+        if args.reasoning_off:
+            cmd.append("--reasoning-off")
         print(f"$ {' '.join(cmd)}", flush=True)
         subprocess.run(cmd, check=True, env=env)
         task_report = json.loads(out_path.read_text(encoding="utf-8"))
@@ -310,6 +333,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--ctx", type=int, default=65536)
+    parser.add_argument("--max-tokens", type=int, default=None)
+    parser.add_argument("--reasoning-off", action="store_true")
     parser.add_argument("--out", default="results/pinchbench-lite-suite.json")
     parser.add_argument(
         "--task",

@@ -75,11 +75,12 @@ def run_once(base_url: str, model: str, prompt: str, timeout: int) -> dict[str, 
     message = choice.get("message", {})
     content = message.get("content") or ""
     reasoning = message.get("reasoning") or message.get("reasoning_content") or ""
-    answer = "\n".join(part for part in [reasoning.strip(), content.strip()] if part)
+    answer = content.strip()
     usage = body.get("usage") or {}
     return {
         "elapsed_s": elapsed,
         "answer": answer,
+        "reasoning": reasoning.strip(),
         "pass": grade(answer),
         "usage": usage,
     }

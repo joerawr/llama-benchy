@@ -11,7 +11,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from grader.semantic_judge import judge_answer  # noqa: E402
+from grader.semantic_judge import judge_result  # noqa: E402
 
 
 PROMPT_TEMPLATE = """/no_think
@@ -159,7 +159,14 @@ def grade(text: str) -> dict[str, Any]:
     }
 
 
-def run_once(base_url: str, model: str, prompt: str, timeout: int, max_tokens: int) -> dict[str, Any]:
+def run_once(
+    base_url: str,
+    model: str,
+    prompt: str,
+    timeout: int,
+    max_tokens: int,
+    reasoning_off: bool = False,
+) -> dict[str, Any]:
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
@@ -168,6 +175,10 @@ def run_once(base_url: str, model: str, prompt: str, timeout: int, max_tokens: i
         "stream": False,
         "cache_prompt": False,
     }
+    if reasoning_off:
+        payload["reasoning"] = False
+        payload["reasoning_effort"] = "off"
+        payload["chat_template_kwargs"] = {"enable_thinking": False}
     start = time.perf_counter()
     response = requests.post(
         f"{base_url.rstrip('/')}/chat/completions",
@@ -181,11 +192,12 @@ def run_once(base_url: str, model: str, prompt: str, timeout: int, max_tokens: i
     message = choice.get("message", {})
     content = message.get("content") or ""
     reasoning = message.get("reasoning") or message.get("reasoning_content") or ""
-    answer = "\n".join(part for part in [reasoning.strip(), content.strip()] if part)
+    answer = content.strip()
     usage = body.get("usage") or {}
     return {
         "elapsed_s": elapsed,
         "answer": answer,
+        "reasoning": reasoning.strip(),
         "usage": usage,
         "finish_reason": choice.get("finish_reason"),
     }
@@ -200,7 +212,8 @@ def main() -> None:
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--out", required=True)
     parser.add_argument("--timeout", type=int, default=900)
-    parser.add_argument("--max-tokens", type=int, default=1600)
+    parser.add_argument("--max-tokens", type=int, default=16384)
+    parser.add_argument("--reasoning-off", action="store_true")
     args = parser.parse_args()
 
     note_path = Path(args.note).expanduser()
@@ -210,15 +223,21 @@ def main() -> None:
     results = []
     for index in range(args.runs):
         print(f"run {index + 1}/{args.runs}: prompt chars={len(prompt)}", flush=True)
-        result = run_once(args.base_url, args.model, prompt, args.timeout, args.max_tokens)
+        request_started = time.perf_counter()
+        try:
+            result = run_once(args.base_url, args.model, prompt, args.timeout, args.max_tokens, args.reasoning_off)
+        except requests.RequestException as exc:
+            result = {"answer": "", "reasoning": "", "usage": {}, "finish_reason": "error",
+                      "elapsed_s": round(time.perf_counter() - request_started, 3), "effective_output_tokens_per_s": None, "error": str(exc)}
         result["run"] = index + 1
         result["diagnostic_grade"] = grade(result["answer"])
-        result["semantic_grade"], result["semantic_judge"] = judge_answer(
-            result["answer"], result["diagnostic_grade"], "compression"
+        result["semantic_grade"], result["semantic_judge"] = judge_result(
+            result["answer"], result["diagnostic_grade"], "long_file_compression",
+            task_prompt=prompt, finish_reason=result.get("finish_reason"),
         )
         grade_result = result["semantic_grade"]
         print(
-            f"  semantic={grade_result['score']}/{grade_result['max_score']} "
+            f"  semantic={grade_result['score'] if grade_result['score'] is not None else '-'}/{grade_result['max_score']} "
             f"structure={result['diagnostic_grade']['structure_pass']} elapsed={result['elapsed_s']:.2f}s "
             f"finish={result['finish_reason']}",
             flush=True,
@@ -227,6 +246,7 @@ def main() -> None:
         results.append(result)
 
     scores = [result["semantic_grade"]["score"] for result in results]
+    complete = bool(scores) and all(score is not None for score in scores)
     report = {
         "label": args.label,
         "model": args.model,
@@ -235,9 +255,9 @@ def main() -> None:
         "rubric": RUBRIC,
         "runs": results,
         "score_summary": {
-            "min": min(scores) if scores else None,
-            "max": max(scores) if scores else None,
-            "avg": sum(scores) / len(scores) if scores else None,
+            "min": min(scores) if complete else None,
+            "max": max(scores) if complete else None,
+            "avg": sum(scores) / len(scores) if complete else None,
             "max_score": results[0]["semantic_grade"]["max_score"] if results else None,
         },
     }

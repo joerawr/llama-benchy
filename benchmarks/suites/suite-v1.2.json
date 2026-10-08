@@ -1,0 +1,67 @@
+{
+  "suite_id": "llama-benchy-local-comparison",
+  "version": "1.2",
+  "description": "Opt-in checklist dash-marker variant; do not pool with 1.1 results.",
+  "created": "2026-10-08",
+  "tasks": [
+    {
+      "id": "finance",
+      "name": "Finance",
+      "implementation": "scripts/pinchbench_lite.py:task_csv_finance_report",
+      "input": "benchmarks-files/pinchbench/assets/csvs/apple_stock_2014.csv",
+      "tests": "Numerical analysis and report writing from stock CSV data."
+    },
+    {
+      "id": "apache",
+      "name": "Apache",
+      "implementation": "scripts/pinchbench_lite.py:task_log_apache_error_summary",
+      "input": "benchmarks-files/pinchbench/assets/logs/apache_error.log",
+      "tests": "Operational log triage, security interpretation, and recommendations."
+    },
+    {
+      "id": "access",
+      "name": "Access anomaly",
+      "implementation": "scripts/pinchbench_lite.py:task_access_log_anomaly",
+      "input": "benchmarks-files/pinchbench/tasks/task_access_log_anomaly.md",
+      "tests": "Threshold-based event classification with JSON-only output."
+    },
+    {
+      "id": "compression",
+      "name": "Compression",
+      "implementation": "scripts/long_file_compression.py",
+      "input": "benchmarks-files/compression/ai-frontier-access-risk-fable-gpt56-glm52-2026-06-26.md",
+      "tests": "Faithful compression of a long research note while preserving uncertainty and evidence."
+    },
+    {
+      "id": "family",
+      "name": "Family note",
+      "implementation": "scripts/ifeval_lite.py:family_backup_note",
+      "tests": "Plain-language explanation under length, phrase, vocabulary, and sentence constraints."
+    },
+    {
+      "id": "checklist",
+      "name": "Checklist",
+      "implementation": "scripts/ifeval_lite.py:two_section_backup_checklist",
+      "tests": "Structured Markdown output with exact headings, bullets, lengths, and vocabulary."
+    },
+    {
+      "id": "text",
+      "name": "Text lines",
+      "implementation": "scripts/ifeval_lite.py:family_text_lines",
+      "tests": "Short-form formatting discipline across exact lines, sentences, bullets, and required words."
+    }
+  ],
+  "non_comparable_diagnostics": [
+    "Iris outliers",
+    "Strict JSON",
+    "CSV-only",
+    "Exact-line",
+    "Constrained bullets"
+  ],
+  "changes": [
+    "Checklist explicitly requires the Markdown marker dash plus space."
+  ],
+  "selection": "scripts/ifeval_lite.py --suite-version 1.2",
+  "checklist_prompt": "benchmarks/suites/checklist-v1.2.txt",
+  "scoring_protocol": "source-aware-v2"
+}

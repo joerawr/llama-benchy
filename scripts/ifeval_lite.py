@@ -12,7 +12,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from grader.semantic_judge import judge_answer  # noqa: E402
+from grader.semantic_judge import judge_result  # noqa: E402
 
 
 @dataclass(frozen=True)
@@ -23,6 +23,47 @@ class Task:
 
 
 WORD_RE = re.compile(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)?")
+
+CHECK_REQUIREMENTS = {
+    "exactly_5_bullets": "Contains exactly five bullet lines.",
+    "no_extra_text": "Contains no text outside the requested bullets.",
+    "bullet_word_counts_9_to_13": "Each of the five bullets contains 9 to 13 words, inclusive.",
+    "offline_once_total": "Uses the word 'offline' exactly once in the entire answer.",
+    "forbidden_words_absent": "Uses none of the words forbidden by the original task prompt.",
+    "final_bullet_exact_ending": "The final bullet ends exactly with 'before disaster strikes.'",
+    "exactly_3_sentences": "Contains exactly three sentences.",
+    "total_words_45_to_60": "Contains 45 to 60 words total, inclusive.",
+    "restore_path_once": "Includes the exact phrase 'restore path' exactly once.",
+    "no_cloud": "Does not use the word 'cloud'.",
+    "no_bullets_or_numbering": "Uses neither bullets nor numbered-list formatting.",
+    "exactly_4_lines": "Contains exactly four nonempty lines.",
+    "numbered_1_to_4": "The four lines are numbered 1. through 4. in order.",
+    "each_step_max_11_words": "Each numbered step contains at most 11 words.",
+    "verify_word_each_line": "Each numbered step contains the word 'verify' exactly once.",
+    "no_title_or_extra": "Contains no title, introduction, summary, or extra lines.",
+    "exactly_6_bullets": "Contains exactly six bullet lines.",
+    "each_bullet_6_to_8_words": "Each of the six bullets contains 6 to 8 words, inclusive.",
+    "alphabetical_first_words": "The first words of the six bullets are distinct and alphabetically ordered.",
+    "backup_exactly_twice": "Uses the word 'backup' exactly twice in the entire answer.",
+    "all_end_period": "Every bullet ends with a period.",
+    "exactly_4_sentences": "Contains exactly four sentences.",
+    "total_words_70_to_85": "Contains 70 to 85 words total, inclusive.",
+    "test_restore_once": "Includes the exact phrase 'test restore' exactly once.",
+    "no_list_or_heading": "Uses no bullets, numbering, or heading.",
+    "final_sentence_max_12_words": "The final sentence contains at most 12 words.",
+    "exact_headings": "Uses exactly '## Why it matters' then '## What to do' as the only headings.",
+    "exactly_4_bullets": "Contains exactly four bullet lines.",
+    "two_bullets_per_section": "Places exactly two bullets under each requested heading.",
+    "no_extra_lines": "Contains exactly the two headings and four bullets, with no other nonempty lines.",
+    "bullet_word_counts_8_to_12": "Each of the four bullets contains 8 to 12 words, inclusive.",
+    "exactly_5_nonempty_lines": "Contains exactly five nonempty lines.",
+    "greeting_exact": "Line 1 is exactly 'Hi Sam,'.",
+    "lines_2_and_3_sentences": "Lines 2 and 3 are each exactly one complete sentence.",
+    "sentence_lines_max_14_words": "Lines 2 and 3 each contain at most 14 words.",
+    "exactly_2_bullets": "Lines 4 and 5 are exactly two bullet lines.",
+    "bullet_words_5_to_9": "Each of the two bullets contains 5 to 9 words, inclusive.",
+    "photos_documents_once": "Uses 'photos' exactly once and 'documents' exactly once.",
+}
 
 
 def words(text: str) -> list[str]:
@@ -38,7 +79,11 @@ def exact_word_occurrences(text: str, word: str) -> int:
 
 
 def add_check(checks: list[dict[str, Any]], check_id: str, passed: bool, detail: str) -> None:
-    checks.append({"id": check_id, "pass": bool(passed), "detail": detail})
+    description = CHECK_REQUIREMENTS.get(
+        check_id,
+        f"Satisfies the original task requirement named '{check_id.replace('_', ' ')}'.",
+    )
+    checks.append({"id": check_id, "description": description, "pass": bool(passed), "detail": detail})
 
 
 def score_from_checks(checks: list[dict[str, Any]]) -> dict[str, Any]:
@@ -430,7 +475,25 @@ Rules:
 ]
 
 
-def chat_completion(base_url: str, model: str, prompt: str, timeout: int, max_tokens: int) -> tuple[str, dict[str, Any], str | None]:
+SUITE_VERSION = "llama-benchy-local-comparison@1.1"
+
+
+def tasks_for_suite(version: str = "1.1") -> list[Task]:
+    if version not in {"1.1", "1.2"}:
+        raise ValueError(f"Unknown suite version: {version}")
+    if version == "1.1":
+        return TASKS
+    return [
+        Task(task.task_id, task.prompt.replace(
+            "- Put exactly 2 bullets under each heading.",
+            "- Put exactly 2 bullets under each heading.\n"
+            "- Start every bullet with the Markdown marker `- ` (dash followed by a space).",
+        ), task.grader) if task.task_id == "two_section_backup_checklist" else task
+        for task in TASKS
+    ]
+
+
+def chat_completion(base_url: str, model: str, prompt: str, timeout: int, max_tokens: int, reasoning_off: bool = False) -> tuple[str, dict[str, Any], str | None]:
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
@@ -438,19 +501,29 @@ def chat_completion(base_url: str, model: str, prompt: str, timeout: int, max_to
         "max_tokens": max_tokens,
         "stream": False,
     }
+    if reasoning_off:
+        payload["reasoning"] = False
+        payload["reasoning_effort"] = "off"
     response = requests.post(f"{base_url.rstrip('/')}/chat/completions", json=payload, timeout=timeout)
     response.raise_for_status()
     data = response.json()
     choice = data["choices"][0]
-    return choice["message"]["content"], data.get("usage", {}), choice.get("finish_reason")
+    return choice["message"].get("content") or "", data.get("usage", {}), choice.get("finish_reason")
 
 
-def run_task(base_url: str, model: str, label: str, task: Task, run_index: int, timeout: int, max_tokens: int) -> dict[str, Any]:
+def run_task(base_url: str, model: str, label: str, task: Task, run_index: int, timeout: int, max_tokens: int, reasoning_off: bool = False) -> dict[str, Any]:
     started = time.time()
-    answer, usage, finish_reason = chat_completion(base_url, model, task.prompt, timeout, max_tokens)
+    error = None
+    try:
+        answer, usage, finish_reason = chat_completion(base_url, model, task.prompt, timeout, max_tokens, reasoning_off)
+    except requests.RequestException as exc:
+        answer, usage, finish_reason = "", {}, "error"
+        error = str(exc)
     elapsed_s = time.time() - started
     diagnostic_grade = task.grader(answer)
-    semantic_grade, semantic_meta = judge_answer(answer, diagnostic_grade, task.task_id)
+    semantic_grade, semantic_meta = judge_result(
+        answer, diagnostic_grade, task.task_id, task_prompt=task.prompt, finish_reason=finish_reason
+    )
     return {
         "label": label,
         "task_id": task.task_id,
@@ -462,6 +535,7 @@ def run_task(base_url: str, model: str, label: str, task: Task, run_index: int, 
         "semantic_judge": semantic_meta,
         "usage": usage,
         "finish_reason": finish_reason,
+        "error": error,
     }
 
 
@@ -471,7 +545,8 @@ def summarize(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
         task_results = [result for result in results if result["task_id"] == task.task_id]
         if not task_results:
             continue
-        total_score = sum(result["semantic_grade"]["score"] for result in task_results)
+        complete = all(result["semantic_grade"]["score"] is not None for result in task_results)
+        total_score = sum(result["semantic_grade"]["score"] for result in task_results) if complete else None
         total_max = sum(result["semantic_grade"]["max_score"] for result in task_results)
         rows.append(
             {
@@ -480,7 +555,7 @@ def summarize(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "passes": sum(1 for result in task_results if result["semantic_grade"]["pass"]),
                 "score": total_score,
                 "max_score": total_max,
-                "score_pct": round(total_score / total_max * 100, 1) if total_max else 0,
+                "score_pct": round(total_score / total_max * 100, 1) if complete and total_max else None,
                 "avg_elapsed_s": round(sum(result["elapsed_s"] for result in task_results) / len(task_results), 3),
             }
         )
@@ -492,24 +567,27 @@ def main() -> None:
     parser.add_argument("--base-url", required=True, help="OpenAI-compatible base URL ending in /v1")
     parser.add_argument("--model", required=True)
     parser.add_argument("--label", required=True)
+    parser.add_argument("--suite-version", choices=("1.1", "1.2"), default="1.1")
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--task", action="append", choices=[task.task_id for task in TASKS])
     parser.add_argument("--timeout", type=int, default=300)
-    parser.add_argument("--max-tokens", type=int, default=256)
+    parser.add_argument("--max-tokens", type=int, default=16384)
+    parser.add_argument("--reasoning-off", action="store_true")
     parser.add_argument("--out", default="results/ifeval-lite.json")
     args = parser.parse_args()
 
-    selected = TASKS
+    selected = tasks_for_suite(args.suite_version)
     if args.task:
-        selected = [task for task in TASKS if task.task_id in args.task]
+        selected = [task for task in selected if task.task_id in args.task]
 
     results: list[dict[str, Any]] = []
     for run_index in range(1, args.runs + 1):
         for task in selected:
             print(f"{args.label} {task.task_id} run={run_index}", flush=True)
-            results.append(run_task(args.base_url, args.model, args.label, task, run_index, args.timeout, args.max_tokens))
+            results.append(run_task(args.base_url, args.model, args.label, task, run_index, args.timeout, args.max_tokens, args.reasoning_off))
 
     report = {
+        "suite_version": f"llama-benchy-local-comparison@{args.suite_version}",
         "label": args.label,
         "model": args.model,
         "runs": args.runs,

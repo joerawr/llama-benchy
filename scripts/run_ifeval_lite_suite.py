@@ -92,6 +92,8 @@ def stop_server(proc: subprocess.Popen[str]) -> None:
 
 def build_server_cmd(model: dict[str, Any], ctx: int) -> list[str]:
     backend = model.get("backend", "llama")
+    if backend == "mlx" and sys.platform != "darwin":
+        raise RuntimeError("MLX requires macOS/Metal; choose a GGUF model on Linux")
     path = model["path"]
     if backend == "mlx":
         cmd = [
@@ -172,6 +174,8 @@ def run_one_model(model: dict[str, Any], args: argparse.Namespace, env: dict[str
         ]
         for task in args.task:
             cmd.extend(["--task", task])
+        if args.reasoning_off:
+            cmd.append("--reasoning-off")
         print(f"$ {' '.join(cmd)}", flush=True)
         subprocess.run(cmd, check=True, env=env)
         report = json.loads(out_path.read_text(encoding="utf-8"))
@@ -199,14 +203,14 @@ def print_table(suite: dict[str, Any]) -> None:
     print(f"|---|---:|---:|{'---:|' * len(task_ids)}---:|", flush=True)
     for model in suite["models"]:
         summaries = {item["task_id"]: item for item in model["summary"]}
-        score = sum(item["score"] for item in model["summary"])
+        score = sum(item["score"] for item in model["summary"]) if all(item["score"] is not None for item in model["summary"]) else "-"
         max_score = sum(item["max_score"] for item in model["summary"])
         passes = sum(item["passes"] for item in model["summary"])
         runs = sum(item["runs"] for item in model["summary"])
         cells = []
         for task_id in task_ids:
             item = summaries.get(task_id)
-            cells.append(f"{item['score']}/{item['max_score']}" if item else "-")
+            cells.append(f"{item['score']}/{item['max_score']}" if item and item["score"] is not None else "-")
         memory = model.get("memory", {})
         mem_text = "-"
         if "projected_gib" in memory:
@@ -225,7 +229,8 @@ def main() -> None:
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--ctx", type=int, default=8192)
     parser.add_argument("--timeout", type=int, default=300)
-    parser.add_argument("--max-tokens", type=int, default=256)
+    parser.add_argument("--max-tokens", type=int, default=16384)
+    parser.add_argument("--reasoning-off", action="store_true")
     parser.add_argument("--task", action="append", choices=[task.task_id for task in TASKS])
     parser.add_argument("--only", nargs="*", choices=[model["label"] for model in MODELS])
     parser.add_argument("--out", default="results/ifeval-lite-suite.json")

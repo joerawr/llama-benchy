@@ -16,7 +16,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from grader.semantic_judge import judge_answer  # noqa: E402
+from grader.semantic_judge import judge_result  # noqa: E402
 
 
 DEFAULT_PINCHBENCH_DIR = Path(__file__).resolve().parents[1] / "benchmarks-files" / "pinchbench"
@@ -692,14 +692,19 @@ def run_task(
     task_results: list[dict[str, Any]] = []
     for index in range(runs):
         print(f"{task_id} run {index + 1}/{runs}: prompt chars={len(prompt)}", flush=True)
-        result = run_once(base_url, model, prompt, max_tokens, timeout, reasoning_off)
+        request_started = time.perf_counter()
+        try:
+            result = run_once(base_url, model, prompt, max_tokens, timeout, reasoning_off)
+        except requests.RequestException as exc:
+            result = {"answer": "", "reasoning": "", "usage": {}, "finish_reason": "error",
+                      "elapsed_s": round(time.perf_counter() - request_started, 3), "effective_output_tokens_per_s": None, "error": str(exc)}
         result["run"] = index + 1
         result["diagnostic_grade"] = grader(result["answer"])
-        result["semantic_grade"], result["semantic_judge"] = judge_answer(
-            result["answer"], result["diagnostic_grade"], task_id, task_prompt=prompt
+        result["semantic_grade"], result["semantic_judge"] = judge_result(
+            result["answer"], result["diagnostic_grade"], task_id, task_prompt=prompt, finish_reason=result.get("finish_reason")
         )
         print(
-            f"  semantic={result['semantic_grade']['score']}/{result['semantic_grade']['max_score']} "
+            f"  semantic={result['semantic_grade']['score'] if result['semantic_grade']['score'] is not None else '-'}/{result['semantic_grade']['max_score']} "
             f"elapsed={result['elapsed_s']:.2f}s finish={result['finish_reason']} "
             f"words={result['diagnostic_grade']['word_count']}",
             flush=True,
@@ -708,14 +713,15 @@ def run_task(
         task_results.append(result)
 
     scores = [result["semantic_grade"]["score"] for result in task_results]
+    complete = bool(scores) and all(score is not None for score in scores)
     return {
         "task_id": task_id,
         "model": model,
         "runs": task_results,
         "score_summary": {
-            "min": min(scores),
-            "max": max(scores),
-            "avg": sum(scores) / len(scores),
+            "min": min(scores) if complete else None,
+            "max": max(scores) if complete else None,
+            "avg": sum(scores) / len(scores) if complete else None,
             "max_score": task_results[0]["semantic_grade"]["max_score"],
         },
     }

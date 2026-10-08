@@ -44,6 +44,7 @@ EVENT_DIR = Path(
 ENV_PATH = Path.home() / ".hermes" / ".env"
 BASE_URL = "https://openrouter.ai/api/v1"
 MAX_TOKENS = None
+REQUEST_TIMEOUT_S = float(os.environ.get("OPENROUTER_REQUEST_TIMEOUT_S", "180"))
 
 CONFIGS = [
     ("glm-5.2", "z-ai/glm-5.2", "high"),
@@ -53,6 +54,16 @@ CONFIGS = [
     ("kimi-k3", "moonshotai/kimi-k3", "max"),
     ("mercury-2", "inception/mercury-2:nitro", None),
     ("mercury-2.5-preview", "inception/mercury-2.5-preview", None),
+    ("gemini-3.7-flash", "google/gemini-3.7-flash:nitro", None),
+    ("deepseek-v4-pro-0813", "deepseek/deepseek-v4-pro-0813:nitro", None),
+    ("qwen3.6-27b", "qwen/qwen3.6-27b:nitro", None),
+    ("qwen3.6-35b-a3b", "qwen/qwen3.6-35b-a3b:nitro", None),
+    ("ox-alpha", "stealth/ox-alpha", None),
+    ("muse-spark-1.2-contributor", "meta/muse-spark-1.2-contributor", None),
+    ("muse-spark-1.3-contributor", "meta/muse-spark-1.3-contributor", None),
+    ("minimax-m2.7", "minimax/minimax-m2.7:nitro", None),
+    ("muse-glimmer-30b", "meta/muse-glimmer-30b:nitro", None),
+    ("gemma-4-31b-it", "google/gemma-4-31b-it:nitro", None),
 ]
 TASK_NAMES = [
     "finance",
@@ -164,6 +175,7 @@ def run_once(
         client = OpenAI(
             api_key=openrouter_api_key(),
             base_url=BASE_URL,
+            timeout=REQUEST_TIMEOUT_S,
             default_headers={
                 "HTTP-Referer": "https://github.com/joerawr/llama-benchy",
                 "X-OpenRouter-Title": "llama-benchy",
@@ -188,8 +200,10 @@ def run_once(
             "pass": False,
             "error": "OpenRouter returned an empty answer",
         }
-        semantic_grade, semantic_meta = semantic_judge(answer, diagnostic_grade, task.task_id) if answer else ({
-            "score": 0,
+        semantic_grade, semantic_meta = semantic_judge(
+            answer, diagnostic_grade, task.task_id, task_prompt=task.prompt, finish_reason=response.choices[0].finish_reason
+        ) if answer else ({
+            "score": None,
             "max_score": diagnostic_grade.get("max_score", 0),
             "error": "no answer to judge",
         }, {})
