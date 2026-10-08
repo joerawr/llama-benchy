@@ -40,6 +40,13 @@
     th.sortable::after { content:attr(data-sort-state); color:var(--muted); font-size:10px; margin-left:5px; }
     .note { max-width:330px; white-space:normal; color:#4d5863; }
     .legend { margin:14px 28px 0; color:var(--muted); font-size:12px; }
+    .runbook { margin:16px 28px 0; padding:14px 16px; border:1px solid var(--line); border-radius:6px; background:#fbfcfd; max-width:1400px; }
+    .runbook h2 { margin:0 0 5px; font-size:16px; }
+    .runbook p { margin:5px 0 10px; color:var(--muted); }
+    .runbook-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:12px; }
+    .runbook details { border:1px solid var(--line); border-radius:4px; background:#fff; }
+    .runbook summary { cursor:pointer; padding:8px 10px; font-weight:700; }
+    .runbook pre { overflow:auto; margin:0; padding:10px; border-top:1px solid var(--line); background:#f5f7f9; font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; }
     code { font-size:12px; }
   </style>
 </head>
@@ -53,8 +60,50 @@
     <label>Tested<select id="tested"><option value="all">All</option><option value="y">Yes</option><option value="p">Partial</option><option value="n">No</option></select></label>
     <label>Search<input id="search" placeholder="model or note"></label>
   </section>
+  <section class="runbook">
+    <h2>Testing notes for this ARM Linux checkout</h2>
+    <p>Rebuild the copied Python environment first. Local tests need a native Linux <code>llama-server</code> plus GGUF; OpenRouter tests need only the API key. Read the saved result JSON before adding a model row.</p>
+    <div class="runbook-grid">
+      <details open>
+        <summary>Local GGUF: smoke test and shared quality suite</summary>
+        <pre>uv sync --all-extras --dev
+PY="$PWD/.venv/bin/python"
+MODEL="$HOME/models/vendor/model.Q4_K_M.gguf"
+llama-server -m "$MODEL" --host 127.0.0.1 --port 1234 \
+  -c 65536 -np 1 -ngl 0 --reasoning off --reasoning-budget 0
+
+BASE=http://127.0.0.1:1234/v1
+LABEL=local-model-label
+"$PY" scripts/pinchbench_lite.py --base-url "$BASE" --model SERVED_MODEL --label "$LABEL" \
+  --task task_csv_finance_report --task task_log_apache_error_summary \
+  --task task_access_log_anomaly --runs 2 --timeout 1200 \
+  --out "results/$LABEL-pinchbench.json"
+"$PY" scripts/ifeval_lite.py --base-url "$BASE" --model SERVED_MODEL --label "$LABEL" \
+  --task family_backup_note --task two_section_backup_checklist \
+  --task family_text_lines --runs 2 --timeout 1200 \
+  --out "results/$LABEL-ifeval.json"
+"$PY" scripts/long_file_compression.py --base-url "$BASE" --model SERVED_MODEL --label "$LABEL" \
+  --note benchmarks-files/compression/ai-frontier-access-risk-fable-gpt56-glm52-2026-06-26.md \
+  --runs 2 --timeout 1200 --out "results/$LABEL-compression.json"</pre>
+      </details>
+      <details>
+        <summary>OpenRouter: two-pass chart candidate</summary>
+        <pre>export OPENROUTER_API_KEY='...'
+PY="$PWD/.venv/bin/python"
+OPENROUTER_CAMPAIGN_STATE=results/openrouter-MODEL.json \
+OPENROUTER_CAMPAIGN_EVENTS=results/openrouter-MODEL-events \
+"$PY" scripts/openrouter_benchmark_campaign.py run \
+  --passes 2 --only-config mercury-2
+
+# Add a new provider model/effort to CONFIGS first.
+# Use effort=None for provider-default models.
+# Keep keys, raw answers, and logs out of the chart/curated data.</pre>
+      </details>
+    </div>
+    <p>Chart rows should record complete-pass totals, semantic per-test means, quant/memory, PP/TG, and OpenRouter cost or token usage. Incomplete output is “-”, not zero. MLX/Metal paths and the copied <code>/Users/...</code> server config are macOS-only and must be replaced on Linux.</p>
+  </section>
   <section class="summary" id="summary"></section>
-  <p class="legend"><b>Score cells:</b> semantic score only. A dash means no semantic score is available. Pass totals are retained from the original runs. <b>Needs regrading:</b> X means the displayed answers have not all been rescored with Luna xhigh under source-aware-v2.</p>
+  <p class="legend">Historical results retain their original protocols. Suite 1.2 observations and mixed-prompt retries are excluded from combined ranking; see <a href="leaderboards/data/reconciled-observations-20261008.json">curated provenance</a>. <b>Score cells:</b> semantic score only. A dash means no semantic score is available. Pass totals are retained from the original runs. <b>Needs regrading:</b> X means the displayed answers have not all been rescored with Luna xhigh under source-aware-v2.</p>
   <div class="wrap"><table><thead><tr>
     <th class="model">Model<small>provider</small></th><th class="effort">Effort</th><th>Tested</th><th>Passes</th>
     <th class="sortable" data-score-index="0">Finance<small>/12</small></th><th class="sortable" data-score-index="1">Apache<small>/10</small></th><th class="sortable" data-score-index="2">Access<small>/7</small></th><th class="sortable" data-score-index="3">Compression<small>/12</small></th><th class="sortable" data-score-index="4">Family<small>/6</small></th><th class="sortable" data-score-index="5">Checklist<small>/7</small></th><th class="sortable" data-score-index="6">Text<small>/8</small></th><th class="sortable" data-score-index="7">Combined<small>/62</small></th><th>Needs regrading</th><th>Notes</th>
@@ -64,13 +113,13 @@
       // provider, model, effort, tested, rescored, pass totals, provenance, scores, combined, note
       ["Codex","gpt-5.4-mini","low","y","y","57","recovered event artifacts",["11.00/10.00","8.00/8.00","7.00/7.00","11.00/12.00","6.00/6.00","7.00/7.00","6.00/7.00"],"56.00/57.00","One complete suite pass recovered from durable event artifacts; rescore completed with gpt-5.6-luna low."],
       ["Local","Gemma 4 26B A4B QAT MLX 4-bit","mlx-4bit","y","y","-","archived + new local runs",["8.00/8.00","7.00/8.33","7.00/7.00","11.00/11.33","5.00/5.00","7.00/7.00","8.00/8.00"],"53.00/54.66","Three passes across the complete seven-test suite. Apache scores varied 10/10, 7/10, and 8/10; displayed value is the mean. Exact per-pass totals are not retained."],
-      ["Local","Muse Glimmer 30B","GGUF UD-Q6_K_XL low","y","y","57/57","fresh two-pass suite",["-/9.00","-/9.00","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/57.00","Two complete passes both scored 57/62: Finance 9/12, Apache 9/10, Access 7/7, Compression 11/12, Family 6/6, Checklist 7/7, Text 8/8. Low reasoning with a 16K allowance; Apache required 65K context for its 38,415-token prompt. Apache took about 10.4 minutes per pass."],
+      ["Local", "Muse Glimmer 30B", "GGUF UD-Q6_K_XL low", "y", "y", "57/57", "historical; provenance incomplete", ["-/9.00", "-/9.00", "-/7.00", "-/11.00", "-/6.00", "-/7.00", "-/8.00"], "-", "Historical reported 57/57 retained in Passes; combined ranking withheld pending a verified rescore-to-source mapping. Original grades and artifact hashes are retained in curated reconciliation observations. Low reasoning with a 16K allowance; Apache took about 10.4 minutes per pass."],
       ["Local","Nail Qwen3.6 35B A3B MLX","mlx-vlm","y","y","50/53/51","fresh three-pass suite",["-/8.33","-/9.00","-/5.00","-/11.00","-/4.33","-/6.67","-/7.00"],"-/51.33","Three complete passes totaling 50/62, 53/62, and 51/62. Short decode 62.72 tok/s and prompt processing 169.73 tok/s; medium decode 49.26-60.41 tok/s and prompt processing 382.66-550.09 tok/s. Trial peak memory about 22.5 GiB."],
       ["Local","Gemma 4 31B QAT OptiQ 4-bit","mlx-4bit","y","y","55","fresh one-pass suite",["-/8.00","-/8.00","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/55.00","One complete suite pass. Output rate: Finance 3.45, Apache 0.55, Access 2.96, Compression 3.94, Family 3.99, Checklist 5.39, Text 3.92 tok/s. Apache took 26.5 minutes."],
       ["Local","Gemma 4 12B AX QAT OptiQ 4-bit","mlx-lm","p","y","35/36","partial two-pass suite",["-/9.00","-/8.50","-/6.00","-/12.00","-","-","-"],"-/35.50","Finance 9/12 and 9/12; Apache 8/10 and 9/10; Access 6/7 and 6/7; Compression 12/12 and 12/12. IFEval-style Family, Checklist, and Text requests returned no visible answer after about 14 minutes each. Short decode 25.15 tok/s; medium 22.84-23.32 tok/s; prompt processing 117.68 short and 142.63-145.98 medium. Trial RSS about 9.1 GiB. MTP assistant package present but not enabled in this mlx-lm run."],
       ["Local","Qwen3.5 122B APEX I-Mini","q3.5-122b","y","y","53/54","fresh two-pass suite; files removed",["-/9.00","-/8.50","-/5.00","-/11.50","-/5.50","-/6.00","-/8.00"],"-/53.50","Historical two-pass result across all seven tasks. Apache scored 9/10 and 8/10; Compression scored 11/12 and 12/12. Apache generated about 11.4 tok/s; Compression about 16.5 tok/s. Model files removed after failing the 55/62 retention threshold."],
       ["Local","Qwen3.6 27B OptiQ","mlx-4bit","y","y","54","fresh one-pass suite",["-/9.00","-/9.00","-/4.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/54.00","One complete suite pass. Apache took about 16.8 minutes and generated about 8.4 tok/s; the model remains on disk as a comparison point."],
-      ["Local","Qwen3.6 27B MTPLX Optimized Speed V2","MTPLX turbo MTP","y","y","57","fresh one-pass suite",["-/9.00","-/9.00","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/57.00","One complete suite pass scored 57/62. Finance 9/12, Apache 9/10, Access 7/7, Compression 11/12, Family 6/6, Checklist 7/7, Text 8/8. Total task time was about 24.1 minutes; Apache took 17.5 minutes. Native MTP turbo; model remains on disk."],
+      ["Local","Qwen3.6 27B MTPLX Optimized Speed V2","MTPLX turbo MTP","y","y","57","fresh one-pass suite",["-/9.00","-/9.00","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/57.00","One complete suite pass scored 57/62. Finance 9/12, Apache 9/10, Access 7/7, Compression 11/12, Family 6/6, Checklist 7/7, Text 8/8. Total task time was about 24.1 minutes; Apache took 17.5 minutes. Native MTP turbo. Historical first pass retained; original second pass scored 51/62. Substituting a 7/7 checklist rerun with an explicit dash-marker prompt produces 55/62 under a mixed protocol, excluded from this mean. See curated reconciliation observations."],
       ["Local","Qwen3.8 27B Q6_K_XL","GGUF UD-Q6_K_XL","y","y","54/55/53","fresh three-pass suite",["-/6.67","-/9.33","-/7.00","-/11.00","-/5.00","-/7.00","-/8.00"],"-/54.00","Three complete passes totaling 54/62, 55/62, and 53/62. 25.9 GB file at 65K context; PP about 105-108 tok/s and TG about 9.8-10.2 tok/s. Finance varied 7/7/6 and Apache 9/10/9. Q6 file removed after the Q8 trial download."],
       ["Local","Qwen3.8 27B Q8_K_XL","GGUF UD-Q8_K_XL","y","y","56/56","two-pass stats; Family rerun substituted",["-/8.00","-/9.00","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/56.00","Displayed stats exclude the anomalous 5/6 Family run and use the 6/6 rerun: adjusted totals 56/62 and 56/62, mean 56.00/62. The excluded raw result remains archived. 31.5 GB file at 65K context; Q8 remains on disk for further comparison."],
       ["Local","NVIDIA Nemotron 3.5 Lightning 30B A3B 8-bit","mlx-8bit","y","y","49","fresh one-pass suite; files removed",["-/7.00","-/8.00","-/4.00","-/11.00","-/6.00","-/7.00","-/6.00"],"-/49.00","One complete suite pass scored 49/62. Finance 7/12, Apache 8/10, Access 4/7, Compression 11/12, Family 6/6, Checklist 7/7, Text 6/8. The 31 GB model was removed after testing."],
@@ -87,6 +136,8 @@
       ["OpenRouter","Gemini 3.7 Flash","Nitro","y","y","59/58","fresh two-pass suite",["-/10.00","-/9.50","-/7.00","-/11.00","-/6.00","-/7.00","-/8.00"],"-/58.50","Two complete passes totaling 59/62 and 58/62. Finance 10/12 both times; Apache varied 10/10 then 9/10; all other tasks were identical. Provider-default Nitro; total cost $0.2305."],
       ["OpenRouter","DeepSeek V4 Pro 0813","Nitro","y","y","58/61","fresh two-pass suite",["-/11.00","-/9.00","-/7.00","-/11.50","-/6.00","-/7.00","-/8.00"],"-/59.50","Two complete passes totaling 58/62 and 61/62. Finance 11/12 both times; Apache improved 8/10 to 10/10; Compression improved 11/12 to 12/12; all instruction tasks were perfect. Provider-default Nitro; total cost $0.8943."],
       ["OpenRouter","GLM 5.3 Flash (Ox Alpha)","provider-default","y","y","62","best complete results",["-/12.00","-/10.00","-/7.00","-/12.00","-/6.00","-/7.00","-/8.00"],"-/62.00","GLM 5.3 Flash, previously known as Ox Alpha. Best complete result is 62/62; Finance also completed at 11/12 on a second pass. Provider was free and heavily used, so retries were necessary; measured output rates were about 33-54 tok/s by task."],
+      ["OpenRouter", "Muse Spark 1.2 Contributor", "provider-default", "y", "y", "60/57", "suite 1.2; two complete passes + focused retries", ["-/10.50", "-/8.50", "-/7.00", "-/11.50", "-/6.00", "-/7.00", "-/8.00"], "-", "Suite 1.2 (explicit dash-marker checklist), verified by saved prompt hashes; excluded from the historical combined-score ranking. Two complete passes totaled 60/62 and 57/62. Finance scored 11/12 and 10/12; Apache 9/10 and 8/10; Compression 12/12 and 11/12. Three targeted gate retries were run; provider-default reasoning; total OpenRouter cost $0.045528 and model-call time about 7.9 minutes."],
+      ["OpenRouter", "Muse Spark 1.3 Contributor", "provider-default", "y", "y", "60/58", "suite 1.2; two complete passes + focused retries", ["-/10.50", "-/9.00", "-/7.00", "-/11.50", "-/6.00", "-/7.00", "-/8.00"], "-", "Suite 1.2 (explicit dash-marker checklist), verified by saved prompt hashes; excluded from the historical combined-score ranking. Two complete passes totaled 60/62 and 58/62. Finance scored 10/12 and 11/12; Apache 10/10 and 8/10; Compression 12/12 and 11/12. Three targeted gate retries were run; provider-default reasoning; total OpenRouter cost $0.030447 and model-call time about 13.6 minutes."],
       ["Codex","Sol","low","y","y","55/54","archived",["8.00/12.00","7.67/9.67","7.00/7.00","11.00/11.33","6.00/5.67","7.33/7.00","7.00/8.00"],"54.00/60.67","Source-aware-v2 Luna xhigh rescore complete across retained records for all seven tasks."],
       ["Codex","Sol","medium","y","y","53/58","archived",["9.00/11.67","8.33/10.00","7.00/7.00","11.00/10.50","6.00/6.00","7.00/7.00","7.00/8.00"],"55.33/60.17","Source-aware-v2 Luna xhigh rescore complete across retained records for all seven tasks."],
       ["Codex","Sol","high","y","y","56/54","archived",["8.00/12.00","9.00/9.67","7.00/7.00","10.67/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"54.67/60.67","Source-aware-v2 Luna xhigh rescore complete across retained records for all seven tasks."],
@@ -116,6 +167,8 @@
       ["Claude","Fable","high","y","y","60","fresh",["10.00/12.00","9.00/8.00","7.00/7.00","12.00/11.00","6.00/6.00","7.00/7.00","7.00/8.00"],"58.00/59.00","Source-aware-v2 Luna xhigh rescore complete across retained records for all seven tasks."],
     ];
     const sourceAwareRegraded = new Set([
+      "OpenRouter|Muse Spark 1.2 Contributor|provider-default",
+      "OpenRouter|Muse Spark 1.3 Contributor|provider-default",
       "Codex|Sol|low", "Codex|Sol|medium", "Codex|Sol|high",
       "Codex|Terra|low", "Codex|Terra|medium", "Codex|Terra|high", "Codex|Terra|xhigh",
       "Codex|Luna|low", "Codex|Luna|medium", "Codex|Luna|high", "Codex|Luna|xhigh",

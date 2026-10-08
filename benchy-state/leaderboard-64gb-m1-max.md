@@ -21,3 +21,13 @@ Sources: `results/gemma4-26b-a4b-qat-q4xl-short.json`, `results/gemma4-26b-a4b-q
 ## Evaluation and Promotion
 
 For a credible family, explicitly inspect fitting Q4, Q5, Q6, and Q8 GGUF files. Benchmark the one quant that best answers a concrete quality-versus-memory question; do not default to Q4 solely because it is smaller. Promotion remains manual and must not change `benchy-state/serving-current.json` automatically.
+
+## Historical quality observation (unranked)
+
+Muse Glimmer 30B GGUF UD-Q6_K_XL has retained observations reported as
+57/62 on two passes, with about 11 generated tokens/s on the short task.
+Its original prompt and scoring provenance is incomplete across those records,
+and the baseline above uses a different measurement mix. These observations do
+not establish a common-protocol promotion. See
+`leaderboards/data/reconciled-observations-20261008.json` for artifact hashes,
+limitations, and the missing family-text source correction.

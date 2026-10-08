@@ -1,0 +1,867 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-10-08",
+  "review_base_commit": "0012f154a9e3952795424af3f955e37045b56285",
+  "raw_artifact_policy": "Retained locally; only curated metadata and hashes are published.",
+  "observations": [
+    {
+      "model": "muse-spark-1.2-contributor",
+      "provider": "OpenRouter",
+      "suite_version": "llama-benchy-local-comparison@1.2",
+      "judge_protocol": "source-aware-v2",
+      "status": "verified variant; excluded from historical combined ranking",
+      "hardware": "hosted provider; local hardware not applicable",
+      "benchmark_git_commit": null,
+      "benchmark_git_commit_status": "not recorded in artifact",
+      "artifact": {
+        "path": "results/openrouter-muse-spark-1.2-contributor.json",
+        "sha256": "ef024846e5c31ada7b679c35b0f088f94cd9b4c09bd26a5512011938f3fd43d7"
+      },
+      "complete_pass_totals": [
+        60,
+        57
+      ],
+      "variant_mean": 58.5,
+      "focused_retry_count": 3,
+      "cost_usd_all_records": 0.045527899999999996,
+      "records": [
+        {
+          "task_id": "task_csv_finance_report",
+          "run": 1,
+          "score": 11,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f"
+        },
+        {
+          "task_id": "task_log_apache_error_summary",
+          "run": 1,
+          "score": 9,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f"
+        },
+        {
+          "task_id": "task_access_log_anomaly",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 12,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d"
+        },
+        {
+          "task_id": "family_backup_note",
+          "run": 1,
+          "score": 6,
+          "max_score": 6,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73"
+        },
+        {
+          "task_id": "two_section_backup_checklist",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4334b89985e245c89a925e258f7d433f691da56e155aaa1ebae7be4c8d621f3f"
+        },
+        {
+          "task_id": "family_text_lines",
+          "run": 1,
+          "score": 8,
+          "max_score": 8,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0"
+        },
+        {
+          "task_id": "task_csv_finance_report",
+          "run": 2,
+          "score": 10,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f"
+        },
+        {
+          "task_id": "task_log_apache_error_summary",
+          "run": 2,
+          "score": 8,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f"
+        },
+        {
+          "task_id": "task_access_log_anomaly",
+          "run": 2,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 2,
+          "score": 11,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d"
+        },
+        {
+          "task_id": "family_backup_note",
+          "run": 2,
+          "score": 6,
+          "max_score": 6,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73"
+        },
+        {
+          "task_id": "two_section_backup_checklist",
+          "run": 2,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4334b89985e245c89a925e258f7d433f691da56e155aaa1ebae7be4c8d621f3f"
+        },
+        {
+          "task_id": "family_text_lines",
+          "run": 2,
+          "score": 8,
+          "max_score": 8,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0"
+        },
+        {
+          "task_id": "task_csv_finance_report",
+          "run": 3,
+          "score": 11,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f"
+        },
+        {
+          "task_id": "task_log_apache_error_summary",
+          "run": 3,
+          "score": 9,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 3,
+          "score": 12,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d"
+        }
+      ]
+    },
+    {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "OpenRouter",
+      "suite_version": "llama-benchy-local-comparison@1.2",
+      "judge_protocol": "source-aware-v2",
+      "status": "verified variant; excluded from historical combined ranking",
+      "hardware": "hosted provider; local hardware not applicable",
+      "benchmark_git_commit": null,
+      "benchmark_git_commit_status": "not recorded in artifact",
+      "artifact": {
+        "path": "results/openrouter-muse-spark-1.3-contributor.json",
+        "sha256": "83910f299dded290f2d168d894b93f827c5036d8c9223b06781445ee657671da"
+      },
+      "complete_pass_totals": [
+        60,
+        58
+      ],
+      "variant_mean": 59.0,
+      "focused_retry_count": 3,
+      "cost_usd_all_records": 0.030447099999999998,
+      "records": [
+        {
+          "task_id": "task_csv_finance_report",
+          "run": 1,
+          "score": 10,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f"
+        },
+        {
+          "task_id": "task_log_apache_error_summary",
+          "run": 1,
+          "score": 10,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f"
+        },
+        {
+          "task_id": "task_access_log_anomaly",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 12,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d"
+        },
+        {
+          "task_id": "family_backup_note",
+          "run": 1,
+          "score": 6,
+          "max_score": 6,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73"
+        },
+        {
+          "task_id": "two_section_backup_checklist",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4334b89985e245c89a925e258f7d433f691da56e155aaa1ebae7be4c8d621f3f"
+        },
+        {
+          "task_id": "family_text_lines",
+          "run": 1,
+          "score": 8,
+          "max_score": 8,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0"
+        },
+        {
+          "task_id": "task_csv_finance_report",
+          "run": 2,
+          "score": 11,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f"
+        },
+        {
+          "task_id": "task_log_apache_error_summary",
+          "run": 2,
+          "score": 8,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f"
+        },
+        {
+          "task_id": "task_access_log_anomaly",
+          "run": 2,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 2,
+          "score": 11,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d"
+        },
+        {
+          "task_id": "family_backup_note",
+          "run": 2,
+          "score": 6,
+          "max_score": 6,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73"
+        },
+        {
+          "task_id": "two_section_backup_checklist",
+          "run": 2,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4334b89985e245c89a925e258f7d433f691da56e155aaa1ebae7be4c8d621f3f"
+        },
+        {
+          "task_id": "family_text_lines",
+          "run": 2,
+          "score": 8,
+          "max_score": 8,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0"
+        },
+        {
+          "task_id": "task_csv_finance_report",
+          "run": 3,
+          "score": 10,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f"
+        },
+        {
+          "task_id": "task_log_apache_error_summary",
+          "run": 3,
+          "score": 8,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 3,
+          "score": 12,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d"
+        }
+      ]
+    },
+    {
+      "model": "Qwen3.6 27B MTPLX Optimized Speed V2",
+      "provider": "Local",
+      "hardware": "historical local run; exact hardware not recorded in these artifacts",
+      "benchmark_git_commit": null,
+      "suite_version": "1.1 task hashes where recorded; unverified where absent",
+      "status": "original second pass retained; changed-task retry not substituted",
+      "artifacts": [
+        {
+          "path": "results/qwen36-27b-mtplx-optimized-speed-v2-pass2-pinchbench.json",
+          "sha256": "de9ad941458d2397fadbdc8088c0730781017acfc5ea345424bdcf1efa8daff7"
+        },
+        {
+          "path": "results/qwen36-27b-mtplx-optimized-speed-v2-pass2-compression.json",
+          "sha256": "2ebd5abd3fed4686dd8b059163f728830070516fe5ef353c3eff522dce9fff1a"
+        },
+        {
+          "path": "results/qwen36-27b-mtplx-optimized-speed-v2-pass2-ifeval.json",
+          "sha256": "1565e6729b5d857b1f294b74f0962c0ab7b4a3225b18151bb89fb0ab404d1621"
+        },
+        {
+          "path": "results/qwen36-27b-mtplx-checklist-explicit-dash-20260820.json",
+          "sha256": "b069fb057808b093ead950eca61173f4e6ad57c74520f87a66c00187924d637c"
+        }
+      ],
+      "original_second_pass_total": 51,
+      "modified_retry_score": 7,
+      "mixed_protocol_total": 55,
+      "mixed_protocol_total_rankable": false,
+      "records": [
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 8,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 9,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4"
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 11,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d"
+        },
+        {
+          "task_id": "family_backup_note",
+          "run": 1,
+          "score": 5,
+          "max_score": 6,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73"
+        },
+        {
+          "task_id": "two_section_backup_checklist",
+          "run": 1,
+          "score": 3,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3"
+        },
+        {
+          "task_id": "family_text_lines",
+          "run": 1,
+          "score": 8,
+          "max_score": 8,
+          "finish_reason": "stop",
+          "judge_protocol": "source-aware-v2",
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "xhigh",
+          "task_prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0"
+        }
+      ],
+      "modified_retry": {
+        "task_id": "two_section_backup_checklist",
+        "run": 1,
+        "score": 7,
+        "max_score": 7,
+        "finish_reason": "stop",
+        "judge_protocol": "source-aware-v2",
+        "judge_model": "gpt-5.6-luna",
+        "judge_effort": "xhigh",
+        "task_prompt_sha256": "4334b89985e245c89a925e258f7d433f691da56e155aaa1ebae7be4c8d621f3f"
+      }
+    },
+    {
+      "model": "Muse Glimmer 30B",
+      "provider": "Local",
+      "quant": "GGUF UD-Q6_K_XL",
+      "hardware": "historical Apple Silicon; exact hardware not consistently recorded",
+      "benchmark_git_commit": null,
+      "suite_version": null,
+      "status": "unverified historical observation; no baseline ranking promotion",
+      "retained_original_pass_totals": [
+        57,
+        57
+      ],
+      "reported_chart_pass_totals": [
+        57,
+        57
+      ],
+      "artifacts": [
+        {
+          "path": "results/muse-glimmer-30b-low-16k-finance.json",
+          "sha256": "23ff004f1e337ca401647a159ced5070022ca9b5ff135c4494503210ba56f91f"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-16k-apache.json",
+          "sha256": "b355606dbcd7149dba6849a2bbdfea8cb37ade5626c0545cfd2bd840608522a1"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-16k-access.json",
+          "sha256": "613f40be970c0f7bb8bf80c269d4590e1abc6ffc22064f1d32dab4b0963df621"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-16k-compression.json",
+          "sha256": "80173860f6120438ff084aa77f166f534ed2edf07f8551275ac905e6150f48f4"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-16k-family-note.json",
+          "sha256": "d952e81798976f2469b003fac48c9cf0d53fc7009914093c73ae42a820c0d174"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-16k-checklist.json",
+          "sha256": "a24b9a51081a328dc0a29011793b65c40eef581efb2c93ae9b3b2e96f2118619"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-family-text.json",
+          "sha256": "3eaa3dcb5e1480a2c233cb07f4151ea626536131e7dd29030df934dc843384af"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-pass2-finance.json",
+          "sha256": "bd24dfcd7e3f5263e82a0f2c49efaf6e2617ebc503aca0f81f0407b82829e103"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-pass2-apache.json",
+          "sha256": "433339a66809ca5d8b85d22fa96fe1570cf2daecf37818bf7972dd444354451e"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-pass2-access.json",
+          "sha256": "502714799efda299bf11c8ea5a05a1cecb8466ff56392e5622baf98ba9a27d68"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-pass2-compression.json",
+          "sha256": "59b723d50350d6da51b14fde9f00436fdde0bffef1d9f9a27234ddf15752d281"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-pass2-family-note.json",
+          "sha256": "587d6b308ea401a885ca739d8b8384e4c6b759494d9c8bcfb3709f5581f8b6f8"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-pass2-checklist.json",
+          "sha256": "e0fbf0767193cd2a5fc07ed607153ddd73f4c070ac05c5359562abaeff67319e"
+        },
+        {
+          "path": "results/muse-glimmer-30b-low-pass2-family-text.json",
+          "sha256": "44dd562c4ab486c64b5ea884108dd7d3b092628f2a9507a284ab5d0019b7a913"
+        }
+      ],
+      "records": [
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 9,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 9,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 11,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "family_backup_note",
+          "run": 1,
+          "score": 6,
+          "max_score": 6,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "two_section_backup_checklist",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "family_text_lines",
+          "run": 1,
+          "score": 8,
+          "max_score": 8,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 9,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 9,
+          "max_score": 10,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "long_file_compression",
+          "run": 1,
+          "score": 11,
+          "max_score": 12,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "family_backup_note",
+          "run": 1,
+          "score": 6,
+          "max_score": 6,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "two_section_backup_checklist",
+          "run": 1,
+          "score": 7,
+          "max_score": 7,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        },
+        {
+          "task_id": "family_text_lines",
+          "run": 1,
+          "score": 8,
+          "max_score": 8,
+          "finish_reason": "stop",
+          "judge_protocol": null,
+          "judge_model": "gpt-5.6-luna",
+          "judge_effort": "low",
+          "task_prompt_sha256": null
+        }
+      ],
+      "limitations": [
+        "Original task prompt hashes/judge protocol are missing in retained records.",
+        "Reported chart totals and retained original grades may differ after rescoring; never silently equate them.",
+        "The prior Markdown family-text reference muse-glimmer-30b-low-16k-family-text.json does not exist; existing source is muse-glimmer-30b-low-family-text.json.",
+        "Baseline ranking uses different quality and performance measurements."
+      ]
+    }
+  ],
+  "presentation_rows": [
+    [
+      "Local",
+      "Muse Glimmer 30B",
+      "GGUF UD-Q6_K_XL low",
+      "y",
+      "y",
+      "57/57",
+      "historical; provenance incomplete",
+      [
+        "-/9.00",
+        "-/9.00",
+        "-/7.00",
+        "-/11.00",
+        "-/6.00",
+        "-/7.00",
+        "-/8.00"
+      ],
+      "-",
+      "Historical reported 57/57 retained in Passes; combined ranking withheld pending a verified rescore-to-source mapping. Original grades and artifact hashes are retained in curated reconciliation observations. Low reasoning with a 16K allowance; Apache took about 10.4 minutes per pass."
+    ],
+    [
+      "Local",
+      "Qwen3.6 27B MTPLX Optimized Speed V2",
+      "MTPLX turbo MTP",
+      "y",
+      "y",
+      "57",
+      "fresh one-pass suite",
+      [
+        "-/9.00",
+        "-/9.00",
+        "-/7.00",
+        "-/11.00",
+        "-/6.00",
+        "-/7.00",
+        "-/8.00"
+      ],
+      "-/57.00",
+      "One complete suite pass scored 57/62. Finance 9/12, Apache 9/10, Access 7/7, Compression 11/12, Family 6/6, Checklist 7/7, Text 8/8. Total task time was about 24.1 minutes; Apache took 17.5 minutes. Native MTP turbo. Historical first pass retained; original second pass scored 51/62. Substituting a 7/7 checklist rerun with an explicit dash-marker prompt produces 55/62 under a mixed protocol, excluded from this mean. See curated reconciliation observations."
+    ],
+    [
+      "OpenRouter",
+      "Muse Spark 1.2 Contributor",
+      "provider-default",
+      "y",
+      "y",
+      "60/57",
+      "suite 1.2; two complete passes + focused retries",
+      [
+        "-/10.50",
+        "-/8.50",
+        "-/7.00",
+        "-/11.50",
+        "-/6.00",
+        "-/7.00",
+        "-/8.00"
+      ],
+      "-",
+      "Suite 1.2 (explicit dash-marker checklist), verified by saved prompt hashes; excluded from the historical combined-score ranking. Two complete passes totaled 60/62 and 57/62. Finance scored 11/12 and 10/12; Apache 9/10 and 8/10; Compression 12/12 and 11/12. Three targeted gate retries were run; provider-default reasoning; total OpenRouter cost $0.045528 and model-call time about 7.9 minutes."
+    ],
+    [
+      "OpenRouter",
+      "Muse Spark 1.3 Contributor",
+      "provider-default",
+      "y",
+      "y",
+      "60/58",
+      "suite 1.2; two complete passes + focused retries",
+      [
+        "-/10.50",
+        "-/9.00",
+        "-/7.00",
+        "-/11.50",
+        "-/6.00",
+        "-/7.00",
+        "-/8.00"
+      ],
+      "-",
+      "Suite 1.2 (explicit dash-marker checklist), verified by saved prompt hashes; excluded from the historical combined-score ranking. Two complete passes totaled 60/62 and 58/62. Finance scored 10/12 and 11/12; Apache 10/10 and 8/10; Compression 12/12 and 11/12. Three targeted gate retries were run; provider-default reasoning; total OpenRouter cost $0.030447 and model-call time about 13.6 minutes."
+    ]
+  ]
+}
