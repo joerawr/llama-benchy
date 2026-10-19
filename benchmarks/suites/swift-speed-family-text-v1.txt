@@ -1,0 +1,9 @@
+Write a short text message to a family member about checking two backups.
+
+Rules:
+- Use exactly 5 non-empty lines.
+- Line 1 must be exactly: Hi Sam,
+- Lines 2 and 3 must each be one sentence, 14 words or fewer.
+- Lines 4 and 5 must be bullet points, each 5 to 9 words.
+- Use "photos" exactly once and "documents" exactly once.
+- Do not use "cloud", "always", or "just".

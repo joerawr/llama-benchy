@@ -1,0 +1,274 @@
+{
+  "experiment_id": "swift-1.5-five-minute-speed@1.0",
+  "date": "2026-10-19",
+  "purpose": "Throughput screening only; no quality scores.",
+  "status": "complete",
+  "hardware": {
+    "machine": "Apple M1 Max, 64GB",
+    "os": "Arch Linux aarch64 / Asahi",
+    "kernel": "7.1.13-3-2-ARCH",
+    "backend": "Vulkan0",
+    "driver": "Honeykrisp / Mesa 26.2.4-arch1.1"
+  },
+  "runtime": {
+    "project": "ggml-org/llama.cpp",
+    "commit": "9c2e0e491a822adae1f0b1c831adb4160057d24f",
+    "build": "b1-9c2e0e4",
+    "compiler": "GNU 16.1.1 aarch64"
+  },
+  "task": {
+    "id": "family_text_lines",
+    "prompt_file": "benchmarks/suites/swift-speed-family-text-v1.txt",
+    "prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0",
+    "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+    "chat_template_source": "Native template in both pinned GGUF files, independently verified identical."
+  },
+  "settings": {
+    "wall_seconds_per_model": 300,
+    "context": 32768,
+    "parallel": 1,
+    "batch": 128,
+    "microbatch": 128,
+    "cpu_threads": 4,
+    "gpu_layers_requested": 99,
+    "kv_precision": "f16/f16",
+    "thinking": true,
+    "reasoning_effort": "xhigh",
+    "reasoning_budget": -1,
+    "mtp": false,
+    "context_shift": false,
+    "completion_cap": null,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "seeds": "20261019 + request index (starting at 1); reset index for each model"
+  },
+  "rate_definition": {
+    "generation_tokens_per_s": "Sum backend predicted_n / (sum predicted_ms / 1000); includes all generated reasoning and answer/control tokens.",
+    "prompt_tokens_per_s": "Sum backend prompt_n / (sum prompt_ms / 1000).",
+    "probe_wall": "Loading and verification excluded; prompt processing and repeat requests included in the five-minute window. A final partial stream is expected and ungraded."
+  },
+  "models": {
+    "swift15-gsq-iq3s": {
+      "name": "Swift 1.5 GSQ-RCO IQ3_S",
+      "repo": "ukisai/Swift-1.5-Qwen3.8-27B-GSQ-RCO-GGUF",
+      "revision": "d74895bbe5db4bec1e0024e7cc87d59c02d7631a",
+      "filename": "Swift-1.5-Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf",
+      "archive_relative_path": "ukisai/Swift-1.5-Qwen3.8-27B-GSQ-RCO-GGUF/Swift-1.5-Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf",
+      "bytes": 11771546912,
+      "sha256": "1333c6ea70ef348d4ac6d62732772e8ad6571ac5b3754c14ed54f1a0d904a786",
+      "summary": {
+        "generated_tokens": 369,
+        "generation_seconds": 288.04773,
+        "generation_tokens_per_s": 1.2810376946903905,
+        "prompt_tokens": 163,
+        "prompt_seconds": 12.487119,
+        "prompt_tokens_per_s": 13.053451320516766,
+        "requests": 1,
+        "completed_answers": 0
+      },
+      "probe_wall_seconds": 300.54869651794434,
+      "requests": [
+        {
+          "index": 1,
+          "elapsed_s": 300.5443701980039,
+          "finish_reason": "probe_window_elapsed",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 163,
+            "prompt_ms": 12487.119,
+            "prompt_per_token_ms": 76.60809202453989,
+            "prompt_per_second": 13.053451320516766,
+            "predicted_n": 369,
+            "predicted_ms": 288047.73,
+            "predicted_per_token_ms": 782.7383967391304,
+            "predicted_per_second": 1.277566047821311
+          },
+          "quality_score": null
+        }
+      ]
+    },
+    "swift15-q6": {
+      "name": "Swift 1.5 Q6_K",
+      "repo": "ukisai/Swift-1.5-Qwen3.8-27B-GGUF",
+      "revision": "14bfe4b42be4a925d98816db830155f476c605e7",
+      "filename": "Swift-1.5-Qwen3.8-27B-Q6_K.gguf",
+      "archive_relative_path": "ukisai/Swift-1.5-Qwen3.8-27B-GGUF/Swift-1.5-Qwen3.8-27B-Q6_K.gguf",
+      "bytes": 23860565696,
+      "sha256": "cd2eb6597026ce4eb86100e830be24f01461f84b89d4708634c2ec3d43b67fa8",
+      "summary": {
+        "generated_tokens": 1421,
+        "generation_seconds": 272.145754,
+        "generation_tokens_per_s": 5.221466729185126,
+        "prompt_tokens": 489,
+        "prompt_seconds": 27.771515,
+        "prompt_tokens_per_s": 17.60796989289205,
+        "requests": 3,
+        "completed_answers": 2
+      },
+      "probe_wall_seconds": 300.1727681159973,
+      "requests": [
+        {
+          "index": 1,
+          "elapsed_s": 151.64364513599867,
+          "finish_reason": "stop",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 163,
+            "prompt_ms": 9243.518,
+            "prompt_per_token_ms": 56.70869938650307,
+            "prompt_per_second": 17.633978751380155,
+            "predicted_n": 742,
+            "predicted_ms": 142383.518,
+            "predicted_per_token_ms": 192.15049662618085,
+            "predicted_per_second": 5.204254048561997
+          },
+          "quality_score": null
+        },
+        {
+          "index": 2,
+          "elapsed_s": 97.38204110500374,
+          "finish_reason": "stop",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 163,
+            "prompt_ms": 9291.756,
+            "prompt_per_token_ms": 57.004638036809816,
+            "prompt_per_second": 17.542432237781536,
+            "predicted_n": 460,
+            "predicted_ms": 87986.232,
+            "predicted_per_token_ms": 191.69113725490197,
+            "predicted_per_second": 5.216725271290172
+          },
+          "quality_score": null
+        },
+        {
+          "index": 3,
+          "elapsed_s": 51.12810462600464,
+          "finish_reason": "probe_window_elapsed",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 163,
+            "prompt_ms": 9236.241,
+            "prompt_per_token_ms": 56.66405521472392,
+            "prompt_per_second": 17.64787211593981,
+            "predicted_n": 219,
+            "predicted_ms": 41776.004,
+            "predicted_per_token_ms": 191.63304587155963,
+            "predicted_per_second": 5.218306662360526
+          },
+          "quality_score": null
+        }
+      ]
+    }
+  },
+  "thinkingcap": {
+    "model": "ThinkingCap Qwen3.6 27B Q6_K",
+    "outcome": "cancelled_by_user_unscored",
+    "elapsed_minutes": 27.8,
+    "prompt_tokens": 5732,
+    "generated_tokens_at_snapshot": 6748,
+    "reasoning_tokens_retokenized": 6748,
+    "answer_tokens": 0,
+    "final_answer_delivered": false,
+    "hardware": "M1 Max Vulkan",
+    "scope": "One partially generated Finance attempt; cannot establish accuracy or compare quality.",
+    "prior_observation": "Oct 8 short family-text test hit a 1536-token cap without an answer in both ThinkingCap runs; Swift 1.0 completed both.",
+    "next_step": "Two Swift 1.5 five-minute speed probes only. Full quality campaign remains paused until user selects priority."
+  },
+  "conclusions": [
+    "Q6_K was about 4.08 times faster than GSQ-RCO IQ3_S on this Linux Vulkan setup.",
+    "User excluded IQ3_S from further quality trials on this runtime because 1.28 tok/s was unusable for the intended workflow.",
+    "No accuracy winner was established. Native macOS Metal has not been measured in this session.",
+    "Full Finance/Compression quality campaign is paused; no automatic follow-on quality tests are scheduled."
+  ],
+  "local_artifacts": {
+    "speed_report": "results/swift-five-minute-speed-20261019/report.json",
+    "thinkingcap_notes": "results/swift-qwen-thinking-20261019/thinkingcap-notes.json"
+  },
+  "archive": {
+    "host": "rpi",
+    "root": "media/models",
+    "status": "copying; verify before final commit"
+  },
+  "historical_27b_references": [
+    {
+      "model": "Qwen3.8 27B GGUF UD-Q6_K_XL",
+      "observed_timestamp": "2026-08-14 16:46:21Z",
+      "artifact": "results/qwen38-27b-q6xl-medium.json",
+      "artifact_sha256": "8c911f812b4456cea5dc06bc18a8f1a7292379113ea6a3172b540a48d53d03a8",
+      "context": "Historical macOS run; exact hardware and all serving settings not recorded in these throughput artifacts. MTPLX used its optimized MTP serving path. These are reference points, not matched Swift OS tests.",
+      "rows": [
+        {
+          "context_size": 0,
+          "prompt_size": 512,
+          "response_size": 128,
+          "generation_tokens_per_s": 10.17655802359215,
+          "prompt_tokens_per_s": 108.24075614486595
+        },
+        {
+          "context_size": 0,
+          "prompt_size": 2048,
+          "response_size": 128,
+          "generation_tokens_per_s": 9.88120694422736,
+          "prompt_tokens_per_s": 107.57780023916784
+        },
+        {
+          "context_size": 4096,
+          "prompt_size": 512,
+          "response_size": 128,
+          "generation_tokens_per_s": 9.769894031690354,
+          "prompt_tokens_per_s": 105.29154454487347
+        },
+        {
+          "context_size": 4096,
+          "prompt_size": 2048,
+          "response_size": 128,
+          "generation_tokens_per_s": 9.777754829426016,
+          "prompt_tokens_per_s": 105.47830548923862
+        }
+      ]
+    },
+    {
+      "model": "Qwen3.6 27B MTPLX Optimized Speed V2",
+      "observed_timestamp": "2026-08-20 19:50:44Z",
+      "artifact": "results/qwen36-27b-mtplx-optimized-speed-v2-pass2-medium.json",
+      "artifact_sha256": "51c814ebbab08d1dea7eb6c7f80ed4d645d4222dede99d63f0acf8599011e4ce",
+      "context": "Historical macOS run; exact hardware and all serving settings not recorded in these throughput artifacts. MTPLX used its optimized MTP serving path. These are reference points, not matched Swift OS tests.",
+      "rows": [
+        {
+          "context_size": 0,
+          "prompt_size": 512,
+          "response_size": 128,
+          "generation_tokens_per_s": 13.567537326718432,
+          "prompt_tokens_per_s": 66.04498716955943
+        },
+        {
+          "context_size": 0,
+          "prompt_size": 2048,
+          "response_size": 128,
+          "generation_tokens_per_s": 13.063699082002726,
+          "prompt_tokens_per_s": 66.72125208802153
+        },
+        {
+          "context_size": 4096,
+          "prompt_size": 512,
+          "response_size": 128,
+          "generation_tokens_per_s": 13.054729125865464,
+          "prompt_tokens_per_s": 65.9404326776103
+        },
+        {
+          "context_size": 4096,
+          "prompt_size": 2048,
+          "response_size": 128,
+          "generation_tokens_per_s": 12.776151561385406,
+          "prompt_tokens_per_s": 66.01543470847297
+        }
+      ]
+    }
+  ]
+}
