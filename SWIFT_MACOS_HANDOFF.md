@@ -135,9 +135,11 @@ Standard GGUF repository revision: 14bfe4b42be4a925d98816db830155f476c605e7
 Q6_K SHA256: cd2eb6597026ce4eb86100e830be24f01461f84b89d4708634c2ec3d43b67fa8
 ```
 
-Archive verification status is recorded in the run JSON. Final verification
-requires the remote SHA-256 values to match and the checksum rsync dry run to
-report no differences. Do not reboot until the session reports that complete.
+Archive verification completed on October 19: both remote file sizes and full
+SHA-256 hashes match the originals above. The checksum rsync dry run exited 0
+and reported no differences, including both `download-provenance.json` files.
+The run JSON records this verification. The archive is ready for the macOS
+comparison; local originals are retained.
 
 ## Repeat on macOS
 

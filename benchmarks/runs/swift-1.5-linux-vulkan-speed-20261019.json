@@ -193,7 +193,31 @@
   "archive": {
     "host": "rpi",
     "root": "media/models",
-    "status": "copying; verify before final commit"
+    "absolute_root": "/home/jrogers/media/models",
+    "status": "verified",
+    "verified_at_utc": "2026-10-19T22:57:42.533612+00:00",
+    "copy_exit_code": 0,
+    "remote_full_sha256_matches": true,
+    "checksum_rsync_dry_run": {
+      "exit_code": 0,
+      "differences": [],
+      "includes_download_provenance": true
+    },
+    "files": [
+      {
+        "path": "ukisai/Swift-1.5-Qwen3.8-27B-GSQ-RCO-GGUF/Swift-1.5-Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf",
+        "bytes": 11771546912,
+        "sha256": "1333c6ea70ef348d4ac6d62732772e8ad6571ac5b3754c14ed54f1a0d904a786",
+        "sha256_matches": true
+      },
+      {
+        "path": "ukisai/Swift-1.5-Qwen3.8-27B-GGUF/Swift-1.5-Qwen3.8-27B-Q6_K.gguf",
+        "bytes": 23860565696,
+        "sha256": "cd2eb6597026ce4eb86100e830be24f01461f84b89d4708634c2ec3d43b67fa8",
+        "sha256_matches": true
+      }
+    ],
+    "local_originals_retained": true
   },
   "historical_27b_references": [
     {
