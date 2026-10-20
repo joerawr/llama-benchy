@@ -1,6 +1,6 @@
 {
   "experiment_id": "qwen38-openrouter-heavy-xhigh-20261020",
-  "status": "complete",
+  "status": "in_progress",
   "planned_requests": 2,
   "suite": "qwen-family-full-xhigh@1.0",
   "tasks": [
@@ -9,8 +9,8 @@
   ],
   "purpose": "Hosted stock-Qwen completion and quality baseline; excluded from local speed rankings.",
   "limits": [
-    "Apache completed on DeepInfra BF16; Finance moved to Near AI FP8 for speed. Interrupted Finance evidence is retained separately.",
-    "Provider context is 262K; generation caps are 128K DeepInfra and 64K Near AI. Local campaign context was 64K or 128K.",
+    "Apache completed on DeepInfra BF16; Finance is rerun on ModelRun FP4 after Near AI FP8 exhausted its 64K output cap. Earlier attempts are retained separately.",
+    "Provider context is 262K; generation caps are 128K DeepInfra and 235929 ModelRun. ModelRun does not expose top_k or seed.",
     "Identical task and xhigh system prompts; provider internal template and kernels are not observable.",
     "Network and hosted timings do not measure Mac inference speed."
   ],
@@ -54,7 +54,9 @@
         "explanation": "The answer is comprehensive and substantively accurate overall, but its client-error category table reports 19 invalid-method entries; the supplied log contains 18.",
         "pass": false
       }
-    },
+    }
+  ],
+  "previous_attempts": [
     {
       "task": "finance",
       "model": "qwen/qwen3.8-27b",
@@ -78,7 +80,32 @@
       "reasoning_tokens_retokenized": 65549,
       "answer_tokens_retokenized": 0,
       "cost_usd": 0.0887044,
-      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/qwen38-finance.result.json"
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/near-ai-fp8-finance-64k/qwen38-finance.result.json"
+    },
+    {
+      "task": "finance",
+      "model": "qwen/qwen3.8-27b",
+      "provider_requested": "near-ai/fp8",
+      "provider": null,
+      "id": null,
+      "prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f",
+      "reasoning_effort": "xhigh",
+      "sampling_note": "Near AI exposes temperature/top_p/top_k/seed; neutral min_p and penalty controls are not exposed.",
+      "max_tokens": 65536,
+      "context_tokens": 262144,
+      "wall_limit_s": 3600,
+      "started_at": 1792534013.780905,
+      "finish_reason": "error",
+      "ttft_s": null,
+      "first_answer_s": null,
+      "total_s": 0.5154242080025142,
+      "prompt_tokens": null,
+      "generation_tokens": null,
+      "reasoning_tokens_provider": null,
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 0,
+      "cost_usd": null,
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/near-ai-rate-limit-attempt1/qwen38-finance.result.json"
     }
   ]
 }

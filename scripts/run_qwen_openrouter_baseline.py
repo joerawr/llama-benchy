@@ -15,8 +15,8 @@ from run_qwen_family_xhigh import OUT, PYTHON, ROOT, SCRIPT, SUITE, save, sha, t
 
 DIRECTORY = OUT / 'openrouter-baseline'
 MODEL = 'qwen/qwen3.8-27b'
-PROVIDER = 'near-ai/fp8'
-MAX_TOKENS = 65536
+PROVIDER = 'modelrun/fp4'
+MAX_TOKENS = 235929
 SYSTEM = ('Reasoning effort is set to xhigh. Please think carefully through the task, '
           'validate key assumptions, consider plausible alternatives, and prioritize '
           'correctness, consistency, and clarity in the final answer.')
@@ -60,8 +60,7 @@ def request_payload(task):
                'stream': True, 'stream_options': {'include_usage': True},
                'reasoning': {'effort': 'xhigh', 'exclude': False},
                'provider': {'only': [PROVIDER], 'allow_fallbacks': False, 'require_parameters': True},
-               'max_tokens': MAX_TOKENS, 'temperature': 1.0, 'top_p': .95, 'top_k': 20,
-               'seed': 20261020}
+               'max_tokens': MAX_TOKENS, 'temperature': 1.0, 'top_p': .95}
 
 
 def run(task_name, tokenizer):
@@ -75,7 +74,7 @@ def run(task_name, tokenizer):
     row = {'task': task_name, 'model': MODEL, 'provider_requested': PROVIDER,
            'prompt_sha256': sha(task.prompt.encode()), 'reasoning_effort': 'xhigh',
            'max_tokens': MAX_TOKENS, 'context_tokens': 262144, 'wall_limit_s': 3600,
-           'sampling_note': 'Near AI exposes temperature/top_p/top_k/seed; neutral min_p and penalty controls are not exposed.',
+           'sampling_note': 'ModelRun FP4 exposes temperature/top_p; top_k and seed are not exposed. Quantization differs from the local MLX 8-bit baseline.',
            'started_at': time.time(), 'answer': '', 'reasoning': '', 'ttft_s': None,
            'first_answer_s': None, 'finish_reason': None,
            'timing_note': 'Network and hosted inference; not comparable to local tok/s.'}
@@ -141,9 +140,9 @@ def run(task_name, tokenizer):
 
 def self_check():
     request = request_payload(tasks()['finance'])
-    assert request['provider']['only'] == ['near-ai/fp8'] and not request['provider']['allow_fallbacks']
-    assert request['max_tokens'] == 65536 and request['reasoning']['effort'] == 'xhigh'
-    assert not {'min_p', 'presence_penalty', 'frequency_penalty', 'repetition_penalty'} & request.keys()
+    assert request['provider']['only'] == ['modelrun/fp4'] and not request['provider']['allow_fallbacks']
+    assert request['max_tokens'] == 235929 and request['reasoning']['effort'] == 'xhigh'
+    assert not {'top_k', 'seed', 'min_p', 'presence_penalty', 'frequency_penalty', 'repetition_penalty'} & request.keys()
     row = {'answer': '', 'reasoning': '', 'ttft_s': None, 'first_answer_s': None}
     apply_event(row, {'choices': [{'delta': {'reasoning': 'abc', 'reasoning_details': [
         {'type': 'reasoning.text', 'text': 'abc'}]}}]}, 1)
@@ -189,15 +188,19 @@ def summarize():
                 row['grading_status'] = 'incomplete'
                 row['grading_error'] = grade['semantic_grade'].get('error')
         records.append(row)
+    previous = []
+    for path in sorted(DIRECTORY.glob('*/qwen38-finance.result.json')):
+        raw = json.loads(path.read_text())
+        previous.append({**{field: raw.get(field) for field in fields}, 'evidence': str(path.relative_to(ROOT))})
     record = {'experiment_id': 'qwen38-openrouter-heavy-xhigh-20261020',
               'status': 'complete' if len(records) == 2 else 'in_progress', 'planned_requests': 2,
               'suite': 'qwen-family-full-xhigh@1.0', 'tasks': ['apache', 'finance'],
               'purpose': 'Hosted stock-Qwen completion and quality baseline; excluded from local speed rankings.',
-              'limits': ['Apache completed on DeepInfra BF16; Finance moved to Near AI FP8 for speed. Interrupted Finance evidence is retained separately.',
-                         'Provider context is 262K; generation caps are 128K DeepInfra and 64K Near AI. Local campaign context was 64K or 128K.',
+              'limits': ['Apache completed on DeepInfra BF16; Finance is rerun on ModelRun FP4 after Near AI FP8 exhausted its 64K output cap. Earlier attempts are retained separately.',
+                         'Provider context is 262K; generation caps are 128K DeepInfra and 235929 ModelRun. ModelRun does not expose top_k or seed.',
                          'Identical task and xhigh system prompts; provider internal template and kernels are not observable.',
                          'Network and hosted timings do not measure Mac inference speed.'],
-              'records': records}
+              'records': records, 'previous_attempts': previous}
     save(ROOT / 'benchmarks/runs/qwen38-openrouter-heavy-xhigh-20261020.json', record)
 
 

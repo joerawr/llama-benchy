@@ -121,6 +121,9 @@ def hosted_result(directory, task):
     status = ('Graded' if delivered and valid else 'Grade failed' if delivered and grade
               else 'Awaiting grade' if delivered else 'Output limit; no answer' if row.get('finish_reason') == 'length' and not row.get('answer', '').strip()
               else 'Failed' if row else 'Queued')
+    live = read_json(directory / 'openrouter-baseline/live.json')
+    if not row and live.get('task') == task and live.get('status') == 'running':
+        status = 'Running'
     return row, score if delivered and valid else None, status
 
 
@@ -139,23 +142,27 @@ def hosted_section(directory):
         elapsed = time.time() - live['started_at'] if running else row.get('total_s')
         cells = [TASK_NAMES[task], status, f'{score}/{MAXIMA[task]}' if score is not None else '-',
                  number(row.get('reasoning_tokens_provider'), 0), number(row.get('reasoning_tokens_retokenized'), 0),
-                 number(row.get('generation_tokens'), 0), number(timing.get('ttft_s')),
+                 number(row.get('generation_tokens'), 0), number(row.get('max_tokens', live.get('max_tokens') if running else None), 0),
+                 number(timing.get('ttft_s')),
                  number(timing.get('first_answer_s')), duration(elapsed), number(row.get('cost_usd'), 4),
                  row.get('provider_requested', live.get('provider_requested', '-') if running else '-'),
                  row.get('finish_reason', '-')]
         rows.append('<tr>' + ''.join('<td>' + html.escape(c) + '</td>' for c in cells) + '</tr>')
-    headers = ['Task', 'Status', 'Score', 'Thinking (provider)', 'Thinking (retokenized)', 'Generated total',
+    history = read_json(directory / 'openrouter-baseline/near-ai-fp8-finance-64k/qwen38-finance.result.json')
+    history_note = ('<p>Earlier Finance attempt: Near AI FP8 exhausted its ' + number(history.get('max_tokens'), 0) +
+                    '-token output cap in ' + duration(history.get('total_s')) +
+                    ' without an answer. That attempt is preserved and has no quality grade.</p>') if history else ''
+    headers = ['Task', 'Status', 'Score', 'Thinking (provider)', 'Thinking (retokenized)', 'Generated total', 'Output cap',
                'TTFT s', 'Answer starts s', 'Elapsed', 'Cost USD', 'Provider', 'Finish']
     return ('<section class="progress" id="hosted-qwen"><h2>Qwen3.8 27B MLX 8-bit* - hosted heavy-task references</h2>'
-            '<p>* These quality references use hosted stock Qwen3.8-27B. Apache is DeepInfra BF16; Finance is Near AI FP8. '
+            '<p>* These quality references use hosted stock Qwen3.8-27B. The Provider column identifies each hosted runtime and precision. '
             'They are shown under the local model name for comparison. Local MLX pass scores and speed measurements remain separate. '
             'Apache has not been tested on Near AI; an incomplete answer has no quality grade.</p><p>' + str(finished) +
-            '/2 tests saved; ' + str(2 - finished) + '/2 remaining. OpenRouter: Apache / DeepInfra BF16; '
-            'Finance / Near AI FP8. Xhigh; same task prompts, temperature/top_p/top_k and seed 20261020. '
-            '262K provider context; generation caps: DeepInfra 128K, Near AI 64K. Near AI does not expose the neutral '
-            'penalty/min_p controls. One-hour wall limit. Interrupted DeepInfra Finance evidence is preserved. '
+            '/2 current tests saved; ' + str(2 - finished) + '/2 remaining. Xhigh; same task prompts, temperature 1 and top_p 0.95. '
+            '262K provider context; output caps are listed per request. ModelRun FP4 does not expose top_k or seed; '
+            'its weight precision differs from local MLX 8-bit. One-hour wall limit. Earlier attempts are preserved. '
             'Hosted timings include network and server behavior and are excluded from local speed comparisons. '
-            'Provider counts are reported separately from local-tokenizer estimates; a dash means unavailable.</p>'
+            'Provider counts are reported separately from local-tokenizer estimates; a dash means unavailable.</p>' + history_note +
             '<div class="wrap"><table><thead><tr>' + ''.join('<th>' + h + '</th>' for h in headers) +
             '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div></section>')
 
@@ -316,7 +323,7 @@ class Handler(BaseHTTPRequestHandler):
         if self.path.split('?', 1)[0] not in ['/', '/' + DOCUMENT.name]:
             self.send_error(404)
             return
-        content = DOCUMENT.read_bytes()
+        content = render(snapshot()).encode('utf-8')
         self.send_response(200)
         self.send_header('Content-Type', 'text/html; charset=utf-8')
         self.send_header('Cache-Control', 'no-store')
@@ -365,7 +372,7 @@ def self_test():
                         'semantic_grade': {'score': 8, 'max_score': 10}, 'semantic_judge': grade['semantic_judge']}
         hosted_path.with_suffix('.grade.json').write_text(json.dumps(hosted_grade))
         document = render(snapshot(p))
-        assert '1/2 tests saved; 1/2 remaining' in document and '8/10' in hosted_section(p)
+        assert '1/2 current tests saved; 1/2 remaining' in document and '8/10' in hosted_section(p)
         assert 'HOSTED SECRET' not in document and '<script>provider</script>' not in document
         assert '&lt;script&gt;provider&lt;/script&gt;' in document and 'Qwen3.8 27B MLX 8-bit*' in document
         assert 'Hosted references*</a>: Apache: 8/10' in document
