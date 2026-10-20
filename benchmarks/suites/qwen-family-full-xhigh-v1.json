@@ -1,0 +1,50 @@
+{
+  "suite_id": "qwen-family-full-xhigh",
+  "version": "1.0",
+  "source_suite": "1.1",
+  "difference": "Remove only the leading /no_think directive from compression; thinking on and xhigh for every task. Original checklist unchanged.",
+  "score_max": 62,
+  "passes": 3,
+  "seeds": [
+    20261020,
+    20261021,
+    20261022
+  ],
+  "tasks": {
+    "finance": {
+      "task_id": "task_csv_finance_report",
+      "source_prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f",
+      "prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f"
+    },
+    "apache": {
+      "task_id": "task_log_apache_error_summary",
+      "source_prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f",
+      "prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f"
+    },
+    "access": {
+      "task_id": "task_access_log_anomaly",
+      "source_prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4",
+      "prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4"
+    },
+    "compression": {
+      "task_id": "long_file_compression",
+      "source_prompt_sha256": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d",
+      "prompt_sha256": "d3f97384142f0390a7052ec26bbf2b0e55ab8421695a2ca14fd4180f311c5d04"
+    },
+    "family_backup_note": {
+      "task_id": "family_backup_note",
+      "source_prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73",
+      "prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73"
+    },
+    "two_section_backup_checklist": {
+      "task_id": "two_section_backup_checklist",
+      "source_prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+      "prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3"
+    },
+    "family_text_lines": {
+      "task_id": "family_text_lines",
+      "source_prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0",
+      "prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0"
+    }
+  }
+}

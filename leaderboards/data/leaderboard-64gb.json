@@ -2,7 +2,12 @@
   "leaderboard": "64gb-m1-max",
   "suite_version": "llama-benchy-local-comparison@1.0",
   "hardware": "64GB M1 Max",
-  "ranking_policy": ["quality", "memory_headroom", "generation_throughput", "prompt_processing_throughput"],
+  "ranking_policy": [
+    "quality",
+    "memory_headroom",
+    "generation_throughput",
+    "prompt_processing_throughput"
+  ],
   "entries": [
     {
       "rank": 1,
@@ -10,8 +15,16 @@
       "quant": "Q4_K_XL",
       "role": "Fast/log-heavy default candidate",
       "memory_64k_gib": 14.96,
-      "generation_tok_s": {"short": 62.9, "medium_2k": 59.7, "context_4k": 56.8},
-      "evidence": {"apache": "8/10", "access": "7/7", "compression": "11/12"},
+      "generation_tok_s": {
+        "short": 62.9,
+        "medium_2k": 59.7,
+        "context_4k": 56.8
+      },
+      "evidence": {
+        "apache": "8/10",
+        "access": "7/7",
+        "compression": "11/12"
+      },
       "source": "benchy-state/leaderboard-64gb-m1-max.md"
     },
     {
@@ -20,8 +33,16 @@
       "quant": "Q4_K_S",
       "role": "Compression-quality default candidate",
       "memory_64k_gib": 16.95,
-      "generation_tok_s": {"short": 52.3, "medium_2k": 46.7, "context_4k": 45.3},
-      "evidence": {"finance": "9/12", "access": "7/7", "compression": "12/12"},
+      "generation_tok_s": {
+        "short": 52.3,
+        "medium_2k": 46.7,
+        "context_4k": 45.3
+      },
+      "evidence": {
+        "finance": "9/12",
+        "access": "7/7",
+        "compression": "12/12"
+      },
       "source": "benchy-state/leaderboard-64gb-m1-max.md"
     },
     {
@@ -30,10 +51,477 @@
       "quant": "Balanced",
       "role": "Analytical/report specialist",
       "memory_64k_gib": 25.56,
-      "generation_tok_s": {"short": 27.9, "medium_2k": 43.2, "context_4k": 35.9},
-      "evidence": {"finance": "11/12", "compression": "11/12"},
+      "generation_tok_s": {
+        "short": 27.9,
+        "medium_2k": 43.2,
+        "context_4k": 35.9
+      },
+      "evidence": {
+        "finance": "11/12",
+        "compression": "11/12"
+      },
       "source": "benchy-state/leaderboard-64gb-m1-max.md"
     }
   ],
-  "status": "baseline; update only with curated, versioned run records"
+  "status": "baseline; update only with curated, versioned run records",
+  "comparisons": [
+    {
+      "experiment_id": "qwen-family-full-xhigh-macos-20261020",
+      "suite": "qwen-family-full-xhigh@1.0",
+      "status": "round2_complete_heavy_tasks_paused",
+      "source": "benchmarks/runs/qwen-family-full-xhigh-macos-20261020.json",
+      "comparison": {
+        "tasks": [
+          "access",
+          "compression",
+          "family_backup_note",
+          "two_section_backup_checklist",
+          "family_text_lines"
+        ],
+        "rounds": [
+          1,
+          2
+        ],
+        "score_max": 40
+      },
+      "ranking_scope": "Within this thinking-on experiment only",
+      "models": [
+        {
+          "name": "Qwen3.8 27B MLX 8-bit",
+          "pass_totals": [
+            38,
+            38
+          ],
+          "mean_score": 38,
+          "score_range": [
+            38,
+            38
+          ],
+          "completed_answers": 10,
+          "graded_answers": 10,
+          "weighted_generation_tokens_per_s": 10.706787197624077,
+          "tasks": {
+            "access": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 24.485135541495765,
+              "mean_first_answer_s": 240.3329057084993,
+              "mean_total_s": 271.9094074374989,
+              "mean_reasoning_tokens_retokenized": 2311,
+              "mean_answer_tokens_retokenized": 335.5,
+              "weighted_generation_tokens_per_s": 10.704900617837954,
+              "mean_prompt_tokens_per_s": 82.64116596354543
+            },
+            "compression": {
+              "scores": [
+                10,
+                10
+              ],
+              "mean_score": 10,
+              "mean_ttft_s": 40.92627547899974,
+              "mean_first_answer_s": 385.921690479001,
+              "mean_total_s": 492.9329534165008,
+              "mean_reasoning_tokens_retokenized": 3659,
+              "mean_answer_tokens_retokenized": 1121,
+              "weighted_generation_tokens_per_s": 10.579815741432155,
+              "mean_prompt_tokens_per_s": 83.4163986825748
+            },
+            "family_backup_note": {
+              "scores": [
+                6,
+                6
+              ],
+              "mean_score": 6,
+              "mean_ttft_s": 2.153660249998211,
+              "mean_first_answer_s": 203.07879091699942,
+              "mean_total_s": 210.86626685450028,
+              "mean_reasoning_tokens_retokenized": 2168.5,
+              "mean_answer_tokens_retokenized": 85,
+              "weighted_generation_tokens_per_s": 10.807464350866242,
+              "mean_prompt_tokens_per_s": 71.13706440615752
+            },
+            "two_section_backup_checklist": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 2.1570156249981665,
+              "mean_first_answer_s": 85.14079787499941,
+              "mean_total_s": 91.12049412550004,
+              "mean_reasoning_tokens_retokenized": 900.5,
+              "mean_answer_tokens_retokenized": 65.5,
+              "weighted_generation_tokens_per_s": 10.882594884727293,
+              "mean_prompt_tokens_per_s": 72.9037166764988
+            },
+            "family_text_lines": {
+              "scores": [
+                8,
+                8
+              ],
+              "mean_score": 8,
+              "mean_ttft_s": 2.4835071665020223,
+              "mean_first_answer_s": 120.90453566650285,
+              "mean_total_s": 124.17660954150051,
+              "mean_reasoning_tokens_retokenized": 1285.5,
+              "mean_answer_tokens_retokenized": 36.5,
+              "weighted_generation_tokens_per_s": 10.88108004750314,
+              "mean_prompt_tokens_per_s": 65.71147316587454
+            }
+          }
+        },
+        {
+          "name": "Dirk Qwen3.8 27B Q8_K_XL",
+          "pass_totals": [
+            39,
+            39
+          ],
+          "mean_score": 39,
+          "score_range": [
+            39,
+            39
+          ],
+          "completed_answers": 10,
+          "graded_answers": 10,
+          "weighted_generation_tokens_per_s": 9.763063959250031,
+          "tasks": {
+            "access": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 21.020437458499146,
+              "mean_first_answer_s": 284.8548951875,
+              "mean_total_s": 313.9117464999981,
+              "mean_reasoning_tokens_retokenized": 2592,
+              "mean_answer_tokens_retokenized": 284,
+              "weighted_generation_tokens_per_s": 9.826161482758563,
+              "mean_prompt_tokens_per_s": 112.17675003438964
+            },
+            "compression": {
+              "scores": [
+                11,
+                11
+              ],
+              "mean_score": 11,
+              "mean_ttft_s": 31.910352271001102,
+              "mean_first_answer_s": 347.3216165420017,
+              "mean_total_s": 454.81067675000304,
+              "mean_reasoning_tokens_retokenized": 3073,
+              "mean_answer_tokens_retokenized": 1034.5,
+              "weighted_generation_tokens_per_s": 9.717404083078957,
+              "mean_prompt_tokens_per_s": 112.85001925958866
+            },
+            "family_backup_note": {
+              "scores": [
+                6,
+                6
+              ],
+              "mean_score": 6,
+              "mean_ttft_s": 3.3939188755011855,
+              "mean_first_answer_s": 143.50472904199887,
+              "mean_total_s": 151.77494504199967,
+              "mean_reasoning_tokens_retokenized": 1367.5,
+              "mean_answer_tokens_retokenized": 80.5,
+              "weighted_generation_tokens_per_s": 9.77215824238791,
+              "mean_prompt_tokens_per_s": 96.46868255910208
+            },
+            "two_section_backup_checklist": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 3.2577951040002517,
+              "mean_first_answer_s": 83.66302618749978,
+              "mean_total_s": 90.38717166650167,
+              "mean_reasoning_tokens_retokenized": 785.5,
+              "mean_answer_tokens_retokenized": 65.5,
+              "weighted_generation_tokens_per_s": 9.789993740002,
+              "mean_prompt_tokens_per_s": 97.3501058258434
+            },
+            "family_text_lines": {
+              "scores": [
+                8,
+                8
+              ],
+              "mean_score": 8,
+              "mean_ttft_s": 3.447410042001138,
+              "mean_first_answer_s": 44.561962271000084,
+              "mean_total_s": 48.092142187997524,
+              "mean_reasoning_tokens_retokenized": 396.5,
+              "mean_answer_tokens_retokenized": 34.5,
+              "weighted_generation_tokens_per_s": 9.698874126197508,
+              "mean_prompt_tokens_per_s": 98.19160719708027
+            }
+          }
+        },
+        {
+          "name": "DavidAU TURBO 735 Q8_0",
+          "pass_totals": [
+            37,
+            40
+          ],
+          "mean_score": 38.5,
+          "score_range": [
+            37,
+            40
+          ],
+          "completed_answers": 10,
+          "graded_answers": 10,
+          "weighted_generation_tokens_per_s": 9.953699418352494,
+          "tasks": {
+            "access": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 18.134223271001247,
+              "mean_first_answer_s": 200.88671922900176,
+              "mean_total_s": 224.6878065000019,
+              "mean_reasoning_tokens_retokenized": 1859.5,
+              "mean_answer_tokens_retokenized": 237.5,
+              "weighted_generation_tokens_per_s": 10.161652897275834,
+              "mean_prompt_tokens_per_s": 113.93744906731291
+            },
+            "compression": {
+              "scores": [
+                10,
+                12
+              ],
+              "mean_score": 11,
+              "mean_ttft_s": 30.159403791501973,
+              "mean_first_answer_s": 167.00638481200076,
+              "mean_total_s": 245.9382702915027,
+              "mean_reasoning_tokens_retokenized": 1362.5,
+              "mean_answer_tokens_retokenized": 777.5,
+              "weighted_generation_tokens_per_s": 9.926745017512019,
+              "mean_prompt_tokens_per_s": 113.76482181066874
+            },
+            "family_backup_note": {
+              "scores": [
+                5,
+                6
+              ],
+              "mean_score": 5.5,
+              "mean_ttft_s": 2.000828979500511,
+              "mean_first_answer_s": 51.99972587500088,
+              "mean_total_s": 58.80813064600079,
+              "mean_reasoning_tokens_retokenized": 489,
+              "mean_answer_tokens_retokenized": 67.5,
+              "weighted_generation_tokens_per_s": 9.831680101213776,
+              "mean_prompt_tokens_per_s": 82.73545849232062
+            },
+            "two_section_backup_checklist": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 1.9082900830035214,
+              "mean_first_answer_s": 184.4070473335014,
+              "mean_total_s": 190.27391779150275,
+              "mean_reasoning_tokens_retokenized": 1798.5,
+              "mean_answer_tokens_retokenized": 58,
+              "weighted_generation_tokens_per_s": 9.866469558934966,
+              "mean_prompt_tokens_per_s": 84.77336973454081
+            },
+            "family_text_lines": {
+              "scores": [
+                8,
+                8
+              ],
+              "mean_score": 8,
+              "mean_ttft_s": 1.9308560419995047,
+              "mean_first_answer_s": 62.61930306299837,
+              "mean_total_s": 66.45661643799758,
+              "mean_reasoning_tokens_retokenized": 588.5,
+              "mean_answer_tokens_retokenized": 38,
+              "weighted_generation_tokens_per_s": 9.74058578454216,
+              "mean_prompt_tokens_per_s": 87.49482506864683
+            }
+          }
+        },
+        {
+          "name": "DavidAU TWIN TURBO ULTRA Q8_0",
+          "pass_totals": [
+            39,
+            38
+          ],
+          "mean_score": 38.5,
+          "score_range": [
+            38,
+            39
+          ],
+          "completed_answers": 10,
+          "graded_answers": 10,
+          "weighted_generation_tokens_per_s": 9.974290125028203,
+          "tasks": {
+            "access": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 18.175296478995733,
+              "mean_first_answer_s": 216.78553193699554,
+              "mean_total_s": 243.42140408349587,
+              "mean_reasoning_tokens_retokenized": 2004,
+              "mean_answer_tokens_retokenized": 263.5,
+              "weighted_generation_tokens_per_s": 10.07563436844758,
+              "mean_prompt_tokens_per_s": 113.70416381999881
+            },
+            "compression": {
+              "scores": [
+                12,
+                11
+              ],
+              "mean_score": 11.5,
+              "mean_ttft_s": 30.11085993750021,
+              "mean_first_answer_s": 72.93759312499606,
+              "mean_total_s": 148.51096991649683,
+              "mean_reasoning_tokens_retokenized": 431.5,
+              "mean_answer_tokens_retokenized": 750.5,
+              "weighted_generation_tokens_per_s": 9.999935776316704,
+              "mean_prompt_tokens_per_s": 113.84089051683993
+            },
+            "family_backup_note": {
+              "scores": [
+                5,
+                6
+              ],
+              "mean_score": 5.5,
+              "mean_ttft_s": 1.9811803119991964,
+              "mean_first_answer_s": 210.85060558299665,
+              "mean_total_s": 218.3430534580002,
+              "mean_reasoning_tokens_retokenized": 2036.5,
+              "mean_answer_tokens_retokenized": 74,
+              "weighted_generation_tokens_per_s": 9.763824580532464,
+              "mean_prompt_tokens_per_s": 83.83765239216075
+            },
+            "two_section_backup_checklist": {
+              "scores": [
+                7,
+                6
+              ],
+              "mean_score": 6.5,
+              "mean_ttft_s": 1.907287437501509,
+              "mean_first_answer_s": 51.82937435450003,
+              "mean_total_s": 57.22590447949551,
+              "mean_reasoning_tokens_retokenized": 501,
+              "mean_answer_tokens_retokenized": 52.5,
+              "weighted_generation_tokens_per_s": 10.0416573298974,
+              "mean_prompt_tokens_per_s": 85.5679018135462
+            },
+            "family_text_lines": {
+              "scores": [
+                8,
+                8
+              ],
+              "mean_score": 8,
+              "mean_ttft_s": 1.9947095835013897,
+              "mean_first_answer_s": 62.37814883399915,
+              "mean_total_s": 66.11652208349551,
+              "mean_reasoning_tokens_retokenized": 616,
+              "mean_answer_tokens_retokenized": 37.5,
+              "weighted_generation_tokens_per_s": 10.222621426016426,
+              "mean_prompt_tokens_per_s": 86.1336795180528
+            }
+          }
+        },
+        {
+          "name": "Swift 1.5 MLX 5-bit",
+          "pass_totals": [
+            39,
+            40
+          ],
+          "mean_score": 39.5,
+          "score_range": [
+            39,
+            40
+          ],
+          "completed_answers": 10,
+          "graded_answers": 10,
+          "weighted_generation_tokens_per_s": 9.983850932769233,
+          "tasks": {
+            "access": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 25.176244583501102,
+              "mean_first_answer_s": 255.94834195850126,
+              "mean_total_s": 289.03505812500225,
+              "mean_reasoning_tokens_retokenized": 2299,
+              "mean_answer_tokens_retokenized": 325.5,
+              "weighted_generation_tokens_per_s": 9.954769663252193,
+              "mean_prompt_tokens_per_s": 80.37282525555105
+            },
+            "compression": {
+              "scores": [
+                11,
+                12
+              ],
+              "mean_score": 11.5,
+              "mean_ttft_s": 42.22233504150063,
+              "mean_first_answer_s": 270.05898831300146,
+              "mean_total_s": 376.7167272084953,
+              "mean_reasoning_tokens_retokenized": 2236,
+              "mean_answer_tokens_retokenized": 1037.5,
+              "weighted_generation_tokens_per_s": 9.792836623443367,
+              "mean_prompt_tokens_per_s": 80.85218427934025
+            },
+            "family_backup_note": {
+              "scores": [
+                6,
+                6
+              ],
+              "mean_score": 6,
+              "mean_ttft_s": 2.2203443335056363,
+              "mean_first_answer_s": 94.78782797900567,
+              "mean_total_s": 103.19066870850293,
+              "mean_reasoning_tokens_retokenized": 941,
+              "mean_answer_tokens_retokenized": 88,
+              "weighted_generation_tokens_per_s": 10.212478061980994,
+              "mean_prompt_tokens_per_s": 69.02285667821889
+            },
+            "two_section_backup_checklist": {
+              "scores": [
+                7,
+                7
+              ],
+              "mean_score": 7,
+              "mean_ttft_s": 2.2183421664994967,
+              "mean_first_answer_s": 86.14514645849704,
+              "mean_total_s": 92.46018385450225,
+              "mean_reasoning_tokens_retokenized": 857,
+              "mean_answer_tokens_retokenized": 63.5,
+              "weighted_generation_tokens_per_s": 10.224245546762825,
+              "mean_prompt_tokens_per_s": 70.90192439288859
+            },
+            "family_text_lines": {
+              "scores": [
+                8,
+                8
+              ],
+              "mean_score": 8,
+              "mean_ttft_s": 2.5645784585030924,
+              "mean_first_answer_s": 63.64639268799874,
+              "mean_total_s": 67.00510533399938,
+              "mean_reasoning_tokens_retokenized": 633,
+              "mean_answer_tokens_retokenized": 35,
+              "weighted_generation_tokens_per_s": 10.399717968676274,
+              "mean_prompt_tokens_per_s": 63.64710314373843
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
