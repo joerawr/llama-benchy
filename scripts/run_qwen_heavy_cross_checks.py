@@ -45,9 +45,13 @@ def summarize():
             grade = json.loads(grade_path.read_text())
             assert grade['source_sha256'] == bench.sha(path.read_bytes())
             meta = grade['semantic_judge']
-            assert (meta['judge_model'], meta['judge_effort'], meta['judge_protocol']) == (
-                'gpt-5.6-luna', 'xhigh', 'source-aware-v2')
-            row['semantic_grade'] = grade['semantic_grade']
+            if grade['semantic_grade'].get('score') is not None:
+                assert (meta.get('judge_model'), meta.get('judge_effort'), meta.get('judge_protocol')) == (
+                    'gpt-5.6-luna', 'xhigh', 'source-aware-v2')
+                row['semantic_grade'] = grade['semantic_grade']
+            else:
+                row['grading_status'] = 'incomplete'
+                row['grading_error'] = grade['semantic_grade'].get('error')
         records.append(row)
     bench.save(bench.ROOT / 'benchmarks/runs/qwen-heavy-cross-checks-128k-20261020.json', {
         'experiment_id': 'qwen-heavy-cross-checks-128k-20261020',

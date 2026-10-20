@@ -9,10 +9,51 @@
   ],
   "purpose": "Hosted stock-Qwen completion and quality baseline; excluded from local speed rankings.",
   "limits": [
-    "One sample per task; hosted BF16 versus local quantized weights.",
-    "Provider context is 262K, max generated tokens 128K; local campaign context was 64K or 128K.",
+    "Apache completed on DeepInfra BF16; Finance moved to Near AI FP8 for speed. Interrupted Finance evidence is retained separately.",
+    "Provider context is 262K; generation caps are 128K DeepInfra and 64K Near AI. Local campaign context was 64K or 128K.",
     "Identical task and xhigh system prompts; provider internal template and kernels are not observable.",
     "Network and hosted timings do not measure Mac inference speed."
   ],
-  "records": []
+  "records": [
+    {
+      "task": "apache",
+      "model": "qwen/qwen3.8-27b",
+      "provider_requested": "deepinfra/bf16",
+      "provider": "DeepInfra",
+      "id": "gen-1792530284-6IFGBXII6POvlBASe2Rp",
+      "prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f",
+      "reasoning_effort": "xhigh",
+      "sampling_note": null,
+      "max_tokens": 131072,
+      "context_tokens": 262144,
+      "wall_limit_s": 3600,
+      "started_at": 1792530284.241627,
+      "finish_reason": "stop",
+      "ttft_s": 17.373188416997436,
+      "first_answer_s": 3365.7420366669976,
+      "total_s": 3530.4742304999963,
+      "prompt_tokens": 48873,
+      "generation_tokens": 64719,
+      "reasoning_tokens_provider": 29503,
+      "reasoning_tokens_retokenized": 61441,
+      "answer_tokens_retokenized": 3278,
+      "cost_usd": 0.128679075,
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/qwen38-apache.result.json",
+      "semantic_grade": {
+        "score": 9,
+        "max_score": 10,
+        "substantive_failures": [
+          "client_error_summary"
+        ],
+        "presentation_differences": [],
+        "strengths": [
+          "Covers all requested sections with clear Markdown structure.",
+          "Correctly separates JK/JNI configuration issues from client errors.",
+          "Provides specific worm, traversal, scanner, and target evidence plus three actionable recommendations."
+        ],
+        "explanation": "The answer is comprehensive and substantively accurate overall, but its client-error category table reports 19 invalid-method entries; the supplied log contains 18.",
+        "pass": false
+      }
+    }
+  ]
 }

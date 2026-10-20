@@ -125,7 +125,7 @@ def hosted_section(directory):
                  and semantic.get('max_score') == MAXIMA[task] and 0 <= score <= MAXIMA[task])
         delivered = row.get('finish_reason') == 'stop' and bool(row.get('answer', '').strip())
         finished += bool(row)
-        status = ('Graded' if delivered and valid else 'Awaiting grade' if delivered else 'Failed' if row
+        status = ('Graded' if delivered and valid else 'Grade failed' if delivered and grade else 'Awaiting grade' if delivered else 'Failed' if row
                   else 'Running' if live.get('status') == 'running' and live.get('task') == task else 'Queued')
         running = status == 'Running'
         timing = live if running else row
@@ -134,13 +134,16 @@ def hosted_section(directory):
                  number(row.get('reasoning_tokens_provider'), 0), number(row.get('reasoning_tokens_retokenized'), 0),
                  number(row.get('generation_tokens'), 0), number(timing.get('ttft_s')),
                  number(timing.get('first_answer_s')), duration(elapsed), number(row.get('cost_usd'), 4),
-                 row.get('provider', 'DeepInfra BF16'), row.get('finish_reason', '-')]
+                 row.get('provider_requested', live.get('provider_requested', '-') if running else '-'),
+                 row.get('finish_reason', '-')]
         rows.append('<tr>' + ''.join('<td>' + html.escape(c) + '</td>' for c in cells) + '</tr>')
     headers = ['Task', 'Status', 'Score', 'Thinking (provider)', 'Thinking (retokenized)', 'Generated total',
                'TTFT s', 'Answer starts s', 'Elapsed', 'Cost USD', 'Provider', 'Finish']
     return ('<section class="progress"><h2>Hosted stock Qwen3.8-27B baseline</h2><p>' + str(finished) +
-            '/2 tests saved; ' + str(2 - finished) + '/2 remaining. OpenRouter / DeepInfra BF16; xhigh; same task prompts '
-            'and sampling, seed 20261020. 262K provider context, 128K generation cap, one-hour wall limit. '
+            '/2 tests saved; ' + str(2 - finished) + '/2 remaining. OpenRouter: Apache / DeepInfra BF16; '
+            'Finance / Near AI FP8. Xhigh; same task prompts, temperature/top_p/top_k and seed 20261020. '
+            '262K provider context; generation caps: DeepInfra 128K, Near AI 64K. Near AI does not expose the neutral '
+            'penalty/min_p controls. One-hour wall limit. Interrupted DeepInfra Finance evidence is preserved. '
             'Hosted timings include network and server behavior and are excluded from local speed comparisons. '
             'Provider counts are reported separately from local-tokenizer estimates; a dash means unavailable.</p>'
             '<div class="wrap"><table><thead><tr>' + ''.join('<th>' + h + '</th>' for h in headers) +

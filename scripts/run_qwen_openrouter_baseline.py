@@ -15,7 +15,8 @@ from run_qwen_family_xhigh import OUT, PYTHON, ROOT, SCRIPT, SUITE, save, sha, t
 
 DIRECTORY = OUT / 'openrouter-baseline'
 MODEL = 'qwen/qwen3.8-27b'
-PROVIDER = 'deepinfra/bf16'
+PROVIDER = 'near-ai/fp8'
+MAX_TOKENS = 65536
 SYSTEM = ('Reasoning effort is set to xhigh. Please think carefully through the task, '
           'validate key assumptions, consider plausible alternatives, and prioritize '
           'correctness, consistency, and clarity in the final answer.')
@@ -53,28 +54,33 @@ def dashboard():
     write_dashboard()
 
 
+def request_payload(task):
+    return {'model': MODEL, 'messages': [{'role': 'system', 'content': SYSTEM},
+                                           {'role': 'user', 'content': task.prompt}],
+               'stream': True, 'stream_options': {'include_usage': True},
+               'reasoning': {'effort': 'xhigh', 'exclude': False},
+               'provider': {'only': [PROVIDER], 'allow_fallbacks': False, 'require_parameters': True},
+               'max_tokens': MAX_TOKENS, 'temperature': 1.0, 'top_p': .95, 'top_k': 20,
+               'seed': 20261020}
+
+
 def run(task_name, tokenizer):
     task = tasks()[task_name]
     assert sha(task.prompt.encode()) == json.loads(SUITE.read_text())['tasks'][task_name]['prompt_sha256']
     path = DIRECTORY / f'qwen38-{task_name}.result.json'
     if path.exists():
         return path
-    request = {'model': MODEL, 'messages': [{'role': 'system', 'content': SYSTEM},
-                                           {'role': 'user', 'content': task.prompt}],
-               'stream': True, 'stream_options': {'include_usage': True},
-               'reasoning': {'effort': 'xhigh', 'exclude': False},
-               'provider': {'only': [PROVIDER], 'allow_fallbacks': False, 'require_parameters': True},
-               'max_tokens': 131072, 'temperature': 1.0, 'top_p': .95, 'top_k': 20,
-               'min_p': 0, 'seed': 20261020, 'presence_penalty': 0, 'frequency_penalty': 0,
-               'repetition_penalty': 1.0}
+    request = request_payload(task)
     save(DIRECTORY / f'{task_name}.request.json', request)
     row = {'task': task_name, 'model': MODEL, 'provider_requested': PROVIDER,
            'prompt_sha256': sha(task.prompt.encode()), 'reasoning_effort': 'xhigh',
-           'max_tokens': 131072, 'context_tokens': 262144, 'wall_limit_s': 3600,
+           'max_tokens': MAX_TOKENS, 'context_tokens': 262144, 'wall_limit_s': 3600,
+           'sampling_note': 'Near AI exposes temperature/top_p/top_k/seed; neutral min_p and penalty controls are not exposed.',
            'started_at': time.time(), 'answer': '', 'reasoning': '', 'ttft_s': None,
            'first_answer_s': None, 'finish_reason': None,
            'timing_note': 'Network and hosted inference; not comparable to local tok/s.'}
-    live = {'task': task_name, 'status': 'running', 'started_at': row['started_at']}
+    live = {'task': task_name, 'status': 'running', 'started_at': row['started_at'],
+            'provider_requested': PROVIDER, 'max_tokens': MAX_TOKENS}
     save(DIRECTORY / 'live.json', live)
     dashboard()
     started = time.monotonic()
@@ -134,6 +140,10 @@ def run(task_name, tokenizer):
 
 
 def self_check():
+    request = request_payload(tasks()['finance'])
+    assert request['provider']['only'] == ['near-ai/fp8'] and not request['provider']['allow_fallbacks']
+    assert request['max_tokens'] == 65536 and request['reasoning']['effort'] == 'xhigh'
+    assert not {'min_p', 'presence_penalty', 'frequency_penalty', 'repetition_penalty'} & request.keys()
     row = {'answer': '', 'reasoning': '', 'ttft_s': None, 'first_answer_s': None}
     apply_event(row, {'choices': [{'delta': {'reasoning': 'abc', 'reasoning_details': [
         {'type': 'reasoning.text', 'text': 'abc'}]}}]}, 1)
@@ -155,7 +165,7 @@ def self_check():
 
 def summarize():
     records = []
-    fields = ['task', 'model', 'provider_requested', 'provider', 'id', 'prompt_sha256', 'reasoning_effort',
+    fields = ['task', 'model', 'provider_requested', 'provider', 'id', 'prompt_sha256', 'reasoning_effort', 'sampling_note',
               'max_tokens', 'context_tokens', 'wall_limit_s', 'started_at', 'finish_reason',
               'ttft_s', 'first_answer_s', 'total_s', 'prompt_tokens', 'generation_tokens',
               'reasoning_tokens_provider', 'reasoning_tokens_retokenized', 'answer_tokens_retokenized', 'cost_usd']
@@ -171,16 +181,20 @@ def summarize():
             grade = json.loads(grade_path.read_text())
             assert grade['source_sha256'] == sha(path.read_bytes())
             meta = grade['semantic_judge']
-            assert meta['judge_model'] == 'gpt-5.6-luna' and meta['judge_effort'] == 'xhigh'
-            assert meta['judge_protocol'] == 'source-aware-v2'
-            row['semantic_grade'] = grade['semantic_grade']
+            if grade['semantic_grade'].get('score') is not None:
+                assert (meta.get('judge_model'), meta.get('judge_effort'), meta.get('judge_protocol')) == (
+                    'gpt-5.6-luna', 'xhigh', 'source-aware-v2')
+                row['semantic_grade'] = grade['semantic_grade']
+            else:
+                row['grading_status'] = 'incomplete'
+                row['grading_error'] = grade['semantic_grade'].get('error')
         records.append(row)
     record = {'experiment_id': 'qwen38-openrouter-heavy-xhigh-20261020',
               'status': 'complete' if len(records) == 2 else 'in_progress', 'planned_requests': 2,
               'suite': 'qwen-family-full-xhigh@1.0', 'tasks': ['apache', 'finance'],
               'purpose': 'Hosted stock-Qwen completion and quality baseline; excluded from local speed rankings.',
-              'limits': ['One sample per task; hosted BF16 versus local quantized weights.',
-                         'Provider context is 262K, max generated tokens 128K; local campaign context was 64K or 128K.',
+              'limits': ['Apache completed on DeepInfra BF16; Finance moved to Near AI FP8 for speed. Interrupted Finance evidence is retained separately.',
+                         'Provider context is 262K; generation caps are 128K DeepInfra and 64K Near AI. Local campaign context was 64K or 128K.',
                          'Identical task and xhigh system prompts; provider internal template and kernels are not observable.',
                          'Network and hosted timings do not measure Mac inference speed.'],
               'records': records}
