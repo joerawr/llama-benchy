@@ -327,7 +327,7 @@ def monitor(proc, path, done):
     save(path.with_suffix('.summary.json'), {'peak_rss_kib': peak})
 
 
-def gguf_round(label, round_):
+def gguf_round(label, round_, task_names=None):
     identity = json.loads((OUT / f'{label}-download.json').read_text())
     assert identity['status'] == 'ready' and Path(identity['path']).stat().st_size == identity['bytes']
     command = [str(SERVER), '-m', identity['path'], '--alias', label, '--host', '127.0.0.1', '--port', '18081',
@@ -357,7 +357,7 @@ def gguf_round(label, round_):
             else:
                 raise TimeoutError('Server failed to load in 600s')
             gguf_request(label, round_, 'warmup', 'Reply READY.', warmup=True)
-            for task in execution_scope()['tasks']:
+            for task in task_names if task_names is not None else execution_scope()['tasks']:
                 if not prefix(label, round_, task).with_suffix('.result.json').exists():
                     gguf_request(label, round_, task, (OUT / f'{task}.prompt.txt').read_text())
         finally:

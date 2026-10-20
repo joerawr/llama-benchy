@@ -147,6 +147,45 @@ def hosted_section(directory):
             '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div></section>')
 
 
+def cross_check_section(directory):
+    directory = directory / 'heavy-cross-checks-128k'
+    state = read_json(directory / 'state.json')
+    if not state:
+        return ''
+    data = snapshot(directory)
+    slots = [next(s for s in data['slots'] if (s['model'], s['task'], s['round']) ==
+                  (item['model'], item['task'], 1)) for item in state['plan']]
+    rows = []
+    for slot in slots:
+        r = slot['record']
+        status = slot['status']
+        if not r and state.get('status') == 'waiting_openrouter':
+            status = 'Waiting for OpenRouter'
+        error = next((x['error'] for x in state.get('errors', []) if x['model'] == slot['model'] and x['task'] == slot['task']), '')
+        if not r and error:
+            status = 'Failed'
+        current = state.get('current_model') == slot['model'] and state.get('status') == 'running'
+        if current and not r:
+            status = 'Running' if slot['active'] else 'Loading / starting request'
+        live = data['live'] if current and data['live'].get('model') == slot['model'] else {}
+        score = '-' if slot['score'] is None else f"{slot['score']}/{MAXIMA[slot['task']]}"
+        cells = [slot['name'], TASK_NAMES[slot['task']], status, score,
+                 number(r.get('ttft_s', live.get('ttft_s'))), number(r.get('first_answer_s', live.get('first_answer_s'))),
+                 number(r.get('reasoning_tokens_retokenized'), 0), number(r.get('generation_tokens_per_s')),
+                 duration(time.time() - state['started_at'] if current else r.get('total_s')),
+                 slot['reason'] or error]
+        rows.append('<tr>' + ''.join('<td>' + html.escape(c) + '</td>' for c in cells) + '</tr>')
+    finished = sum(s['finished'] for s in slots)
+    headers = ['Model', 'Task', 'Status', 'Score', 'TTFT s', 'Answer starts s', 'Thinking tokens',
+               'Generation tok/s', 'Elapsed', 'Detail']
+    return ('<section class="progress"><h2>Local 128K follow-up checks</h2><p>' + str(finished) +
+            '/2 tests saved; ' + str(2 - finished) + '/2 remaining. Starts after both OpenRouter attempts finish. '
+            'One attempt each: TWIN TURBO Finance, then TURBO735 Apache. Thinking on/xhigh; 128K context; '
+            'one-hour wall limit per request. Earlier attempts are preserved above and in their original records.</p>'
+            '<div class="wrap"><table><thead><tr>' + ''.join('<th>' + h + '</th>' for h in headers) +
+            '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div></section>')
+
+
 def render(data, now=None):
     now = time.time() if now is None else now
     e = html.escape
@@ -208,7 +247,7 @@ def render(data, now=None):
 <section class="progress"><div class="counter">''' + str(data['active_finished']) + ' / ' + str(data['active_total']) + ' active-scope tests finished &nbsp;&middot;&nbsp; ' + str(data['active_remaining']) + ' / ' + str(data['active_total']) + ''' remaining</div><p>''' + e(scope_note) + '''</p>
 <progress value="''' + str(data['active_finished']) + '" max="' + str(data['active_total']) + '"></progress><div class="counts"><span><b>' + str(data['finished']) + '/' + str(TOTAL) + '</b> historical attempts saved</span><span><b>' + str(data['failed']) + '</b> failed / incomplete</span><span><b>' + str(data['graded']) + '</b> graded</span><span><b>' + str(data['grading']) + '</b> awaiting a valid grade</span><span><b>' + str(data['paused']) + '</b> paused</span><span><b>' + str(data['deferred']) + '''</b> deferred</span></div>
 <div class="current">''' + e(current) + '</div><p>' + e(live_note) + '''</p></section>
-<div class="models">''' + ''.join(summaries) + '</div>' + hosted_section(data.get('directory', OUT)) + '''<div class="controls"><label>Model <select id="model"><option value="">All models</option>''' + model_options + '''</select></label><label>Status <select id="status"><option value="">All statuses</option>''' + status_options + '''</select></label><button onclick="location.reload()">Refresh results</button></div>
+<div class="models">''' + ''.join(summaries) + '</div>' + hosted_section(data.get('directory', OUT)) + cross_check_section(data.get('directory', OUT)) + '''<div class="controls"><label>Model <select id="model"><option value="">All models</option>''' + model_options + '''</select></label><label>Status <select id="status"><option value="">All statuses</option>''' + status_options + '''</select></label><button onclick="location.reload()">Refresh results</button></div>
 <div class="wrap"><table><thead><tr>''' + ''.join('<th>' + e(h) + '</th>' for h in headers) + '</tr></thead><tbody>' + ''.join(rows) + '''</tbody></table></div>
 <div class="notes"><p>Refresh this document for the latest snapshot. The file updates within a few seconds of each saved result or grade, and refreshes its timestamp every 15 seconds while the campaign is running. Refreshing this page does not contact or interrupt the model.</p>
 <p>Failed tests count as finished attempts. A dash is missing quality evidence, not a score of zero. A pass total appears only when every task in its stated scope has a valid grade. Scores use Luna xhigh, source-aware-v2; hidden reasoning is not graded or displayed.</p>
@@ -231,6 +270,7 @@ def signature():
     paths = list(OUT.glob('*.result.json')) + list(OUT.glob('*.result.grade.json'))
     paths += [OUT / name for name in ['state.json', 'live.json', 'protocol.json', 'control.json', 'publication.json']]
     paths += list((OUT / 'openrouter-baseline').glob('*.json'))
+    paths += list((OUT / 'heavy-cross-checks-128k').glob('*.json'))
     return [(p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in sorted(paths) if p.exists()]
 
 
@@ -308,6 +348,13 @@ def self_test():
         hosted_grade['source_sha256'] = 'stale'
         hosted_result.with_suffix('.grade.json').write_text(json.dumps(hosted_grade))
         assert '8/10' not in hosted_section(p)
+        cross = p / 'heavy-cross-checks-128k'
+        cross.mkdir()
+        (cross / 'state.json').write_text(json.dumps({'status': 'waiting_openrouter',
+            'plan': [{'model': 'twin709-ultra-q8', 'task': 'finance'}, {'model': 'turbo735-q8', 'task': 'apache'}]}))
+        section = cross_check_section(p)
+        assert section.count('Waiting for OpenRouter') == 2 and '0/2 tests saved; 2/2 remaining' in section
+        assert section.index('TWIN TURBO') < section.index('TURBO 735')
         from concurrent.futures import ThreadPoolExecutor
         target = p / 'dashboard.html'
         with ThreadPoolExecutor(max_workers=4) as pool:

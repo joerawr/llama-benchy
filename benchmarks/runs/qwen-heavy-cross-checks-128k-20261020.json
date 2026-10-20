@@ -1,0 +1,23 @@
+{
+  "experiment_id": "qwen-heavy-cross-checks-128k-20261020",
+  "suite": "qwen-family-full-xhigh@1.0",
+  "planned_requests": 2,
+  "status": "in_progress",
+  "thinking": "on, xhigh",
+  "context_tokens": 131072,
+  "wall_limit_s": 3600,
+  "order": [
+    {
+      "model": "twin709-ultra-q8",
+      "task": "finance"
+    },
+    {
+      "model": "turbo735-q8",
+      "task": "apache"
+    }
+  ],
+  "limits": [
+    "One new attempt per model/task; earlier attempts remain in the original campaign."
+  ],
+  "records": []
+}
