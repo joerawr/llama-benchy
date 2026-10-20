@@ -1,0 +1,18 @@
+{
+  "experiment_id": "qwen38-openrouter-heavy-xhigh-20261020",
+  "status": "in_progress",
+  "planned_requests": 2,
+  "suite": "qwen-family-full-xhigh@1.0",
+  "tasks": [
+    "apache",
+    "finance"
+  ],
+  "purpose": "Hosted stock-Qwen completion and quality baseline; excluded from local speed rankings.",
+  "limits": [
+    "One sample per task; hosted BF16 versus local quantized weights.",
+    "Provider context is 262K, max generated tokens 128K; local campaign context was 64K or 128K.",
+    "Identical task and xhigh system prompts; provider internal template and kernels are not observable.",
+    "Network and hosted timings do not measure Mac inference speed."
+  ],
+  "records": []
+}

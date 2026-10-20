@@ -78,7 +78,7 @@ def snapshot(directory=OUT):
     started = live.get('started_at')
     if live_matches and started is None and live.get('elapsed_s') is not None:
         started = (directory / 'live.json').stat().st_mtime - live['elapsed_s']
-    return {'slots': slots, 'state': state, 'live': live, 'control': control, 'started': started if live_matches else None,
+    return {'directory': directory, 'slots': slots, 'state': state, 'live': live, 'control': control, 'started': started if live_matches else None,
             'finished': finished, 'remaining': TOTAL - finished,
             'active_total': len(selected), 'active_finished': sum(s['finished'] and s['in_scope'] for s in slots),
             'active_remaining': sum(not s['finished'] and s['in_scope'] for s in slots),
@@ -105,6 +105,46 @@ def duration(value):
         return '-'
     value = round(value)
     return f'{value // 3600:d}:{value // 60 % 60:02d}:{value % 60:02d}' if value >= 3600 else f'{value // 60:d}:{value % 60:02d}'
+
+
+def hosted_section(directory):
+    directory = directory / 'openrouter-baseline'
+    if not directory.exists():
+        return ''
+    live = read_json(directory / 'live.json')
+    rows, finished = [], 0
+    for task in ['apache', 'finance']:
+        path = directory / f'qwen38-{task}.result.json'
+        row = read_json(path)
+        grade = read_json(path.with_suffix('.grade.json'))
+        semantic, judge = grade.get('semantic_grade', {}), grade.get('semantic_judge', {})
+        score = semantic.get('score')
+        valid = (path.exists() and grade.get('source_sha256') == hashlib.sha256(path.read_bytes()).hexdigest()
+                 and judge.get('judge_protocol') == 'source-aware-v2' and judge.get('judge_effort') == 'xhigh'
+                 and judge.get('judge_model') == 'gpt-5.6-luna' and type(score) is int
+                 and semantic.get('max_score') == MAXIMA[task] and 0 <= score <= MAXIMA[task])
+        delivered = row.get('finish_reason') == 'stop' and bool(row.get('answer', '').strip())
+        finished += bool(row)
+        status = ('Graded' if delivered and valid else 'Awaiting grade' if delivered else 'Failed' if row
+                  else 'Running' if live.get('status') == 'running' and live.get('task') == task else 'Queued')
+        running = status == 'Running'
+        timing = live if running else row
+        elapsed = time.time() - live['started_at'] if running else row.get('total_s')
+        cells = [TASK_NAMES[task], status, f'{score}/{MAXIMA[task]}' if delivered and valid else '-',
+                 number(row.get('reasoning_tokens_provider'), 0), number(row.get('reasoning_tokens_retokenized'), 0),
+                 number(row.get('generation_tokens'), 0), number(timing.get('ttft_s')),
+                 number(timing.get('first_answer_s')), duration(elapsed), number(row.get('cost_usd'), 4),
+                 row.get('provider', 'DeepInfra BF16'), row.get('finish_reason', '-')]
+        rows.append('<tr>' + ''.join('<td>' + html.escape(c) + '</td>' for c in cells) + '</tr>')
+    headers = ['Task', 'Status', 'Score', 'Thinking (provider)', 'Thinking (retokenized)', 'Generated total',
+               'TTFT s', 'Answer starts s', 'Elapsed', 'Cost USD', 'Provider', 'Finish']
+    return ('<section class="progress"><h2>Hosted stock Qwen3.8-27B baseline</h2><p>' + str(finished) +
+            '/2 tests saved; ' + str(2 - finished) + '/2 remaining. OpenRouter / DeepInfra BF16; xhigh; same task prompts '
+            'and sampling, seed 20261020. 262K provider context, 128K generation cap, one-hour wall limit. '
+            'Hosted timings include network and server behavior and are excluded from local speed comparisons. '
+            'Provider counts are reported separately from local-tokenizer estimates; a dash means unavailable.</p>'
+            '<div class="wrap"><table><thead><tr>' + ''.join('<th>' + h + '</th>' for h in headers) +
+            '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div></section>')
 
 
 def render(data, now=None):
@@ -168,13 +208,13 @@ def render(data, now=None):
 <section class="progress"><div class="counter">''' + str(data['active_finished']) + ' / ' + str(data['active_total']) + ' active-scope tests finished &nbsp;&middot;&nbsp; ' + str(data['active_remaining']) + ' / ' + str(data['active_total']) + ''' remaining</div><p>''' + e(scope_note) + '''</p>
 <progress value="''' + str(data['active_finished']) + '" max="' + str(data['active_total']) + '"></progress><div class="counts"><span><b>' + str(data['finished']) + '/' + str(TOTAL) + '</b> historical attempts saved</span><span><b>' + str(data['failed']) + '</b> failed / incomplete</span><span><b>' + str(data['graded']) + '</b> graded</span><span><b>' + str(data['grading']) + '</b> awaiting a valid grade</span><span><b>' + str(data['paused']) + '</b> paused</span><span><b>' + str(data['deferred']) + '''</b> deferred</span></div>
 <div class="current">''' + e(current) + '</div><p>' + e(live_note) + '''</p></section>
-<div class="models">''' + ''.join(summaries) + '''</div><div class="controls"><label>Model <select id="model"><option value="">All models</option>''' + model_options + '''</select></label><label>Status <select id="status"><option value="">All statuses</option>''' + status_options + '''</select></label><button onclick="location.reload()">Refresh results</button></div>
+<div class="models">''' + ''.join(summaries) + '</div>' + hosted_section(data.get('directory', OUT)) + '''<div class="controls"><label>Model <select id="model"><option value="">All models</option>''' + model_options + '''</select></label><label>Status <select id="status"><option value="">All statuses</option>''' + status_options + '''</select></label><button onclick="location.reload()">Refresh results</button></div>
 <div class="wrap"><table><thead><tr>''' + ''.join('<th>' + e(h) + '</th>' for h in headers) + '</tr></thead><tbody>' + ''.join(rows) + '''</tbody></table></div>
 <div class="notes"><p>Refresh this document for the latest snapshot. The file updates within a few seconds of each saved result or grade, and refreshes its timestamp every 15 seconds while the campaign is running. Refreshing this page does not contact or interrupt the model.</p>
 <p>Failed tests count as finished attempts. A dash is missing quality evidence, not a score of zero. A pass total appears only when every task in its stated scope has a valid grade. Scores use Luna xhigh, source-aware-v2; hidden reasoning is not graded or displayed.</p>
 <p>Thinking is explicitly on/xhigh; one-hour wall limit per request. Initial tests used 64K; remaining tests use 128K. Compression removes the original /no_think directive, and checklist wording is unchanged. GGUF and MLX throughput includes backend and quantization differences. This document is separate from the primary benchmark document.</p>
 <p>TTFT is the first generated text; answer start excludes time spent thinking. Generation speed includes thinking and answer tokens. Thinking tokens are separately retokenized. Elapsed is wall time, including prefill.</p></div></main>
-<script>function filter(){const m=document.getElementById('model').value,s=document.getElementById('status').value;document.querySelectorAll('tbody tr').forEach(r=>{r.hidden=(m&&r.dataset.model!==m)||(s&&r.dataset.status!==s)})}document.getElementById('model').onchange=filter;document.getElementById('status').onchange=filter;</script></body></html>'''
+<script>function filter(){const m=document.getElementById('model').value,s=document.getElementById('status').value;document.querySelectorAll('tbody tr[data-model]').forEach(r=>{r.hidden=(m&&r.dataset.model!==m)||(s&&r.dataset.status!==s)})}document.getElementById('model').onchange=filter;document.getElementById('status').onchange=filter;</script></body></html>'''
 
 
 def write_dashboard(directory=OUT, target=DOCUMENT):
@@ -190,6 +230,7 @@ def write_dashboard(directory=OUT, target=DOCUMENT):
 def signature():
     paths = list(OUT.glob('*.result.json')) + list(OUT.glob('*.result.grade.json'))
     paths += [OUT / name for name in ['state.json', 'live.json', 'protocol.json', 'control.json', 'publication.json']]
+    paths += list((OUT / 'openrouter-baseline').glob('*.json'))
     return [(p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in sorted(paths) if p.exists()]
 
 
@@ -252,6 +293,21 @@ def self_test():
         assert narrowed['active_total'] == 25 and narrowed['active_remaining'] == 25
         assert next(s for s in narrowed['slots'] if s['model'] == LABELS[0] and s['round'] == 2 and s['task'] == 'finance')['status'] == 'Paused'
         assert all(s['status'] == 'Deferred' for s in narrowed['slots'] if s['round'] == 3)
+        hosted = p / 'openrouter-baseline'
+        hosted.mkdir()
+        hosted_result = hosted / 'qwen38-apache.result.json'
+        hosted_result.write_text(json.dumps({'finish_reason': 'stop', 'answer': 'HOSTED SECRET ANSWER',
+                                             'reasoning': 'HOSTED SECRET REASONING',
+                                             'reasoning_tokens_retokenized': 123, 'provider': '<script>provider</script>'}))
+        hosted_grade = {'source_sha256': hashlib.sha256(hosted_result.read_bytes()).hexdigest(),
+                        'semantic_grade': {'score': 8, 'max_score': 10}, 'semantic_judge': grade['semantic_judge']}
+        hosted_result.with_suffix('.grade.json').write_text(json.dumps(hosted_grade))
+        document = render(snapshot(p))
+        assert '1/2 tests saved; 1/2 remaining' in document and '8/10' in hosted_section(p)
+        assert 'HOSTED SECRET' not in document and '<script>provider</script>' not in document
+        hosted_grade['source_sha256'] = 'stale'
+        hosted_result.with_suffix('.grade.json').write_text(json.dumps(hosted_grade))
+        assert '8/10' not in hosted_section(p)
         from concurrent.futures import ThreadPoolExecutor
         target = p / 'dashboard.html'
         with ThreadPoolExecutor(max_workers=4) as pool:
