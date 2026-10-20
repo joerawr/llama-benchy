@@ -1,6 +1,6 @@
 {
   "experiment_id": "qwen38-openrouter-heavy-xhigh-20261020",
-  "status": "in_progress",
+  "status": "complete",
   "planned_requests": 2,
   "suite": "qwen-family-full-xhigh@1.0",
   "tasks": [
@@ -54,6 +54,31 @@
         "explanation": "The answer is comprehensive and substantively accurate overall, but its client-error category table reports 19 invalid-method entries; the supplied log contains 18.",
         "pass": false
       }
+    },
+    {
+      "task": "finance",
+      "model": "qwen/qwen3.8-27b",
+      "provider_requested": "near-ai/fp8",
+      "provider": "Near AI",
+      "id": "gen-1792534072-rFAiiWrgiXAYqLlcgZ5V",
+      "prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f",
+      "reasoning_effort": "xhigh",
+      "sampling_note": "Near AI exposes temperature/top_p/top_k/seed; neutral min_p and penalty controls are not exposed.",
+      "max_tokens": 65536,
+      "context_tokens": 262144,
+      "wall_limit_s": 3600,
+      "started_at": 1792534072.311852,
+      "finish_reason": "length",
+      "ttft_s": 2.726232583998353,
+      "first_answer_s": null,
+      "total_s": 456.6519445839949,
+      "prompt_tokens": 5770,
+      "generation_tokens": 65536,
+      "reasoning_tokens_provider": 65536,
+      "reasoning_tokens_retokenized": 65549,
+      "answer_tokens_retokenized": 0,
+      "cost_usd": 0.0887044,
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/qwen38-finance.result.json"
     }
   ]
 }

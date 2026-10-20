@@ -107,30 +107,37 @@ def duration(value):
     return f'{value // 3600:d}:{value // 60 % 60:02d}:{value % 60:02d}' if value >= 3600 else f'{value // 60:d}:{value % 60:02d}'
 
 
+def hosted_result(directory, task):
+    path = directory / 'openrouter-baseline' / f'qwen38-{task}.result.json'
+    row = read_json(path)
+    grade = read_json(path.with_suffix('.grade.json'))
+    semantic, judge = grade.get('semantic_grade', {}), grade.get('semantic_judge', {})
+    score = semantic.get('score')
+    valid = (path.exists() and grade.get('source_sha256') == hashlib.sha256(path.read_bytes()).hexdigest()
+             and judge.get('judge_protocol') == 'source-aware-v2' and judge.get('judge_effort') == 'xhigh'
+             and judge.get('judge_model') == 'gpt-5.6-luna' and type(score) is int
+             and semantic.get('max_score') == MAXIMA[task] and 0 <= score <= MAXIMA[task])
+    delivered = row.get('finish_reason') == 'stop' and bool(row.get('answer', '').strip())
+    status = ('Graded' if delivered and valid else 'Grade failed' if delivered and grade
+              else 'Awaiting grade' if delivered else 'Output limit; no answer' if row.get('finish_reason') == 'length' and not row.get('answer', '').strip()
+              else 'Failed' if row else 'Queued')
+    return row, score if delivered and valid else None, status
+
+
 def hosted_section(directory):
-    directory = directory / 'openrouter-baseline'
-    if not directory.exists():
+    if not (directory / 'openrouter-baseline').exists():
         return ''
-    live = read_json(directory / 'live.json')
+    live = read_json(directory / 'openrouter-baseline/live.json')
     rows, finished = [], 0
     for task in ['apache', 'finance']:
-        path = directory / f'qwen38-{task}.result.json'
-        row = read_json(path)
-        grade = read_json(path.with_suffix('.grade.json'))
-        semantic, judge = grade.get('semantic_grade', {}), grade.get('semantic_judge', {})
-        score = semantic.get('score')
-        valid = (path.exists() and grade.get('source_sha256') == hashlib.sha256(path.read_bytes()).hexdigest()
-                 and judge.get('judge_protocol') == 'source-aware-v2' and judge.get('judge_effort') == 'xhigh'
-                 and judge.get('judge_model') == 'gpt-5.6-luna' and type(score) is int
-                 and semantic.get('max_score') == MAXIMA[task] and 0 <= score <= MAXIMA[task])
-        delivered = row.get('finish_reason') == 'stop' and bool(row.get('answer', '').strip())
+        row, score, status = hosted_result(directory, task)
         finished += bool(row)
-        status = ('Graded' if delivered and valid else 'Grade failed' if delivered and grade else 'Awaiting grade' if delivered else 'Failed' if row
-                  else 'Running' if live.get('status') == 'running' and live.get('task') == task else 'Queued')
+        if not row and live.get('status') == 'running' and live.get('task') == task:
+            status = 'Running'
         running = status == 'Running'
         timing = live if running else row
         elapsed = time.time() - live['started_at'] if running else row.get('total_s')
-        cells = [TASK_NAMES[task], status, f'{score}/{MAXIMA[task]}' if delivered and valid else '-',
+        cells = [TASK_NAMES[task], status, f'{score}/{MAXIMA[task]}' if score is not None else '-',
                  number(row.get('reasoning_tokens_provider'), 0), number(row.get('reasoning_tokens_retokenized'), 0),
                  number(row.get('generation_tokens'), 0), number(timing.get('ttft_s')),
                  number(timing.get('first_answer_s')), duration(elapsed), number(row.get('cost_usd'), 4),
@@ -139,7 +146,10 @@ def hosted_section(directory):
         rows.append('<tr>' + ''.join('<td>' + html.escape(c) + '</td>' for c in cells) + '</tr>')
     headers = ['Task', 'Status', 'Score', 'Thinking (provider)', 'Thinking (retokenized)', 'Generated total',
                'TTFT s', 'Answer starts s', 'Elapsed', 'Cost USD', 'Provider', 'Finish']
-    return ('<section class="progress"><h2>Hosted stock Qwen3.8-27B baseline</h2><p>' + str(finished) +
+    return ('<section class="progress" id="hosted-qwen"><h2>Qwen3.8 27B MLX 8-bit* - hosted heavy-task references</h2>'
+            '<p>* These quality references use hosted stock Qwen3.8-27B. Apache is DeepInfra BF16; Finance is Near AI FP8. '
+            'They are shown under the local model name for comparison. Local MLX pass scores and speed measurements remain separate. '
+            'Apache has not been tested on Near AI; an incomplete answer has no quality grade.</p><p>' + str(finished) +
             '/2 tests saved; ' + str(2 - finished) + '/2 remaining. OpenRouter: Apache / DeepInfra BF16; '
             'Finance / Near AI FP8. Xhigh; same task prompts, temperature/top_p/top_k and seed 20261020. '
             '262K provider context; generation caps: DeepInfra 128K, Near AI 64K. Near AI does not expose the neutral '
@@ -203,6 +213,7 @@ def render(data, now=None):
     else:
         current = state.get('status', 'Waiting for campaign').replace('_', ' ')
     summaries = []
+    directory = data.get('directory', OUT)
     focused = bool(data['control'].get('paused_tasks'))
     for label, name in zip(LABELS, NAMES):
         ss = [s for s in data['slots'] if s['model'] == label]
@@ -219,7 +230,15 @@ def render(data, now=None):
             text = f'{sum(scores)}/{maximum}' if all(s is not None for s in scores) else 'incomplete' if all(s['finished'] for s in rr) else f"{sum(s['finished'] for s in rr)}/{len(rr)} finished"
             passes.append(f'Pass {round_}: {text}')
         active_ss = [s for s in ss if s['in_scope']]
-        summaries.append('<article><h2>' + e(name) + '</h2><b>' + str(sum(s['finished'] for s in active_ss)) + '/' + str(len(active_ss)) + ' active-scope tests finished</b><p>' + e(' | '.join(passes)) + '</p></article>')
+        references = ''
+        if label == 'qwen38-mlx8' and (directory / 'openrouter-baseline').exists():
+            name += '*'
+            scores = []
+            for task in ['apache', 'finance']:
+                _, score, status = hosted_result(directory, task)
+                scores.append(TASK_NAMES[task] + ': ' + (f'{score}/{MAXIMA[task]}' if score is not None else status))
+            references = '<p><a href="#hosted-qwen">Hosted references*</a>: ' + e(' | '.join(scores)) + '</p>'
+        summaries.append('<article><h2>' + e(name) + '</h2><b>' + str(sum(s['finished'] for s in active_ss)) + '/' + str(len(active_ss)) + ' active-scope tests finished</b><p>' + e(' | '.join(passes)) + '</p>' + references + '</article>')
     rows = []
     for s in data['slots']:
         r = s['record']
@@ -338,18 +357,30 @@ def self_test():
         assert all(s['status'] == 'Deferred' for s in narrowed['slots'] if s['round'] == 3)
         hosted = p / 'openrouter-baseline'
         hosted.mkdir()
-        hosted_result = hosted / 'qwen38-apache.result.json'
-        hosted_result.write_text(json.dumps({'finish_reason': 'stop', 'answer': 'HOSTED SECRET ANSWER',
+        hosted_path = hosted / 'qwen38-apache.result.json'
+        hosted_path.write_text(json.dumps({'finish_reason': 'stop', 'answer': 'HOSTED SECRET ANSWER',
                                              'reasoning': 'HOSTED SECRET REASONING',
-                                             'reasoning_tokens_retokenized': 123, 'provider': '<script>provider</script>'}))
-        hosted_grade = {'source_sha256': hashlib.sha256(hosted_result.read_bytes()).hexdigest(),
+                                             'reasoning_tokens_retokenized': 123, 'provider_requested': '<script>provider</script>'}))
+        hosted_grade = {'source_sha256': hashlib.sha256(hosted_path.read_bytes()).hexdigest(),
                         'semantic_grade': {'score': 8, 'max_score': 10}, 'semantic_judge': grade['semantic_judge']}
-        hosted_result.with_suffix('.grade.json').write_text(json.dumps(hosted_grade))
+        hosted_path.with_suffix('.grade.json').write_text(json.dumps(hosted_grade))
         document = render(snapshot(p))
         assert '1/2 tests saved; 1/2 remaining' in document and '8/10' in hosted_section(p)
         assert 'HOSTED SECRET' not in document and '<script>provider</script>' not in document
+        assert '&lt;script&gt;provider&lt;/script&gt;' in document and 'Qwen3.8 27B MLX 8-bit*' in document
+        assert 'Hosted references*</a>: Apache: 8/10' in document
+        assert 'Apache has not been tested on Near AI' in document
+        finance = hosted / 'qwen38-finance.result.json'
+        finance.write_text(json.dumps({'finish_reason': 'length', 'answer': '', 'provider_requested': 'near-ai/fp8',
+                                       'max_tokens': 65536, 'generation_tokens': 65536}))
+        finance_grade = dict(hosted_grade, source_sha256=hashlib.sha256(finance.read_bytes()).hexdigest(),
+                             semantic_grade={'score': 12, 'max_score': 12})
+        finance.with_suffix('.grade.json').write_text(json.dumps(finance_grade))
+        assert hosted_result(p, 'finance')[1] is None
+        document = render(snapshot(p))
+        assert 'Finance: Output limit; no answer' in document and '12/12' not in hosted_section(p)
         hosted_grade['source_sha256'] = 'stale'
-        hosted_result.with_suffix('.grade.json').write_text(json.dumps(hosted_grade))
+        hosted_path.with_suffix('.grade.json').write_text(json.dumps(hosted_grade))
         assert '8/10' not in hosted_section(p)
         cross = p / 'heavy-cross-checks-128k'
         cross.mkdir()
