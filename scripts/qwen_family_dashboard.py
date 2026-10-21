@@ -341,7 +341,7 @@ def render(data, now=None):
     live_note = f"Current test elapsed: {elapsed}."
     if active and data['live'].get('generation_tokens') is not None:
         live_note += ' Generated tokens: ' + number(data['live']['generation_tokens'], 0) + '.'
-    scope_note = ('Round two: Access anomaly, Compression, Family note, Checklist, Text lines. Apache and Finance paused; round three deferred. Pass scores below use these five tasks, out of 40.' if focused else 'Full campaign: five models, seven tasks, three passes.')
+    scope_note = ('Active rounds: ' + ', '.join(map(str, data['control']['rounds'])) + '. Access anomaly, Compression, Family note, Checklist, Text lines. Apache and Finance paused. Pass scores below use these five tasks, out of 40.' if focused else 'Full campaign: five models, seven tasks, three passes.')
     return '''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Five-model xhigh test progress</title><style>
 :root{color-scheme:dark;--bg:#10151d;--panel:#192230;--line:#334155;--muted:#aebdd0;--text:#edf3fa;--blue:#83c8ff;--green:#91e2bc;--red:#ffacac}
@@ -438,6 +438,11 @@ def self_test():
         assert narrowed['active_total'] == 25 and narrowed['active_remaining'] == 25
         assert next(s for s in narrowed['slots'] if s['model'] == LABELS[0] and s['round'] == 2 and s['task'] == 'finance')['status'] == 'Paused'
         assert all(s['status'] == 'Deferred' for s in narrowed['slots'] if s['round'] == 3)
+        (p / 'control.json').write_text(json.dumps({'rounds': [3], 'tasks': TASKS[2:], 'paused_tasks': TASKS[:2], 'deferred_rounds': []}))
+        third = snapshot(p)
+        assert third['active_total'] == 25 and third['active_remaining'] == 25
+        assert 'Active rounds: 3.' in render(third)
+        assert all(s['status'] == 'Queued' for s in third['slots'] if s['round'] == 3 and s['task'] in TASKS[2:])
         cerebras = p / 'cerebras-five-task'
         cerebras.mkdir()
         (cerebras / 'state.json').write_text('{"status":"complete"}')

@@ -54,7 +54,7 @@ def main():
     scope = execution_scope()
     focused = bool(scope.get('paused_tasks'))
     comparison_tasks = scope['tasks'] if focused else TASKS
-    comparison_rounds = [1, 2] if focused else [1, 2, 3]
+    comparison_rounds = scope.get('comparison_rounds', [1, 2]) if focused else [1, 2, 3]
     comparison_max = sum(MAXIMA[TASKS.index(t)] for t in comparison_tasks)
     models = []
     for label, name in zip(LABELS, NAMES):
@@ -106,7 +106,7 @@ def main():
     active_slots = set(scheduled_slots())
     active = [r for m in models for r in m['records'] if (r['model'], r['round'], r['task']) in active_slots]
     complete = (len(active) == len(active_slots) and all(r['finish_reason'] == 'stop' and r['has_answer'] and r['semantic_score'] is not None for r in active))
-    status = 'round2_complete_heavy_tasks_paused' if complete and focused else 'complete' if complete else 'finished_with_incomplete_results'
+    status = f'round{max(comparison_rounds)}_complete_heavy_tasks_paused' if complete and focused else 'complete' if complete else 'finished_with_incomplete_results'
     state = json.loads((OUT / 'state.json').read_text())
     state.update(status=status, scope=scope,
                  completed_answers=sum(m['summary']['completed_answers'] for m in models),
@@ -124,8 +124,8 @@ def main():
               'failures': json.loads((OUT / 'state.json').read_text()).get('errors', [])}
     save(RECORD, record)
     save(OUT / 'comparison.json', record)
-    lead = ('Apache and Finance are paused; round three is deferred. The comparison below uses the five selected tasks in rounds one and two, out of 40 per pass. Original heavy-task attempts remain in the saved history. ' if focused else 'Three scheduled passes per model. ') + 'Explicit thinking on/xhigh. Compression omits only the original /no_think directive. Context increased from 64K to 128K after first-round context failures; the one-hour wall limit remains. Results retain their actual context setting. This experiment is separate from historical suite rankings. Missing or incomplete results display as a dash.'
-    lines = ['# Five-model xhigh comparison - five-task round-two wrap-up' if focused else '# Five-model full-suite xhigh comparison', '', lead, '',
+    lead = (f'Apache and Finance are paused. The comparison below uses the five selected tasks in rounds {", ".join(map(str, comparison_rounds))}, out of 40 per pass. Original heavy-task attempts remain in the saved history. ' if focused else 'Three scheduled passes per model. ') + 'Explicit thinking on/xhigh. Compression omits only the original /no_think directive. Context increased from 64K to 128K after first-round context failures; the one-hour wall limit remains. Results retain their actual context setting. This experiment is separate from historical suite rankings. Missing or incomplete results display as a dash.'
+    lines = ['# Five-model xhigh comparison - five-task results' if focused else '# Five-model full-suite xhigh comparison', '', lead, '',
              '| Model | ' + ' | '.join(f'Pass {n} /{comparison_max}' for n in comparison_rounds) + f' | Mean /{comparison_max} | Generation tok/s |',
              '|---|' + '---:|' * (len(comparison_rounds) + 2)]
     for m in models:
@@ -164,11 +164,13 @@ def main():
         subprocess.run(['git', 'commit', '--only', '-m', 'Add five-model full-suite xhigh comparison', '--', *files], cwd=ROOT, check=True)
         branch = subprocess.check_output(['git', 'branch', '--show-current'], cwd=ROOT, text=True).strip()
         assert branch == 'bench/qwen-family-full-xhigh-20261020', 'Refuse to push an unexpected branch'
-        subprocess.run(['git', 'push', '-u', 'origin', branch], cwd=ROOT, check=True)
-    save(OUT / 'publication.json', {'status': 'published', 'complete': complete,
+        if '--local-only' not in sys.argv:
+            subprocess.run(['git', 'push', '-u', 'origin', branch], cwd=ROOT, check=True)
+    publication_status = 'local_complete' if '--local-only' in sys.argv else 'published'
+    save(OUT / 'publication.json', {'status': publication_status, 'complete': complete,
                                    'record': str(RECORD.relative_to(ROOT)),
                                    'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()})
-    state['publication_status'] = 'published'
+    state['publication_status'] = publication_status
     save(OUT / 'state.json', state)
     print('PUBLISHED', record['status'], str(RECORD), flush=True)
 
@@ -180,6 +182,7 @@ if __name__ == '__main__':
         assert summarize(sample)['pass_totals'] == [62, 62, 62]
         assert summarize(sample)['mean_score'] == 62
         assert summarize(sample, TASKS[2:], [1, 2])['pass_totals'] == [40, 40]
+        assert summarize(sample, TASKS[2:], [1, 2, 3])['pass_totals'] == [40, 40, 40]
         sample[0]['semantic_score'] = None
         assert summarize(sample)['pass_totals'][0] is None and summarize(sample)['mean_score'] is None
         print('Publication self-checks passed: totals and missing scores.')

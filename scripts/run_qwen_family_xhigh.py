@@ -455,7 +455,7 @@ def run():
             state['active_saved_answers'] = sum(path.exists() for path in active)
             state['status'] = 'scope_finished' if all(path.exists() for path in active) and not state['errors'] else 'finished_with_incomplete_results'
             state['finished_at'] = time.time(); save(OUT / 'state.json', state)
-            subprocess.run([str(PYTHON), str(ROOT / 'scripts/publish_qwen_family_xhigh.py')], check=True)
+            subprocess.run([str(PYTHON), str(ROOT / 'scripts/publish_qwen_family_xhigh.py'), '--local-only'], check=True)
 
 
 def self_test():
