@@ -1,6 +1,6 @@
 {
   "experiment_id": "qwen-family-full-xhigh-macos-20261020",
-  "status": "round2_complete_heavy_tasks_paused",
+  "status": "round3_complete_heavy_tasks_paused",
   "date": "2026-10-20",
   "hardware": "Apple M1 Max 64GB, macOS Metal",
   "suite": {
@@ -117,7 +117,12 @@
     "mtp": false,
     "execution_scope": {
       "rounds": [
-        2
+        3
+      ],
+      "comparison_rounds": [
+        1,
+        2,
+        3
       ],
       "tasks": [
         "access",
@@ -130,12 +135,10 @@
         "finance",
         "apache"
       ],
-      "deferred_rounds": [
-        3
-      ],
+      "deferred_rounds": [],
       "target_answers": 25,
-      "instruction": "Pause Apache and Finance; finish round two of the other five tasks for all five models, then stop.",
-      "updated_at": 1792525473.805713
+      "instruction": "Run round three of all five finishable tasks on all five local models at xhigh, then stop.",
+      "updated_at": 1792546517.724174
     },
     "sampling": {
       "temperature": 1.0,
@@ -156,8 +159,8 @@
       "Recovery increased context from 64K to 128K; earlier completed and timed-out attempts are retained with their original execution settings. The one-hour wall limit remains.",
       "Download/archive activity may overlap measurements; preparation status is captured with each request."
     ],
-    "source_commit": "5957da8afa5364175df8024186112062ce78d751",
-    "runner_sha256": "6bc4f90b9b89b7de600715c5ba1b8ae81097a39f2e2bc95fb3c17fa2194fc2d8"
+    "source_commit": "558bac7a31c644bb8995052f1774d54b6d4beeae",
+    "runner_sha256": "710644997238f0fe66a68a0acfb2f9d84057ece0d8ec969bdaff1c9ccd919655"
   },
   "models": [
     {
@@ -794,6 +797,231 @@
             "reasoning_output_tokens": 157
           },
           "judge_elapsed_s": 6.003
+        },
+        {
+          "model": "qwen38-mlx8",
+          "round": 3,
+          "task": "access",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 24.234756541001843,
+          "first_answer_s": 245.43228745801025,
+          "total_s": 273.7842796250043,
+          "generation_tokens": 2690,
+          "generation_tokens_per_s": 10.78002716322437,
+          "prompt_tokens": 2023,
+          "prompt_tokens_per_s": 83.49390185715308,
+          "reasoning_tokens_retokenized": 2396,
+          "answer_tokens_retokenized": 292,
+          "peak_mlx_memory_gb": 29.801593826,
+          "prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4",
+          "rendered_sha256": "9eb1282602e7cc677517eebcf8ebac188591ea72c61c991bd6c0a1b512e26f9d",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-access.result.json",
+          "source_sha256": "2b02c9da54e68b7ba22157c762d47aadad419ae2b4dbe89088a4376346712226",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-access.result.grade.json",
+          "grade_sha256": "1fec17afc9b8f39e0cf9da2058793f6ab5d19be9a58baac53980c945ce92121f",
+          "judge_usage": {
+            "input_tokens": 21455,
+            "cached_input_tokens": 6784,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 197,
+            "reasoning_output_tokens": 125
+          },
+          "judge_elapsed_s": 5.226
+        },
+        {
+          "model": "qwen38-mlx8",
+          "round": 3,
+          "task": "compression",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 44.239877375002834,
+          "first_answer_s": 388.0690621660033,
+          "total_s": 479.36878249999427,
+          "generation_tokens": 4602,
+          "generation_tokens_per_s": 10.576523132140874,
+          "prompt_tokens": 3413,
+          "prompt_tokens_per_s": 77.16406026238977,
+          "reasoning_tokens_retokenized": 3640,
+          "answer_tokens_retokenized": 960,
+          "peak_mlx_memory_gb": 29.906741695,
+          "prompt_sha256": "d3f97384142f0390a7052ec26bbf2b0e55ab8421695a2ca14fd4180f311c5d04",
+          "rendered_sha256": "08646d2536d3398850a614f9bc8cc6767b6b97b74c8d8d7befa4e668e05bfdb9",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-compression.result.json",
+          "source_sha256": "ed17490f342673e3a1eecd3a4bb3abf56b3ac709f50bd4ea1972e8c367dc7e92",
+          "has_answer": true,
+          "semantic_score": 11,
+          "semantic_max": 12,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-compression.result.grade.json",
+          "grade_sha256": "fdb784f19b65f194fa08898ffc8a5918e69ed46a64a9703c57738199c6adc01b",
+          "judge_usage": {
+            "input_tokens": 24011,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 654,
+            "reasoning_output_tokens": 516
+          },
+          "judge_elapsed_s": 8.938
+        },
+        {
+          "model": "qwen38-mlx8",
+          "round": 3,
+          "task": "family_backup_note",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.439489416006836,
+          "first_answer_s": 158.1391079580062,
+          "total_s": 165.80345762500656,
+          "generation_tokens": 1768,
+          "generation_tokens_per_s": 10.823417957232923,
+          "prompt_tokens": 153,
+          "prompt_tokens_per_s": 62.79104555068851,
+          "reasoning_tokens_retokenized": 1682,
+          "answer_tokens_retokenized": 84,
+          "peak_mlx_memory_gb": 29.272292415,
+          "prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73",
+          "rendered_sha256": "af16d1970540a147a08b4efd76829729276d36b4dc4d156dc1621c588e90cef2",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-family_backup_note.result.json",
+          "source_sha256": "ea8a8524d2d4bdbdf66be00f5e5ab0afb8987e4d182d409d5a450ecd34b2125d",
+          "has_answer": true,
+          "semantic_score": 6,
+          "semantic_max": 6,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-family_backup_note.result.grade.json",
+          "grade_sha256": "4d1b842b284c8a67846806ed2afc507a1b60717a3a5c9cb57837db89e1abb72e",
+          "judge_usage": {
+            "input_tokens": 18571,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 238,
+            "reasoning_output_tokens": 152
+          },
+          "judge_elapsed_s": 5.594
+        },
+        {
+          "model": "qwen38-mlx8",
+          "round": 3,
+          "task": "two_section_backup_checklist",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.3467130420031026,
+          "first_answer_s": 99.92137504200218,
+          "total_s": 105.91414970900223,
+          "generation_tokens": 1123,
+          "generation_tokens_per_s": 10.844603827503814,
+          "prompt_tokens": 157,
+          "prompt_tokens_per_s": 67.01848525641583,
+          "reasoning_tokens_retokenized": 1055,
+          "answer_tokens_retokenized": 66,
+          "peak_mlx_memory_gb": 29.110193397,
+          "prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+          "rendered_sha256": "1276605843cdf7ad57fdd360beb897fde11e945e953dcaf1f84e43bdbb05d0ae",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-two_section_backup_checklist.result.json",
+          "source_sha256": "fa94245ecca6f2ce4c0ddf366feadd0edf5460a879adad6bc74a70c3c7148713",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-two_section_backup_checklist.result.grade.json",
+          "grade_sha256": "14b701d608fe1648ca21d66731ba7959edd9cc8b48fcf12cbfaf1d335241a237",
+          "judge_usage": {
+            "input_tokens": 19936,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 256,
+            "reasoning_output_tokens": 178
+          },
+          "judge_elapsed_s": 5.306
+        },
+        {
+          "model": "qwen38-mlx8",
+          "round": 3,
+          "task": "family_text_lines",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.6460810830030823,
+          "first_answer_s": 38.295352750006714,
+          "total_s": 41.867734125000425,
+          "generation_tokens": 428,
+          "generation_tokens_per_s": 10.915979000628298,
+          "prompt_tokens": 163,
+          "prompt_tokens_per_s": 61.668062439861515,
+          "reasoning_tokens_retokenized": 386,
+          "answer_tokens_retokenized": 40,
+          "peak_mlx_memory_gb": 29.124256701,
+          "prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0",
+          "rendered_sha256": "932d39dc2decb8877803ff333cb898c90426925bd7b12443f54a438e57f29d18",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-family_text_lines.result.json",
+          "source_sha256": "e05f983c8f46d940bd77390327bf185698f906258f9f8b08d287fb92f3ea6c04",
+          "has_answer": true,
+          "semantic_score": 8,
+          "semantic_max": 8,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/qwen38-mlx8-pass3-family_text_lines.result.grade.json",
+          "grade_sha256": "944db3c8bff01900f1240416a02ed5b8f30a72989eb3f8550f852e0369480400",
+          "judge_usage": {
+            "input_tokens": 19904,
+            "cached_input_tokens": 6784,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 266,
+            "reasoning_output_tokens": 192
+          },
+          "judge_elapsed_s": 5.557
         }
       ],
       "peak_process_rss_gib": 20.630233764648438,
@@ -806,9 +1034,9 @@
         ],
         "mean_score": null,
         "score_range": null,
-        "completed_answers": 10,
-        "graded_answers": 10,
-        "weighted_generation_tokens_per_s": 10.706787197624077,
+        "completed_answers": 15,
+        "graded_answers": 15,
+        "weighted_generation_tokens_per_s": 10.707754076929325,
         "tasks": {
           "finance": {
             "scores": [
@@ -841,158 +1069,169 @@
           "access": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 24.485135541495765,
-            "mean_first_answer_s": 240.3329057084993,
-            "mean_total_s": 271.9094074374989,
-            "mean_reasoning_tokens_retokenized": 2311,
-            "mean_answer_tokens_retokenized": 335.5,
-            "weighted_generation_tokens_per_s": 10.704900617837954,
-            "mean_prompt_tokens_per_s": 82.64116596354543
+            "mean_score": 7,
+            "mean_ttft_s": 24.40167587466446,
+            "mean_first_answer_s": 242.03269962500295,
+            "mean_total_s": 272.534364833334,
+            "mean_reasoning_tokens_retokenized": 2339.3333333333335,
+            "mean_answer_tokens_retokenized": 321,
+            "weighted_generation_tokens_per_s": 10.730085814962022,
+            "mean_prompt_tokens_per_s": 82.92541126141464
           },
           "compression": {
             "scores": [
               10,
-              10
+              10,
+              11
             ],
-            "mean_score": null,
-            "mean_ttft_s": 40.92627547899974,
-            "mean_first_answer_s": 385.921690479001,
-            "mean_total_s": 492.9329534165008,
-            "mean_reasoning_tokens_retokenized": 3659,
-            "mean_answer_tokens_retokenized": 1121,
-            "weighted_generation_tokens_per_s": 10.579815741432155,
-            "mean_prompt_tokens_per_s": 83.4163986825748
+            "mean_score": 10.333333333333334,
+            "mean_ttft_s": 42.0308094443341,
+            "mean_first_answer_s": 386.6374810413351,
+            "mean_total_s": 488.41156311099866,
+            "mean_reasoning_tokens_retokenized": 3652.6666666666665,
+            "mean_answer_tokens_retokenized": 1067.3333333333333,
+            "weighted_generation_tokens_per_s": 10.57874587185752,
+            "mean_prompt_tokens_per_s": 81.33228587584645
           },
           "family_backup_note": {
             "scores": [
               6,
+              6,
               6
             ],
-            "mean_score": null,
-            "mean_ttft_s": 2.153660249998211,
-            "mean_first_answer_s": 203.07879091699942,
-            "mean_total_s": 210.86626685450028,
-            "mean_reasoning_tokens_retokenized": 2168.5,
-            "mean_answer_tokens_retokenized": 85,
-            "weighted_generation_tokens_per_s": 10.807464350866242,
-            "mean_prompt_tokens_per_s": 71.13706440615752
+            "mean_score": 6,
+            "mean_ttft_s": 2.2489366386677525,
+            "mean_first_answer_s": 188.09889659733503,
+            "mean_total_s": 195.84533044466903,
+            "mean_reasoning_tokens_retokenized": 2006.3333333333333,
+            "mean_answer_tokens_retokenized": 84.66666666666667,
+            "weighted_generation_tokens_per_s": 10.811951704719489,
+            "mean_prompt_tokens_per_s": 68.35505812100118
           },
           "two_section_backup_checklist": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 2.1570156249981665,
-            "mean_first_answer_s": 85.14079787499941,
-            "mean_total_s": 91.12049412550004,
-            "mean_reasoning_tokens_retokenized": 900.5,
-            "mean_answer_tokens_retokenized": 65.5,
-            "weighted_generation_tokens_per_s": 10.882594884727293,
-            "mean_prompt_tokens_per_s": 72.9037166764988
+            "mean_score": 7,
+            "mean_ttft_s": 2.2202480973331453,
+            "mean_first_answer_s": 90.067656930667,
+            "mean_total_s": 96.0517126533341,
+            "mean_reasoning_tokens_retokenized": 952,
+            "mean_answer_tokens_retokenized": 65.66666666666667,
+            "weighted_generation_tokens_per_s": 10.868616974355005,
+            "mean_prompt_tokens_per_s": 70.94197286980447
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
-            "mean_score": null,
-            "mean_ttft_s": 2.4835071665020223,
-            "mean_first_answer_s": 120.90453566650285,
-            "mean_total_s": 124.17660954150051,
-            "mean_reasoning_tokens_retokenized": 1285.5,
-            "mean_answer_tokens_retokenized": 36.5,
-            "weighted_generation_tokens_per_s": 10.88108004750314,
-            "mean_prompt_tokens_per_s": 65.71147316587454
+            "mean_score": 8,
+            "mean_ttft_s": 2.5376984720023756,
+            "mean_first_answer_s": 93.36814136100413,
+            "mean_total_s": 96.74031773600048,
+            "mean_reasoning_tokens_retokenized": 985.6666666666666,
+            "mean_answer_tokens_retokenized": 37.666666666666664,
+            "weighted_generation_tokens_per_s": 10.885922578252245,
+            "mean_prompt_tokens_per_s": 64.36366959053686
           }
         }
       },
       "comparison_summary": {
         "pass_totals": [
           38,
-          38
+          38,
+          39
         ],
-        "mean_score": 38,
+        "mean_score": 38.333333333333336,
         "score_range": [
           38,
-          38
+          39
         ],
-        "completed_answers": 10,
-        "graded_answers": 10,
-        "weighted_generation_tokens_per_s": 10.706787197624077,
+        "completed_answers": 15,
+        "graded_answers": 15,
+        "weighted_generation_tokens_per_s": 10.707754076929325,
         "tasks": {
           "access": {
             "scores": [
               7,
-              7
-            ],
-            "mean_score": 7,
-            "mean_ttft_s": 24.485135541495765,
-            "mean_first_answer_s": 240.3329057084993,
-            "mean_total_s": 271.9094074374989,
-            "mean_reasoning_tokens_retokenized": 2311,
-            "mean_answer_tokens_retokenized": 335.5,
-            "weighted_generation_tokens_per_s": 10.704900617837954,
-            "mean_prompt_tokens_per_s": 82.64116596354543
-          },
-          "compression": {
-            "scores": [
-              10,
-              10
-            ],
-            "mean_score": 10,
-            "mean_ttft_s": 40.92627547899974,
-            "mean_first_answer_s": 385.921690479001,
-            "mean_total_s": 492.9329534165008,
-            "mean_reasoning_tokens_retokenized": 3659,
-            "mean_answer_tokens_retokenized": 1121,
-            "weighted_generation_tokens_per_s": 10.579815741432155,
-            "mean_prompt_tokens_per_s": 83.4163986825748
-          },
-          "family_backup_note": {
-            "scores": [
-              6,
-              6
-            ],
-            "mean_score": 6,
-            "mean_ttft_s": 2.153660249998211,
-            "mean_first_answer_s": 203.07879091699942,
-            "mean_total_s": 210.86626685450028,
-            "mean_reasoning_tokens_retokenized": 2168.5,
-            "mean_answer_tokens_retokenized": 85,
-            "weighted_generation_tokens_per_s": 10.807464350866242,
-            "mean_prompt_tokens_per_s": 71.13706440615752
-          },
-          "two_section_backup_checklist": {
-            "scores": [
               7,
               7
             ],
             "mean_score": 7,
-            "mean_ttft_s": 2.1570156249981665,
-            "mean_first_answer_s": 85.14079787499941,
-            "mean_total_s": 91.12049412550004,
-            "mean_reasoning_tokens_retokenized": 900.5,
-            "mean_answer_tokens_retokenized": 65.5,
-            "weighted_generation_tokens_per_s": 10.882594884727293,
-            "mean_prompt_tokens_per_s": 72.9037166764988
+            "mean_ttft_s": 24.40167587466446,
+            "mean_first_answer_s": 242.03269962500295,
+            "mean_total_s": 272.534364833334,
+            "mean_reasoning_tokens_retokenized": 2339.3333333333335,
+            "mean_answer_tokens_retokenized": 321,
+            "weighted_generation_tokens_per_s": 10.730085814962022,
+            "mean_prompt_tokens_per_s": 82.92541126141464
+          },
+          "compression": {
+            "scores": [
+              10,
+              10,
+              11
+            ],
+            "mean_score": 10.333333333333334,
+            "mean_ttft_s": 42.0308094443341,
+            "mean_first_answer_s": 386.6374810413351,
+            "mean_total_s": 488.41156311099866,
+            "mean_reasoning_tokens_retokenized": 3652.6666666666665,
+            "mean_answer_tokens_retokenized": 1067.3333333333333,
+            "weighted_generation_tokens_per_s": 10.57874587185752,
+            "mean_prompt_tokens_per_s": 81.33228587584645
+          },
+          "family_backup_note": {
+            "scores": [
+              6,
+              6,
+              6
+            ],
+            "mean_score": 6,
+            "mean_ttft_s": 2.2489366386677525,
+            "mean_first_answer_s": 188.09889659733503,
+            "mean_total_s": 195.84533044466903,
+            "mean_reasoning_tokens_retokenized": 2006.3333333333333,
+            "mean_answer_tokens_retokenized": 84.66666666666667,
+            "weighted_generation_tokens_per_s": 10.811951704719489,
+            "mean_prompt_tokens_per_s": 68.35505812100118
+          },
+          "two_section_backup_checklist": {
+            "scores": [
+              7,
+              7,
+              7
+            ],
+            "mean_score": 7,
+            "mean_ttft_s": 2.2202480973331453,
+            "mean_first_answer_s": 90.067656930667,
+            "mean_total_s": 96.0517126533341,
+            "mean_reasoning_tokens_retokenized": 952,
+            "mean_answer_tokens_retokenized": 65.66666666666667,
+            "weighted_generation_tokens_per_s": 10.868616974355005,
+            "mean_prompt_tokens_per_s": 70.94197286980447
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
             "mean_score": 8,
-            "mean_ttft_s": 2.4835071665020223,
-            "mean_first_answer_s": 120.90453566650285,
-            "mean_total_s": 124.17660954150051,
-            "mean_reasoning_tokens_retokenized": 1285.5,
-            "mean_answer_tokens_retokenized": 36.5,
-            "weighted_generation_tokens_per_s": 10.88108004750314,
-            "mean_prompt_tokens_per_s": 65.71147316587454
+            "mean_ttft_s": 2.5376984720023756,
+            "mean_first_answer_s": 93.36814136100413,
+            "mean_total_s": 96.74031773600048,
+            "mean_reasoning_tokens_retokenized": 985.6666666666666,
+            "mean_answer_tokens_retokenized": 37.666666666666664,
+            "weighted_generation_tokens_per_s": 10.885922578252245,
+            "mean_prompt_tokens_per_s": 64.36366959053686
           }
         }
       }
@@ -1581,6 +1820,231 @@
             "reasoning_output_tokens": 124
           },
           "judge_elapsed_s": 5.688
+        },
+        {
+          "model": "dirk-q8xl",
+          "round": 3,
+          "task": "access",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 19.426509665994672,
+          "first_answer_s": 178.65751200000523,
+          "total_s": 211.959748416004,
+          "generation_tokens": 1846,
+          "generation_tokens_per_s": 9.582760031946064,
+          "prompt_tokens": 2174,
+          "prompt_tokens_per_s": 112.75697334972857,
+          "reasoning_tokens_retokenized": 1538,
+          "answer_tokens_retokenized": 305,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4",
+          "rendered_sha256": "4190862e644a72ada138cc03fa4ef5a492b2009fe110cfd1531dfe0fb329fb83",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-access.result.json",
+          "source_sha256": "beecc64b7c0d40c4b64dfbea64807814c633b4c596b8433ec927e62158e2f1c1",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-access.result.grade.json",
+          "grade_sha256": "59a01576e81a6e19d380ef2a1ffe82c3128c2abc0f2bea6555b0d7e129960cc9",
+          "judge_usage": {
+            "input_tokens": 21464,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 196,
+            "reasoning_output_tokens": 115
+          },
+          "judge_elapsed_s": 5.664
+        },
+        {
+          "model": "dirk-q8xl",
+          "round": 3,
+          "task": "compression",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 32.405754666993744,
+          "first_answer_s": 505.5025185419945,
+          "total_s": 620.7006505419995,
+          "generation_tokens": 5167,
+          "generation_tokens_per_s": 8.781289919406559,
+          "prompt_tokens": 3564,
+          "prompt_tokens_per_s": 111.11069196926898,
+          "reasoning_tokens_retokenized": 4168,
+          "answer_tokens_retokenized": 996,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "d3f97384142f0390a7052ec26bbf2b0e55ab8421695a2ca14fd4180f311c5d04",
+          "rendered_sha256": "de9defa33f88b06cbb45273fdac6a5feb009cbe674b57131eaa90f0d93d45684",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-compression.result.json",
+          "source_sha256": "94f0fd396d825f76cfa079984cdb33bf29e60c5633ae6dd93bce42192b7fc16b",
+          "has_answer": true,
+          "semantic_score": 10,
+          "semantic_max": 12,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-compression.result.grade.json",
+          "grade_sha256": "2fc3b176959c846d0726b0168459096ec75eb100e2bd07d20f2bd479419c93f5",
+          "judge_usage": {
+            "input_tokens": 22829,
+            "cached_input_tokens": 7552,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1744,
+            "reasoning_output_tokens": 1552
+          },
+          "judge_elapsed_s": 14.59
+        },
+        {
+          "model": "dirk-q8xl",
+          "round": 3,
+          "task": "family_backup_note",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 3.6199909579881933,
+          "first_answer_s": 166.74484024998674,
+          "total_s": 176.14208929199958,
+          "generation_tokens": 1532,
+          "generation_tokens_per_s": 8.874221788422902,
+          "prompt_tokens": 304,
+          "prompt_tokens_per_s": 96.19635194321377,
+          "reasoning_tokens_retokenized": 1446,
+          "answer_tokens_retokenized": 83,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73",
+          "rendered_sha256": "1e0b6e54d7bdb51cd15a884d33d068051be086ad7d5b62bb0f48876f1f0898c9",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-family_backup_note.result.json",
+          "source_sha256": "bd88388e40f4b5e593e89aed169df5a40a46b4c0ac6c457d474bfbb8daadcf66",
+          "has_answer": true,
+          "semantic_score": 6,
+          "semantic_max": 6,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-family_backup_note.result.grade.json",
+          "grade_sha256": "17fef3f82b54f34cf9ee9b692893d9b3529397973cffc7e0d1a3d159b0838d2d",
+          "judge_usage": {
+            "input_tokens": 19804,
+            "cached_input_tokens": 18304,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 233,
+            "reasoning_output_tokens": 153
+          },
+          "judge_elapsed_s": 6.515
+        },
+        {
+          "model": "dirk-q8xl",
+          "round": 3,
+          "task": "two_section_backup_checklist",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 3.5362217079964466,
+          "first_answer_s": 76.44030999999086,
+          "total_s": 83.19912362498872,
+          "generation_tokens": 704,
+          "generation_tokens_per_s": 8.824727997530381,
+          "prompt_tokens": 308,
+          "prompt_tokens_per_s": 91.26272048243608,
+          "reasoning_tokens_retokenized": 641,
+          "answer_tokens_retokenized": 60,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+          "rendered_sha256": "be8ae5565a85aa7f634331a5b3a323d58c2c39d182a61c405a4a0b241d523276",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-two_section_backup_checklist.result.json",
+          "source_sha256": "29f9c151d1d91aa2a0e64ce9b66a30aedf3b54bc22cee54551c20cf2af030f1e",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-two_section_backup_checklist.result.grade.json",
+          "grade_sha256": "ab9dac7a1d5a4c620389bb8f306f26b4b5c7fa2d90b9775b14e5d4dc757332fb",
+          "judge_usage": {
+            "input_tokens": 19925,
+            "cached_input_tokens": 6784,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 126,
+            "reasoning_output_tokens": 47
+          },
+          "judge_elapsed_s": 4.86
+        },
+        {
+          "model": "dirk-q8xl",
+          "round": 3,
+          "task": "family_text_lines",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 3.5728440409875475,
+          "first_answer_s": 74.9146415409923,
+          "total_s": 78.66752829100005,
+          "generation_tokens": 663,
+          "generation_tokens_per_s": 8.815561175320445,
+          "prompt_tokens": 314,
+          "prompt_tokens_per_s": 91.78892522768916,
+          "reasoning_tokens_retokenized": 627,
+          "answer_tokens_retokenized": 33,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0",
+          "rendered_sha256": "f4b6b06048eef2d55a73752c63e6c2fbba1f30f46d39d2cda310f840cb9e6e6c",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-family_text_lines.result.json",
+          "source_sha256": "355eb0c51b8d01167d8a28605421ba3d92829e11625761e8f9b1d2ccfe450109",
+          "has_answer": true,
+          "semantic_score": 8,
+          "semantic_max": 8,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/dirk-q8xl-pass3-family_text_lines.result.grade.json",
+          "grade_sha256": "9370feeaebf0c514e2129b1125e52debdb4c65804e2592ddea26c714c063ef7a",
+          "judge_usage": {
+            "input_tokens": 19889,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 177,
+            "reasoning_output_tokens": 102
+          },
+          "judge_elapsed_s": 5.709
         }
       ],
       "peak_process_rss_gib": 39.40809631347656,
@@ -1593,9 +2057,9 @@
         ],
         "mean_score": null,
         "score_range": null,
-        "completed_answers": 10,
-        "graded_answers": 10,
-        "weighted_generation_tokens_per_s": 9.763063959250031,
+        "completed_answers": 15,
+        "graded_answers": 15,
+        "weighted_generation_tokens_per_s": 9.469027116025876,
         "tasks": {
           "finance": {
             "scores": [
@@ -1626,158 +2090,169 @@
           "access": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 21.020437458499146,
-            "mean_first_answer_s": 284.8548951875,
-            "mean_total_s": 313.9117464999981,
-            "mean_reasoning_tokens_retokenized": 2592,
-            "mean_answer_tokens_retokenized": 284,
-            "weighted_generation_tokens_per_s": 9.826161482758563,
-            "mean_prompt_tokens_per_s": 112.17675003438964
+            "mean_score": 7,
+            "mean_ttft_s": 20.489128194330988,
+            "mean_first_answer_s": 249.4557674583351,
+            "mean_total_s": 279.92774713866675,
+            "mean_reasoning_tokens_retokenized": 2240.6666666666665,
+            "mean_answer_tokens_retokenized": 291,
+            "weighted_generation_tokens_per_s": 9.765942102260478,
+            "mean_prompt_tokens_per_s": 112.37015780616929
           },
           "compression": {
             "scores": [
               11,
-              11
+              11,
+              10
             ],
-            "mean_score": null,
-            "mean_ttft_s": 31.910352271001102,
-            "mean_first_answer_s": 347.3216165420017,
-            "mean_total_s": 454.81067675000304,
-            "mean_reasoning_tokens_retokenized": 3073,
-            "mean_answer_tokens_retokenized": 1034.5,
-            "weighted_generation_tokens_per_s": 9.717404083078957,
-            "mean_prompt_tokens_per_s": 112.85001925958866
+            "mean_score": 10.666666666666666,
+            "mean_ttft_s": 32.07548640299865,
+            "mean_first_answer_s": 400.04858387533267,
+            "mean_total_s": 510.10733468066854,
+            "mean_reasoning_tokens_retokenized": 3438,
+            "mean_answer_tokens_retokenized": 1021.6666666666666,
+            "weighted_generation_tokens_per_s": 9.333402297425891,
+            "mean_prompt_tokens_per_s": 112.27024349614877
           },
           "family_backup_note": {
             "scores": [
               6,
+              6,
               6
             ],
-            "mean_score": null,
-            "mean_ttft_s": 3.3939188755011855,
-            "mean_first_answer_s": 143.50472904199887,
-            "mean_total_s": 151.77494504199967,
-            "mean_reasoning_tokens_retokenized": 1367.5,
-            "mean_answer_tokens_retokenized": 80.5,
-            "weighted_generation_tokens_per_s": 9.77215824238791,
-            "mean_prompt_tokens_per_s": 96.46868255910208
+            "mean_score": 6,
+            "mean_ttft_s": 3.469276236330188,
+            "mean_first_answer_s": 151.25143277799484,
+            "mean_total_s": 159.8973264586663,
+            "mean_reasoning_tokens_retokenized": 1393.6666666666667,
+            "mean_answer_tokens_retokenized": 81.33333333333333,
+            "weighted_generation_tokens_per_s": 9.442058571561974,
+            "mean_prompt_tokens_per_s": 96.3779056871393
           },
           "two_section_backup_checklist": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 3.2577951040002517,
-            "mean_first_answer_s": 83.66302618749978,
-            "mean_total_s": 90.38717166650167,
-            "mean_reasoning_tokens_retokenized": 785.5,
-            "mean_answer_tokens_retokenized": 65.5,
-            "weighted_generation_tokens_per_s": 9.789993740002,
-            "mean_prompt_tokens_per_s": 97.3501058258434
+            "mean_score": 7,
+            "mean_ttft_s": 3.3506039719989835,
+            "mean_first_answer_s": 81.2554541249968,
+            "mean_total_s": 87.99115565266402,
+            "mean_reasoning_tokens_retokenized": 737.3333333333334,
+            "mean_answer_tokens_retokenized": 63.666666666666664,
+            "weighted_generation_tokens_per_s": 9.487110745039285,
+            "mean_prompt_tokens_per_s": 95.32097737804096
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
-            "mean_score": null,
-            "mean_ttft_s": 3.447410042001138,
-            "mean_first_answer_s": 44.561962271000084,
-            "mean_total_s": 48.092142187997524,
-            "mean_reasoning_tokens_retokenized": 396.5,
-            "mean_answer_tokens_retokenized": 34.5,
-            "weighted_generation_tokens_per_s": 9.698874126197508,
-            "mean_prompt_tokens_per_s": 98.19160719708027
+            "mean_score": 8,
+            "mean_ttft_s": 3.489221374996608,
+            "mean_first_answer_s": 54.679522027664156,
+            "mean_total_s": 58.283937555665034,
+            "mean_reasoning_tokens_retokenized": 473.3333333333333,
+            "mean_answer_tokens_retokenized": 34,
+            "weighted_generation_tokens_per_s": 9.295528760815234,
+            "mean_prompt_tokens_per_s": 96.0573798739499
           }
         }
       },
       "comparison_summary": {
         "pass_totals": [
           39,
-          39
-        ],
-        "mean_score": 39,
-        "score_range": [
           39,
+          38
+        ],
+        "mean_score": 38.666666666666664,
+        "score_range": [
+          38,
           39
         ],
-        "completed_answers": 10,
-        "graded_answers": 10,
-        "weighted_generation_tokens_per_s": 9.763063959250031,
+        "completed_answers": 15,
+        "graded_answers": 15,
+        "weighted_generation_tokens_per_s": 9.469027116025876,
         "tasks": {
           "access": {
             "scores": [
               7,
-              7
-            ],
-            "mean_score": 7,
-            "mean_ttft_s": 21.020437458499146,
-            "mean_first_answer_s": 284.8548951875,
-            "mean_total_s": 313.9117464999981,
-            "mean_reasoning_tokens_retokenized": 2592,
-            "mean_answer_tokens_retokenized": 284,
-            "weighted_generation_tokens_per_s": 9.826161482758563,
-            "mean_prompt_tokens_per_s": 112.17675003438964
-          },
-          "compression": {
-            "scores": [
-              11,
-              11
-            ],
-            "mean_score": 11,
-            "mean_ttft_s": 31.910352271001102,
-            "mean_first_answer_s": 347.3216165420017,
-            "mean_total_s": 454.81067675000304,
-            "mean_reasoning_tokens_retokenized": 3073,
-            "mean_answer_tokens_retokenized": 1034.5,
-            "weighted_generation_tokens_per_s": 9.717404083078957,
-            "mean_prompt_tokens_per_s": 112.85001925958866
-          },
-          "family_backup_note": {
-            "scores": [
-              6,
-              6
-            ],
-            "mean_score": 6,
-            "mean_ttft_s": 3.3939188755011855,
-            "mean_first_answer_s": 143.50472904199887,
-            "mean_total_s": 151.77494504199967,
-            "mean_reasoning_tokens_retokenized": 1367.5,
-            "mean_answer_tokens_retokenized": 80.5,
-            "weighted_generation_tokens_per_s": 9.77215824238791,
-            "mean_prompt_tokens_per_s": 96.46868255910208
-          },
-          "two_section_backup_checklist": {
-            "scores": [
               7,
               7
             ],
             "mean_score": 7,
-            "mean_ttft_s": 3.2577951040002517,
-            "mean_first_answer_s": 83.66302618749978,
-            "mean_total_s": 90.38717166650167,
-            "mean_reasoning_tokens_retokenized": 785.5,
-            "mean_answer_tokens_retokenized": 65.5,
-            "weighted_generation_tokens_per_s": 9.789993740002,
-            "mean_prompt_tokens_per_s": 97.3501058258434
+            "mean_ttft_s": 20.489128194330988,
+            "mean_first_answer_s": 249.4557674583351,
+            "mean_total_s": 279.92774713866675,
+            "mean_reasoning_tokens_retokenized": 2240.6666666666665,
+            "mean_answer_tokens_retokenized": 291,
+            "weighted_generation_tokens_per_s": 9.765942102260478,
+            "mean_prompt_tokens_per_s": 112.37015780616929
+          },
+          "compression": {
+            "scores": [
+              11,
+              11,
+              10
+            ],
+            "mean_score": 10.666666666666666,
+            "mean_ttft_s": 32.07548640299865,
+            "mean_first_answer_s": 400.04858387533267,
+            "mean_total_s": 510.10733468066854,
+            "mean_reasoning_tokens_retokenized": 3438,
+            "mean_answer_tokens_retokenized": 1021.6666666666666,
+            "weighted_generation_tokens_per_s": 9.333402297425891,
+            "mean_prompt_tokens_per_s": 112.27024349614877
+          },
+          "family_backup_note": {
+            "scores": [
+              6,
+              6,
+              6
+            ],
+            "mean_score": 6,
+            "mean_ttft_s": 3.469276236330188,
+            "mean_first_answer_s": 151.25143277799484,
+            "mean_total_s": 159.8973264586663,
+            "mean_reasoning_tokens_retokenized": 1393.6666666666667,
+            "mean_answer_tokens_retokenized": 81.33333333333333,
+            "weighted_generation_tokens_per_s": 9.442058571561974,
+            "mean_prompt_tokens_per_s": 96.3779056871393
+          },
+          "two_section_backup_checklist": {
+            "scores": [
+              7,
+              7,
+              7
+            ],
+            "mean_score": 7,
+            "mean_ttft_s": 3.3506039719989835,
+            "mean_first_answer_s": 81.2554541249968,
+            "mean_total_s": 87.99115565266402,
+            "mean_reasoning_tokens_retokenized": 737.3333333333334,
+            "mean_answer_tokens_retokenized": 63.666666666666664,
+            "weighted_generation_tokens_per_s": 9.487110745039285,
+            "mean_prompt_tokens_per_s": 95.32097737804096
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
             "mean_score": 8,
-            "mean_ttft_s": 3.447410042001138,
-            "mean_first_answer_s": 44.561962271000084,
-            "mean_total_s": 48.092142187997524,
-            "mean_reasoning_tokens_retokenized": 396.5,
-            "mean_answer_tokens_retokenized": 34.5,
-            "weighted_generation_tokens_per_s": 9.698874126197508,
-            "mean_prompt_tokens_per_s": 98.19160719708027
+            "mean_ttft_s": 3.489221374996608,
+            "mean_first_answer_s": 54.679522027664156,
+            "mean_total_s": 58.283937555665034,
+            "mean_reasoning_tokens_retokenized": 473.3333333333333,
+            "mean_answer_tokens_retokenized": 34,
+            "weighted_generation_tokens_per_s": 9.295528760815234,
+            "mean_prompt_tokens_per_s": 96.0573798739499
           }
         }
       }
@@ -2372,9 +2847,234 @@
             "reasoning_output_tokens": 144
           },
           "judge_elapsed_s": 8.315
+        },
+        {
+          "model": "turbo735-q8",
+          "round": 3,
+          "task": "access",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 18.39289249999274,
+          "first_answer_s": 83.95408229199529,
+          "total_s": 106.36164070900122,
+          "generation_tokens": 854,
+          "generation_tokens_per_s": 9.696655975752948,
+          "prompt_tokens": 2023,
+          "prompt_tokens_per_s": 110.37191571055564,
+          "reasoning_tokens_retokenized": 630,
+          "answer_tokens_retokenized": 221,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4",
+          "rendered_sha256": "9eb1282602e7cc677517eebcf8ebac188591ea72c61c991bd6c0a1b512e26f9d",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-access.result.json",
+          "source_sha256": "710854e5f43f4489758387e05ff4874d42ed9bdca29f2ba4b1ea68f45f21ed90",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-access.result.grade.json",
+          "grade_sha256": "1f204fc68e64343bdccee72e39339e94a2f3466db2c6ece4c09cfe1337481761",
+          "judge_usage": {
+            "input_tokens": 21405,
+            "cached_input_tokens": 7552,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 161,
+            "reasoning_output_tokens": 82
+          },
+          "judge_elapsed_s": 5.185
+        },
+        {
+          "model": "turbo735-q8",
+          "round": 3,
+          "task": "compression",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 29.936147208005423,
+          "first_answer_s": 226.92804020800395,
+          "total_s": 326.05164345800586,
+          "generation_tokens": 2721,
+          "generation_tokens_per_s": 9.185024928512224,
+          "prompt_tokens": 3413,
+          "prompt_tokens_per_s": 114.38829076813094,
+          "reasoning_tokens_retokenized": 1837,
+          "answer_tokens_retokenized": 881,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "d3f97384142f0390a7052ec26bbf2b0e55ab8421695a2ca14fd4180f311c5d04",
+          "rendered_sha256": "08646d2536d3398850a614f9bc8cc6767b6b97b74c8d8d7befa4e668e05bfdb9",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-compression.result.json",
+          "source_sha256": "ae2b837b7ebd1d715dd65373c28837fa6a74f5453c944a042d257f738859b360",
+          "has_answer": true,
+          "semantic_score": 11,
+          "semantic_max": 12,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-compression.result.grade.json",
+          "grade_sha256": "443cd520e9ca8237c7c4f2cd6d45317214d47bfbd16151e74a7da6c09bf3e9c6",
+          "judge_usage": {
+            "input_tokens": 23933,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 669,
+            "reasoning_output_tokens": 542
+          },
+          "judge_elapsed_s": 8.634
+        },
+        {
+          "model": "turbo735-q8",
+          "round": 3,
+          "task": "family_backup_note",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.1263433749991236,
+          "first_answer_s": 320.6739127079927,
+          "total_s": 329.17744250000396,
+          "generation_tokens": 2945,
+          "generation_tokens_per_s": 9.001604964150314,
+          "prompt_tokens": 153,
+          "prompt_tokens_per_s": 77.26562507890688,
+          "reasoning_tokens_retokenized": 2866,
+          "answer_tokens_retokenized": 76,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73",
+          "rendered_sha256": "af16d1970540a147a08b4efd76829729276d36b4dc4d156dc1621c588e90cef2",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-family_backup_note.result.json",
+          "source_sha256": "671f1c9720f41ac22c332e6b4f0fed04f6d69ce3002e06d6df9deb64286fe083",
+          "has_answer": true,
+          "semantic_score": 6,
+          "semantic_max": 6,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-family_backup_note.result.grade.json",
+          "grade_sha256": "773bf5f6123c0c565948225064fcc091f2805abb3b748f5d046c8afe610c1456",
+          "judge_usage": {
+            "input_tokens": 19797,
+            "cached_input_tokens": 18304,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 203,
+            "reasoning_output_tokens": 122
+          },
+          "judge_elapsed_s": 5.661
+        },
+        {
+          "model": "turbo735-q8",
+          "round": 3,
+          "task": "two_section_backup_checklist",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.143181249994086,
+          "first_answer_s": 77.98762908299977,
+          "total_s": 83.80580358298903,
+          "generation_tokens": 734,
+          "generation_tokens_per_s": 8.975943540653873,
+          "prompt_tokens": 157,
+          "prompt_tokens_per_s": 76.35458876488428,
+          "reasoning_tokens_retokenized": 678,
+          "answer_tokens_retokenized": 53,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+          "rendered_sha256": "1276605843cdf7ad57fdd360beb897fde11e945e953dcaf1f84e43bdbb05d0ae",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-two_section_backup_checklist.result.json",
+          "source_sha256": "c64368f77f7c4b6b0903e14c2a2eb629c58c75e015554522ab711d0079c6bcc5",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-two_section_backup_checklist.result.grade.json",
+          "grade_sha256": "aecf5b5f8b84ec0f44d1661b7831c12e553e3101a6e8ebee1b513d9dda9a70d0",
+          "judge_usage": {
+            "input_tokens": 19918,
+            "cached_input_tokens": 6784,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 120,
+            "reasoning_output_tokens": 43
+          },
+          "judge_elapsed_s": 5.23
+        },
+        {
+          "model": "turbo735-q8",
+          "round": 3,
+          "task": "family_text_lines",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.175038917004713,
+          "first_answer_s": 51.55707954200625,
+          "total_s": 56.154893875005655,
+          "generation_tokens": 485,
+          "generation_tokens_per_s": 8.966353074643054,
+          "prompt_tokens": 163,
+          "prompt_tokens_per_s": 77.98326660900051,
+          "reasoning_tokens_retokenized": 441,
+          "answer_tokens_retokenized": 41,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0",
+          "rendered_sha256": "932d39dc2decb8877803ff333cb898c90426925bd7b12443f54a438e57f29d18",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-family_text_lines.result.json",
+          "source_sha256": "ca0cf37e8684e96e475100e52b8702c232ca557692b20c0666a2b31afe865903",
+          "has_answer": true,
+          "semantic_score": 8,
+          "semantic_max": 8,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/turbo735-q8-pass3-family_text_lines.result.grade.json",
+          "grade_sha256": "ef783a76bfa809b6ea4bf099fca1e6b2f1e7d3045839c6f8d013ad10ace74cbb",
+          "judge_usage": {
+            "input_tokens": 19899,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 257,
+            "reasoning_output_tokens": 171
+          },
+          "judge_elapsed_s": 9.204
         }
       ],
-      "peak_process_rss_gib": 37.203094482421875,
+      "peak_process_rss_gib": 37.80787658691406,
       "peak_mlx_memory_gb": null,
       "summary": {
         "pass_totals": [
@@ -2384,9 +3084,9 @@
         ],
         "mean_score": null,
         "score_range": null,
-        "completed_answers": 11,
-        "graded_answers": 11,
-        "weighted_generation_tokens_per_s": 9.807484466609953,
+        "completed_answers": 16,
+        "graded_answers": 16,
+        "weighted_generation_tokens_per_s": 9.65685194523396,
         "tasks": {
           "finance": {
             "scores": [
@@ -2417,158 +3117,169 @@
           "access": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 18.134223271001247,
-            "mean_first_answer_s": 200.88671922900176,
-            "mean_total_s": 224.6878065000019,
-            "mean_reasoning_tokens_retokenized": 1859.5,
-            "mean_answer_tokens_retokenized": 237.5,
-            "weighted_generation_tokens_per_s": 10.161652897275834,
-            "mean_prompt_tokens_per_s": 113.93744906731291
+            "mean_score": 7,
+            "mean_ttft_s": 18.220446347331745,
+            "mean_first_answer_s": 161.90917358333294,
+            "mean_total_s": 185.245751236335,
+            "mean_reasoning_tokens_retokenized": 1449.6666666666667,
+            "mean_answer_tokens_retokenized": 232,
+            "weighted_generation_tokens_per_s": 10.079973949784609,
+            "mean_prompt_tokens_per_s": 112.74893794839383
           },
           "compression": {
             "scores": [
               10,
-              12
+              12,
+              11
             ],
-            "mean_score": null,
-            "mean_ttft_s": 30.159403791501973,
-            "mean_first_answer_s": 167.00638481200076,
-            "mean_total_s": 245.9382702915027,
-            "mean_reasoning_tokens_retokenized": 1362.5,
-            "mean_answer_tokens_retokenized": 777.5,
-            "weighted_generation_tokens_per_s": 9.926745017512019,
-            "mean_prompt_tokens_per_s": 113.76482181066874
+            "mean_score": 11,
+            "mean_ttft_s": 30.084984930336457,
+            "mean_first_answer_s": 186.98026994400183,
+            "mean_total_s": 272.6427280136704,
+            "mean_reasoning_tokens_retokenized": 1520.6666666666667,
+            "mean_answer_tokens_retokenized": 812,
+            "weighted_generation_tokens_per_s": 9.624921333779508,
+            "mean_prompt_tokens_per_s": 113.97264479648948
           },
           "family_backup_note": {
             "scores": [
               5,
+              6,
               6
             ],
-            "mean_score": null,
-            "mean_ttft_s": 2.000828979500511,
-            "mean_first_answer_s": 51.99972587500088,
-            "mean_total_s": 58.80813064600079,
-            "mean_reasoning_tokens_retokenized": 489,
-            "mean_answer_tokens_retokenized": 67.5,
-            "weighted_generation_tokens_per_s": 9.831680101213776,
-            "mean_prompt_tokens_per_s": 82.73545849232062
+            "mean_score": 5.666666666666667,
+            "mean_ttft_s": 2.042667111333382,
+            "mean_first_answer_s": 141.5577881526648,
+            "mean_total_s": 148.9312345973352,
+            "mean_reasoning_tokens_retokenized": 1281.3333333333333,
+            "mean_answer_tokens_retokenized": 70.33333333333333,
+            "weighted_generation_tokens_per_s": 9.215845294582422,
+            "mean_prompt_tokens_per_s": 80.91218068784937
           },
           "two_section_backup_checklist": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 1.9082900830035214,
-            "mean_first_answer_s": 184.4070473335014,
-            "mean_total_s": 190.27391779150275,
-            "mean_reasoning_tokens_retokenized": 1798.5,
-            "mean_answer_tokens_retokenized": 58,
-            "weighted_generation_tokens_per_s": 9.866469558934966,
-            "mean_prompt_tokens_per_s": 84.77336973454081
+            "mean_score": 7,
+            "mean_ttft_s": 1.986587138667043,
+            "mean_first_answer_s": 148.93390791666752,
+            "mean_total_s": 154.78454638866484,
+            "mean_reasoning_tokens_retokenized": 1425,
+            "mean_answer_tokens_retokenized": 56.333333333333336,
+            "weighted_generation_tokens_per_s": 9.70771475638697,
+            "mean_prompt_tokens_per_s": 81.96710941132197
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
-            "mean_score": null,
-            "mean_ttft_s": 1.9308560419995047,
-            "mean_first_answer_s": 62.61930306299837,
-            "mean_total_s": 66.45661643799758,
-            "mean_reasoning_tokens_retokenized": 588.5,
-            "mean_answer_tokens_retokenized": 38,
-            "weighted_generation_tokens_per_s": 9.74058578454216,
-            "mean_prompt_tokens_per_s": 87.49482506864683
+            "mean_score": 8,
+            "mean_ttft_s": 2.0122503336679074,
+            "mean_first_answer_s": 58.93189522266766,
+            "mean_total_s": 63.02270891700027,
+            "mean_reasoning_tokens_retokenized": 539.3333333333334,
+            "mean_answer_tokens_retokenized": 39,
+            "weighted_generation_tokens_per_s": 9.512167725628697,
+            "mean_prompt_tokens_per_s": 84.32430558209806
           }
         }
       },
       "comparison_summary": {
         "pass_totals": [
           37,
-          40
+          40,
+          39
         ],
-        "mean_score": 38.5,
+        "mean_score": 38.666666666666664,
         "score_range": [
           37,
           40
         ],
-        "completed_answers": 10,
-        "graded_answers": 10,
-        "weighted_generation_tokens_per_s": 9.953699418352494,
+        "completed_answers": 15,
+        "graded_answers": 15,
+        "weighted_generation_tokens_per_s": 9.653060579059556,
         "tasks": {
           "access": {
             "scores": [
               7,
-              7
-            ],
-            "mean_score": 7,
-            "mean_ttft_s": 18.134223271001247,
-            "mean_first_answer_s": 200.88671922900176,
-            "mean_total_s": 224.6878065000019,
-            "mean_reasoning_tokens_retokenized": 1859.5,
-            "mean_answer_tokens_retokenized": 237.5,
-            "weighted_generation_tokens_per_s": 10.161652897275834,
-            "mean_prompt_tokens_per_s": 113.93744906731291
-          },
-          "compression": {
-            "scores": [
-              10,
-              12
-            ],
-            "mean_score": 11,
-            "mean_ttft_s": 30.159403791501973,
-            "mean_first_answer_s": 167.00638481200076,
-            "mean_total_s": 245.9382702915027,
-            "mean_reasoning_tokens_retokenized": 1362.5,
-            "mean_answer_tokens_retokenized": 777.5,
-            "weighted_generation_tokens_per_s": 9.926745017512019,
-            "mean_prompt_tokens_per_s": 113.76482181066874
-          },
-          "family_backup_note": {
-            "scores": [
-              5,
-              6
-            ],
-            "mean_score": 5.5,
-            "mean_ttft_s": 2.000828979500511,
-            "mean_first_answer_s": 51.99972587500088,
-            "mean_total_s": 58.80813064600079,
-            "mean_reasoning_tokens_retokenized": 489,
-            "mean_answer_tokens_retokenized": 67.5,
-            "weighted_generation_tokens_per_s": 9.831680101213776,
-            "mean_prompt_tokens_per_s": 82.73545849232062
-          },
-          "two_section_backup_checklist": {
-            "scores": [
               7,
               7
             ],
             "mean_score": 7,
-            "mean_ttft_s": 1.9082900830035214,
-            "mean_first_answer_s": 184.4070473335014,
-            "mean_total_s": 190.27391779150275,
-            "mean_reasoning_tokens_retokenized": 1798.5,
-            "mean_answer_tokens_retokenized": 58,
-            "weighted_generation_tokens_per_s": 9.866469558934966,
-            "mean_prompt_tokens_per_s": 84.77336973454081
+            "mean_ttft_s": 18.220446347331745,
+            "mean_first_answer_s": 161.90917358333294,
+            "mean_total_s": 185.245751236335,
+            "mean_reasoning_tokens_retokenized": 1449.6666666666667,
+            "mean_answer_tokens_retokenized": 232,
+            "weighted_generation_tokens_per_s": 10.079973949784609,
+            "mean_prompt_tokens_per_s": 112.74893794839383
+          },
+          "compression": {
+            "scores": [
+              10,
+              12,
+              11
+            ],
+            "mean_score": 11,
+            "mean_ttft_s": 30.084984930336457,
+            "mean_first_answer_s": 186.98026994400183,
+            "mean_total_s": 272.6427280136704,
+            "mean_reasoning_tokens_retokenized": 1520.6666666666667,
+            "mean_answer_tokens_retokenized": 812,
+            "weighted_generation_tokens_per_s": 9.624921333779508,
+            "mean_prompt_tokens_per_s": 113.97264479648948
+          },
+          "family_backup_note": {
+            "scores": [
+              5,
+              6,
+              6
+            ],
+            "mean_score": 5.666666666666667,
+            "mean_ttft_s": 2.042667111333382,
+            "mean_first_answer_s": 141.5577881526648,
+            "mean_total_s": 148.9312345973352,
+            "mean_reasoning_tokens_retokenized": 1281.3333333333333,
+            "mean_answer_tokens_retokenized": 70.33333333333333,
+            "weighted_generation_tokens_per_s": 9.215845294582422,
+            "mean_prompt_tokens_per_s": 80.91218068784937
+          },
+          "two_section_backup_checklist": {
+            "scores": [
+              7,
+              7,
+              7
+            ],
+            "mean_score": 7,
+            "mean_ttft_s": 1.986587138667043,
+            "mean_first_answer_s": 148.93390791666752,
+            "mean_total_s": 154.78454638866484,
+            "mean_reasoning_tokens_retokenized": 1425,
+            "mean_answer_tokens_retokenized": 56.333333333333336,
+            "weighted_generation_tokens_per_s": 9.70771475638697,
+            "mean_prompt_tokens_per_s": 81.96710941132197
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
             "mean_score": 8,
-            "mean_ttft_s": 1.9308560419995047,
-            "mean_first_answer_s": 62.61930306299837,
-            "mean_total_s": 66.45661643799758,
-            "mean_reasoning_tokens_retokenized": 588.5,
-            "mean_answer_tokens_retokenized": 38,
-            "weighted_generation_tokens_per_s": 9.74058578454216,
-            "mean_prompt_tokens_per_s": 87.49482506864683
+            "mean_ttft_s": 2.0122503336679074,
+            "mean_first_answer_s": 58.93189522266766,
+            "mean_total_s": 63.02270891700027,
+            "mean_reasoning_tokens_retokenized": 539.3333333333334,
+            "mean_answer_tokens_retokenized": 39,
+            "weighted_generation_tokens_per_s": 9.512167725628697,
+            "mean_prompt_tokens_per_s": 84.32430558209806
           }
         }
       }
@@ -3163,6 +3874,231 @@
             "reasoning_output_tokens": 354
           },
           "judge_elapsed_s": 10.691
+        },
+        {
+          "model": "twin709-ultra-q8",
+          "round": 3,
+          "task": "access",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 18.31949291699857,
+          "first_answer_s": 159.57963558399933,
+          "total_s": 180.587983874997,
+          "generation_tokens": 1564,
+          "generation_tokens_per_s": 9.632157755492043,
+          "prompt_tokens": 2023,
+          "prompt_tokens_per_s": 110.78360369808046,
+          "reasoning_tokens_retokenized": 1364,
+          "answer_tokens_retokenized": 197,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4",
+          "rendered_sha256": "9eb1282602e7cc677517eebcf8ebac188591ea72c61c991bd6c0a1b512e26f9d",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-access.result.json",
+          "source_sha256": "c8a83f18ea4ca7173d0441dcee0cd624add432484d2bc282bdf180156b6be19b",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-access.result.grade.json",
+          "grade_sha256": "532849be10286cba6a45fd723481763bfe3d190fd65c4ff2fd552331502aba97",
+          "judge_usage": {
+            "input_tokens": 21391,
+            "cached_input_tokens": 6784,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 150,
+            "reasoning_output_tokens": 70
+          },
+          "judge_elapsed_s": 4.817
+        },
+        {
+          "model": "twin709-ultra-q8",
+          "round": 3,
+          "task": "compression",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 30.370212832989637,
+          "first_answer_s": 170.5062526249967,
+          "total_s": 268.1142138330033,
+          "generation_tokens": 2132,
+          "generation_tokens_per_s": 8.963314034741973,
+          "prompt_tokens": 3413,
+          "prompt_tokens_per_s": 112.85484839539949,
+          "reasoning_tokens_retokenized": 1262,
+          "answer_tokens_retokenized": 867,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "d3f97384142f0390a7052ec26bbf2b0e55ab8421695a2ca14fd4180f311c5d04",
+          "rendered_sha256": "08646d2536d3398850a614f9bc8cc6767b6b97b74c8d8d7befa4e668e05bfdb9",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-compression.result.json",
+          "source_sha256": "b0ceb7648199e9a7bc5041328f1c4dc3f0dc1aa98a09ba0ea4f72e044790cbde",
+          "has_answer": true,
+          "semantic_score": 11,
+          "semantic_max": 12,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-compression.result.grade.json",
+          "grade_sha256": "71bd35d4439584901ccd80e63c82199548acd77028d9827fe6fa496b09c308b5",
+          "judge_usage": {
+            "input_tokens": 23905,
+            "cached_input_tokens": 18304,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 825,
+            "reasoning_output_tokens": 692
+          },
+          "judge_elapsed_s": 9.957
+        },
+        {
+          "model": "twin709-ultra-q8",
+          "round": 3,
+          "task": "family_backup_note",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.210312374998466,
+          "first_answer_s": 241.7416527089954,
+          "total_s": 250.37479924999934,
+          "generation_tokens": 2232,
+          "generation_tokens_per_s": 8.98996603336164,
+          "prompt_tokens": 153,
+          "prompt_tokens_per_s": 73.1813711797411,
+          "reasoning_tokens_retokenized": 2152,
+          "answer_tokens_retokenized": 77,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73",
+          "rendered_sha256": "af16d1970540a147a08b4efd76829729276d36b4dc4d156dc1621c588e90cef2",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-family_backup_note.result.json",
+          "source_sha256": "d651752b18253008aac4f2e63f26e69885231fbb921bb3e49196dfb08faf30c3",
+          "has_answer": true,
+          "semantic_score": 6,
+          "semantic_max": 6,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-family_backup_note.result.grade.json",
+          "grade_sha256": "765de67075119cb8ae7cb73f1d136c2888eb18923997571301ec3f8c271f73df",
+          "judge_usage": {
+            "input_tokens": 19798,
+            "cached_input_tokens": 18304,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 373,
+            "reasoning_output_tokens": 291
+          },
+          "judge_elapsed_s": 6.403
+        },
+        {
+          "model": "twin709-ultra-q8",
+          "round": 3,
+          "task": "two_section_backup_checklist",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.1131345000030706,
+          "first_answer_s": 95.41499124999973,
+          "total_s": 101.39008429199748,
+          "generation_tokens": 882,
+          "generation_tokens_per_s": 8.874157138900825,
+          "prompt_tokens": 157,
+          "prompt_tokens_per_s": 76.64137013290687,
+          "reasoning_tokens_retokenized": 826,
+          "answer_tokens_retokenized": 53,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+          "rendered_sha256": "1276605843cdf7ad57fdd360beb897fde11e945e953dcaf1f84e43bdbb05d0ae",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-two_section_backup_checklist.result.json",
+          "source_sha256": "87524e21ae8e196d9972867612e31d015516c604cd82e4875f3b49162f3f96c8",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-two_section_backup_checklist.result.grade.json",
+          "grade_sha256": "c223eeabeaa8cce7c367dde1cf44f9c0f7d5ab3a9f69aa3575fad026078e3867",
+          "judge_usage": {
+            "input_tokens": 19911,
+            "cached_input_tokens": 18304,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 116,
+            "reasoning_output_tokens": 48
+          },
+          "judge_elapsed_s": 5.562
+        },
+        {
+          "model": "twin709-ultra-q8",
+          "round": 3,
+          "task": "family_text_lines",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.161031791998539,
+          "first_answer_s": 94.79179275000934,
+          "total_s": 98.6236398750043,
+          "generation_tokens": 858,
+          "generation_tokens_per_s": 8.88425999707058,
+          "prompt_tokens": 163,
+          "prompt_tokens_per_s": 79.16721913729101,
+          "reasoning_tokens_retokenized": 821,
+          "answer_tokens_retokenized": 34,
+          "peak_mlx_memory_gb": null,
+          "prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0",
+          "rendered_sha256": "932d39dc2decb8877803ff333cb898c90426925bd7b12443f54a438e57f29d18",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-family_text_lines.result.json",
+          "source_sha256": "b18b2f8be241f51f3aad86c52d02c0625140ba45b4837b33cddfec135074217b",
+          "has_answer": true,
+          "semantic_score": 8,
+          "semantic_max": 8,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/twin709-ultra-q8-pass3-family_text_lines.result.grade.json",
+          "grade_sha256": "6b18b8992363f7d313b8a8c22f87ed0bda4b6017df176962fd919aaca971d51f",
+          "judge_usage": {
+            "input_tokens": 18657,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 246,
+            "reasoning_output_tokens": 169
+          },
+          "judge_elapsed_s": 7.125
         }
       ],
       "peak_process_rss_gib": 38.16731262207031,
@@ -3175,9 +4111,9 @@
         ],
         "mean_score": null,
         "score_range": null,
-        "completed_answers": 11,
-        "graded_answers": 11,
-        "weighted_generation_tokens_per_s": 9.567317687159669,
+        "completed_answers": 16,
+        "graded_answers": 16,
+        "weighted_generation_tokens_per_s": 9.412710020543686,
         "tasks": {
           "finance": {
             "scores": [
@@ -3208,158 +4144,169 @@
           "access": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 18.175296478995733,
-            "mean_first_answer_s": 216.78553193699554,
-            "mean_total_s": 243.42140408349587,
-            "mean_reasoning_tokens_retokenized": 2004,
-            "mean_answer_tokens_retokenized": 263.5,
-            "weighted_generation_tokens_per_s": 10.07563436844758,
-            "mean_prompt_tokens_per_s": 113.70416381999881
+            "mean_score": 7,
+            "mean_ttft_s": 18.223361958330013,
+            "mean_first_answer_s": 197.71689981933014,
+            "mean_total_s": 222.47693068066292,
+            "mean_reasoning_tokens_retokenized": 1790.6666666666667,
+            "mean_answer_tokens_retokenized": 241.33333333333334,
+            "weighted_generation_tokens_per_s": 9.958177590654778,
+            "mean_prompt_tokens_per_s": 112.73064377935935
           },
           "compression": {
             "scores": [
               12,
+              11,
               11
             ],
-            "mean_score": null,
-            "mean_ttft_s": 30.11085993750021,
-            "mean_first_answer_s": 72.93759312499606,
-            "mean_total_s": 148.51096991649683,
-            "mean_reasoning_tokens_retokenized": 431.5,
-            "mean_answer_tokens_retokenized": 750.5,
-            "weighted_generation_tokens_per_s": 9.999935776316704,
-            "mean_prompt_tokens_per_s": 113.84089051683993
+            "mean_score": 11.333333333333334,
+            "mean_ttft_s": 30.19731090266335,
+            "mean_first_answer_s": 105.46047962499627,
+            "mean_total_s": 188.37871788866565,
+            "mean_reasoning_tokens_retokenized": 708.3333333333334,
+            "mean_answer_tokens_retokenized": 789.3333333333334,
+            "weighted_generation_tokens_per_s": 9.480689564506667,
+            "mean_prompt_tokens_per_s": 113.51220980969312
           },
           "family_backup_note": {
             "scores": [
               5,
+              6,
               6
             ],
-            "mean_score": null,
-            "mean_ttft_s": 1.9811803119991964,
-            "mean_first_answer_s": 210.85060558299665,
-            "mean_total_s": 218.3430534580002,
-            "mean_reasoning_tokens_retokenized": 2036.5,
-            "mean_answer_tokens_retokenized": 74,
-            "weighted_generation_tokens_per_s": 9.763824580532464,
-            "mean_prompt_tokens_per_s": 83.83765239216075
+            "mean_score": 5.666666666666667,
+            "mean_ttft_s": 2.0575576663322863,
+            "mean_first_answer_s": 221.1476212916629,
+            "mean_total_s": 229.02030205533325,
+            "mean_reasoning_tokens_retokenized": 2075,
+            "mean_answer_tokens_retokenized": 75,
+            "weighted_generation_tokens_per_s": 9.481777128043811,
+            "mean_prompt_tokens_per_s": 80.28555865468753
           },
           "two_section_backup_checklist": {
             "scores": [
               7,
-              6
+              6,
+              7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 1.907287437501509,
-            "mean_first_answer_s": 51.82937435450003,
-            "mean_total_s": 57.22590447949551,
-            "mean_reasoning_tokens_retokenized": 501,
-            "mean_answer_tokens_retokenized": 52.5,
-            "weighted_generation_tokens_per_s": 10.0416573298974,
-            "mean_prompt_tokens_per_s": 85.5679018135462
+            "mean_score": 6.666666666666667,
+            "mean_ttft_s": 1.9759031250020296,
+            "mean_first_answer_s": 66.3579133196666,
+            "mean_total_s": 71.9472977503295,
+            "mean_reasoning_tokens_retokenized": 609.3333333333334,
+            "mean_answer_tokens_retokenized": 52.666666666666664,
+            "weighted_generation_tokens_per_s": 9.48969698673345,
+            "mean_prompt_tokens_per_s": 82.59239125333309
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
-            "mean_score": null,
-            "mean_ttft_s": 1.9947095835013897,
-            "mean_first_answer_s": 62.37814883399915,
-            "mean_total_s": 66.11652208349551,
-            "mean_reasoning_tokens_retokenized": 616,
-            "mean_answer_tokens_retokenized": 37.5,
-            "weighted_generation_tokens_per_s": 10.222621426016426,
-            "mean_prompt_tokens_per_s": 86.1336795180528
+            "mean_score": 8,
+            "mean_ttft_s": 2.050150319667106,
+            "mean_first_answer_s": 73.18269680600254,
+            "mean_total_s": 76.95222801399844,
+            "mean_reasoning_tokens_retokenized": 684.3333333333334,
+            "mean_answer_tokens_retokenized": 36.333333333333336,
+            "weighted_generation_tokens_per_s": 9.648205887886816,
+            "mean_prompt_tokens_per_s": 83.81152605779887
           }
         }
       },
       "comparison_summary": {
         "pass_totals": [
           39,
-          38
+          38,
+          39
         ],
-        "mean_score": 38.5,
+        "mean_score": 38.666666666666664,
         "score_range": [
           38,
           39
         ],
-        "completed_answers": 10,
-        "graded_answers": 10,
-        "weighted_generation_tokens_per_s": 9.974290125028203,
+        "completed_answers": 15,
+        "graded_answers": 15,
+        "weighted_generation_tokens_per_s": 9.631779953007669,
         "tasks": {
           "access": {
             "scores": [
               7,
+              7,
               7
             ],
             "mean_score": 7,
-            "mean_ttft_s": 18.175296478995733,
-            "mean_first_answer_s": 216.78553193699554,
-            "mean_total_s": 243.42140408349587,
-            "mean_reasoning_tokens_retokenized": 2004,
-            "mean_answer_tokens_retokenized": 263.5,
-            "weighted_generation_tokens_per_s": 10.07563436844758,
-            "mean_prompt_tokens_per_s": 113.70416381999881
+            "mean_ttft_s": 18.223361958330013,
+            "mean_first_answer_s": 197.71689981933014,
+            "mean_total_s": 222.47693068066292,
+            "mean_reasoning_tokens_retokenized": 1790.6666666666667,
+            "mean_answer_tokens_retokenized": 241.33333333333334,
+            "weighted_generation_tokens_per_s": 9.958177590654778,
+            "mean_prompt_tokens_per_s": 112.73064377935935
           },
           "compression": {
             "scores": [
               12,
+              11,
               11
             ],
-            "mean_score": 11.5,
-            "mean_ttft_s": 30.11085993750021,
-            "mean_first_answer_s": 72.93759312499606,
-            "mean_total_s": 148.51096991649683,
-            "mean_reasoning_tokens_retokenized": 431.5,
-            "mean_answer_tokens_retokenized": 750.5,
-            "weighted_generation_tokens_per_s": 9.999935776316704,
-            "mean_prompt_tokens_per_s": 113.84089051683993
+            "mean_score": 11.333333333333334,
+            "mean_ttft_s": 30.19731090266335,
+            "mean_first_answer_s": 105.46047962499627,
+            "mean_total_s": 188.37871788866565,
+            "mean_reasoning_tokens_retokenized": 708.3333333333334,
+            "mean_answer_tokens_retokenized": 789.3333333333334,
+            "weighted_generation_tokens_per_s": 9.480689564506667,
+            "mean_prompt_tokens_per_s": 113.51220980969312
           },
           "family_backup_note": {
             "scores": [
               5,
+              6,
               6
             ],
-            "mean_score": 5.5,
-            "mean_ttft_s": 1.9811803119991964,
-            "mean_first_answer_s": 210.85060558299665,
-            "mean_total_s": 218.3430534580002,
-            "mean_reasoning_tokens_retokenized": 2036.5,
-            "mean_answer_tokens_retokenized": 74,
-            "weighted_generation_tokens_per_s": 9.763824580532464,
-            "mean_prompt_tokens_per_s": 83.83765239216075
+            "mean_score": 5.666666666666667,
+            "mean_ttft_s": 2.0575576663322863,
+            "mean_first_answer_s": 221.1476212916629,
+            "mean_total_s": 229.02030205533325,
+            "mean_reasoning_tokens_retokenized": 2075,
+            "mean_answer_tokens_retokenized": 75,
+            "weighted_generation_tokens_per_s": 9.481777128043811,
+            "mean_prompt_tokens_per_s": 80.28555865468753
           },
           "two_section_backup_checklist": {
             "scores": [
               7,
-              6
+              6,
+              7
             ],
-            "mean_score": 6.5,
-            "mean_ttft_s": 1.907287437501509,
-            "mean_first_answer_s": 51.82937435450003,
-            "mean_total_s": 57.22590447949551,
-            "mean_reasoning_tokens_retokenized": 501,
-            "mean_answer_tokens_retokenized": 52.5,
-            "weighted_generation_tokens_per_s": 10.0416573298974,
-            "mean_prompt_tokens_per_s": 85.5679018135462
+            "mean_score": 6.666666666666667,
+            "mean_ttft_s": 1.9759031250020296,
+            "mean_first_answer_s": 66.3579133196666,
+            "mean_total_s": 71.9472977503295,
+            "mean_reasoning_tokens_retokenized": 609.3333333333334,
+            "mean_answer_tokens_retokenized": 52.666666666666664,
+            "weighted_generation_tokens_per_s": 9.48969698673345,
+            "mean_prompt_tokens_per_s": 82.59239125333309
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
             "mean_score": 8,
-            "mean_ttft_s": 1.9947095835013897,
-            "mean_first_answer_s": 62.37814883399915,
-            "mean_total_s": 66.11652208349551,
-            "mean_reasoning_tokens_retokenized": 616,
-            "mean_answer_tokens_retokenized": 37.5,
-            "weighted_generation_tokens_per_s": 10.222621426016426,
-            "mean_prompt_tokens_per_s": 86.1336795180528
+            "mean_ttft_s": 2.050150319667106,
+            "mean_first_answer_s": 73.18269680600254,
+            "mean_total_s": 76.95222801399844,
+            "mean_reasoning_tokens_retokenized": 684.3333333333334,
+            "mean_answer_tokens_retokenized": 36.333333333333336,
+            "weighted_generation_tokens_per_s": 9.648205887886816,
+            "mean_prompt_tokens_per_s": 83.81152605779887
           }
         }
       }
@@ -3918,6 +4865,231 @@
             "reasoning_output_tokens": 168
           },
           "judge_elapsed_s": 7.677
+        },
+        {
+          "model": "swift15-mlx5",
+          "round": 3,
+          "task": "access",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 26.072943666003994,
+          "first_answer_s": 223.57338575000176,
+          "total_s": 257.70297774999926,
+          "generation_tokens": 2294,
+          "generation_tokens_per_s": 9.90435753064087,
+          "prompt_tokens": 2023,
+          "prompt_tokens_per_s": 77.60762098013997,
+          "reasoning_tokens_retokenized": 1953,
+          "answer_tokens_retokenized": 339,
+          "peak_mlx_memory_gb": 20.817883334,
+          "prompt_sha256": "835297548c75a35bd15f31c04a18754ece49c7e2c833578390e2a2f7225b1da4",
+          "rendered_sha256": "9eb1282602e7cc677517eebcf8ebac188591ea72c61c991bd6c0a1b512e26f9d",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-access.result.json",
+          "source_sha256": "9ab581b1af0d2879571c1e8f678e01e733c0265ead41521148f3bd8be4dfb9ed",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-access.result.grade.json",
+          "grade_sha256": "2d5488d2d5a30ac4c858cf13df5aa6625409c3355c53187b27e80e2119c505e1",
+          "judge_usage": {
+            "input_tokens": 20257,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 182,
+            "reasoning_output_tokens": 104
+          },
+          "judge_elapsed_s": 5.45
+        },
+        {
+          "model": "swift15-mlx5",
+          "round": 3,
+          "task": "compression",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 42.1390576660051,
+          "first_answer_s": 190.06834408300347,
+          "total_s": 285.22608475000015,
+          "generation_tokens": 2394,
+          "generation_tokens_per_s": 9.848947586000627,
+          "prompt_tokens": 3413,
+          "prompt_tokens_per_s": 81.01397355151221,
+          "reasoning_tokens_retokenized": 1460,
+          "answer_tokens_retokenized": 932,
+          "peak_mlx_memory_gb": 20.829391919,
+          "prompt_sha256": "d3f97384142f0390a7052ec26bbf2b0e55ab8421695a2ca14fd4180f311c5d04",
+          "rendered_sha256": "08646d2536d3398850a614f9bc8cc6767b6b97b74c8d8d7befa4e668e05bfdb9",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-compression.result.json",
+          "source_sha256": "efa4ba081f061f875fd3e80f0ba790031fd0c56cae522a72f9ad5aa1f19c6e91",
+          "has_answer": true,
+          "semantic_score": 12,
+          "semantic_max": 12,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-compression.result.grade.json",
+          "grade_sha256": "36c1f5137bbc677b625bf97c5c8a2569752a7ab7b9c82cfdf2813924481bd799",
+          "judge_usage": {
+            "input_tokens": 22767,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1063,
+            "reasoning_output_tokens": 968
+          },
+          "judge_elapsed_s": 11.556
+        },
+        {
+          "model": "swift15-mlx5",
+          "round": 3,
+          "task": "family_backup_note",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.2184117500000866,
+          "first_answer_s": 82.50898808300553,
+          "total_s": 91.10388083300495,
+          "generation_tokens": 914,
+          "generation_tokens_per_s": 10.284613735519592,
+          "prompt_tokens": 153,
+          "prompt_tokens_per_s": 69.07853726377643,
+          "reasoning_tokens_retokenized": 825,
+          "answer_tokens_retokenized": 87,
+          "peak_mlx_memory_gb": 19.961870013,
+          "prompt_sha256": "dbd1feeec6cef3a10e7b5c4f43568a3b08a507d4d3babaf7b0bdda1821804a73",
+          "rendered_sha256": "af16d1970540a147a08b4efd76829729276d36b4dc4d156dc1621c588e90cef2",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-family_backup_note.result.json",
+          "source_sha256": "72d2fd5b5fa261d4a20fc480b028f443c78463f6a238cb711d67f01c0b6463fe",
+          "has_answer": true,
+          "semantic_score": 6,
+          "semantic_max": 6,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-family_backup_note.result.grade.json",
+          "grade_sha256": "d81f845004e9b7bf900cbe2c22ed7a61c7c51c9c0f4ba263a25ffcf4c98c9175",
+          "judge_usage": {
+            "input_tokens": 19807,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 220,
+            "reasoning_output_tokens": 138
+          },
+          "judge_elapsed_s": 6.4
+        },
+        {
+          "model": "swift15-mlx5",
+          "round": 3,
+          "task": "two_section_backup_checklist",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.223118541005533,
+          "first_answer_s": 50.52311079100764,
+          "total_s": 56.69034354100586,
+          "generation_tokens": 567,
+          "generation_tokens_per_s": 10.412677455002612,
+          "prompt_tokens": 157,
+          "prompt_tokens_per_s": 70.75571082203989,
+          "reasoning_tokens_retokenized": 503,
+          "answer_tokens_retokenized": 62,
+          "peak_mlx_memory_gb": 19.975276701,
+          "prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+          "rendered_sha256": "1276605843cdf7ad57fdd360beb897fde11e945e953dcaf1f84e43bdbb05d0ae",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-two_section_backup_checklist.result.json",
+          "source_sha256": "08440b7038195ada57c170e28aa29ae1e80b194ffaa4499c0d639fc950a38a97",
+          "has_answer": true,
+          "semantic_score": 7,
+          "semantic_max": 7,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-two_section_backup_checklist.result.grade.json",
+          "grade_sha256": "be8126d8e90f745bee02aef87ec7187daef0582a83ab20080ba2c2c4b9ade7c3",
+          "judge_usage": {
+            "input_tokens": 19928,
+            "cached_input_tokens": 18304,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 284,
+            "reasoning_output_tokens": 205
+          },
+          "judge_elapsed_s": 6.892
+        },
+        {
+          "model": "swift15-mlx5",
+          "round": 3,
+          "task": "family_text_lines",
+          "seed": 20261022,
+          "finish_reason": "stop",
+          "ttft_s": 2.552783792008995,
+          "first_answer_s": 58.83702820900362,
+          "total_s": 62.73945191700477,
+          "generation_tokens": 626,
+          "generation_tokens_per_s": 10.403594377042898,
+          "prompt_tokens": 163,
+          "prompt_tokens_per_s": 63.96280685390293,
+          "reasoning_tokens_retokenized": 584,
+          "answer_tokens_retokenized": 40,
+          "peak_mlx_memory_gb": 19.996009325,
+          "prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0",
+          "rendered_sha256": "932d39dc2decb8877803ff333cb898c90426925bd7b12443f54a438e57f29d18",
+          "machine_before": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "machine_after": {
+            "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t100%; charged; 0:00 remaining present: true\n",
+            "swap": "vm.swapusage: total = 1024.00M  used = 0.69M  free = 1023.31M  (encrypted)\n"
+          },
+          "preparation_status": "complete",
+          "context_tokens": 131072,
+          "request_wall_timeout_s": 3600,
+          "source_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-family_text_lines.result.json",
+          "source_sha256": "8ca93e7cf9880f2713e17b83392d622f0045d65ed901724787d3a466835df9e7",
+          "has_answer": true,
+          "semantic_score": 8,
+          "semantic_max": 8,
+          "grade_artifact": "results/qwen-family-full-xhigh-20261020/swift15-mlx5-pass3-family_text_lines.result.grade.json",
+          "grade_sha256": "d97e46c10a25905e1d9b0943c10c0dc7e14bec2fc80486d853a53b927cbff986",
+          "judge_usage": {
+            "input_tokens": 19900,
+            "cached_input_tokens": 11136,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 223,
+            "reasoning_output_tokens": 145
+          },
+          "judge_elapsed_s": 5.79
         }
       ],
       "peak_process_rss_gib": 5.14935302734375,
@@ -3930,9 +5102,9 @@
         ],
         "mean_score": null,
         "score_range": null,
-        "completed_answers": 10,
-        "graded_answers": 10,
-        "weighted_generation_tokens_per_s": 9.983850932769233,
+        "completed_answers": 15,
+        "graded_answers": 15,
+        "weighted_generation_tokens_per_s": 9.993965323558617,
         "tasks": {
           "finance": {
             "scores": [
@@ -3963,158 +5135,169 @@
           "access": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 25.176244583501102,
-            "mean_first_answer_s": 255.94834195850126,
-            "mean_total_s": 289.03505812500225,
-            "mean_reasoning_tokens_retokenized": 2299,
-            "mean_answer_tokens_retokenized": 325.5,
-            "weighted_generation_tokens_per_s": 9.954769663252193,
-            "mean_prompt_tokens_per_s": 80.37282525555105
+            "mean_score": 7,
+            "mean_ttft_s": 25.475144277668733,
+            "mean_first_answer_s": 245.15668988900143,
+            "mean_total_s": 278.59103133333457,
+            "mean_reasoning_tokens_retokenized": 2183.6666666666665,
+            "mean_answer_tokens_retokenized": 330,
+            "weighted_generation_tokens_per_s": 9.939392095555293,
+            "mean_prompt_tokens_per_s": 79.45109049708068
           },
           "compression": {
             "scores": [
               11,
+              12,
               12
             ],
-            "mean_score": null,
-            "mean_ttft_s": 42.22233504150063,
-            "mean_first_answer_s": 270.05898831300146,
-            "mean_total_s": 376.7167272084953,
-            "mean_reasoning_tokens_retokenized": 2236,
-            "mean_answer_tokens_retokenized": 1037.5,
-            "weighted_generation_tokens_per_s": 9.792836623443367,
-            "mean_prompt_tokens_per_s": 80.85218427934025
+            "mean_score": 11.666666666666666,
+            "mean_ttft_s": 42.19457591633545,
+            "mean_first_answer_s": 243.39544023633547,
+            "mean_total_s": 346.2198463889969,
+            "mean_reasoning_tokens_retokenized": 1977.3333333333333,
+            "mean_answer_tokens_retokenized": 1002.3333333333334,
+            "weighted_generation_tokens_per_s": 9.807791158096926,
+            "mean_prompt_tokens_per_s": 80.9061140367309
           },
           "family_backup_note": {
             "scores": [
               6,
+              6,
               6
             ],
-            "mean_score": null,
-            "mean_ttft_s": 2.2203443335056363,
-            "mean_first_answer_s": 94.78782797900567,
-            "mean_total_s": 103.19066870850293,
-            "mean_reasoning_tokens_retokenized": 941,
-            "mean_answer_tokens_retokenized": 88,
-            "weighted_generation_tokens_per_s": 10.212478061980994,
-            "mean_prompt_tokens_per_s": 69.02285667821889
+            "mean_score": 6,
+            "mean_ttft_s": 2.2197001390037863,
+            "mean_first_answer_s": 90.69488134700562,
+            "mean_total_s": 99.16173941667027,
+            "mean_reasoning_tokens_retokenized": 902.3333333333334,
+            "mean_answer_tokens_retokenized": 87.66666666666667,
+            "weighted_generation_tokens_per_s": 10.234524734679573,
+            "mean_prompt_tokens_per_s": 69.04141687340473
           },
           "two_section_backup_checklist": {
             "scores": [
               7,
+              7,
               7
             ],
-            "mean_score": null,
-            "mean_ttft_s": 2.2183421664994967,
-            "mean_first_answer_s": 86.14514645849704,
-            "mean_total_s": 92.46018385450225,
-            "mean_reasoning_tokens_retokenized": 857,
-            "mean_answer_tokens_retokenized": 63.5,
-            "weighted_generation_tokens_per_s": 10.224245546762825,
-            "mean_prompt_tokens_per_s": 70.90192439288859
+            "mean_score": 7,
+            "mean_ttft_s": 2.2199342913348423,
+            "mean_first_answer_s": 74.27113456933391,
+            "mean_total_s": 80.53690375000345,
+            "mean_reasoning_tokens_retokenized": 739,
+            "mean_answer_tokens_retokenized": 63,
+            "weighted_generation_tokens_per_s": 10.267925331322001,
+            "mean_prompt_tokens_per_s": 70.85318653593902
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
-            "mean_score": null,
-            "mean_ttft_s": 2.5645784585030924,
-            "mean_first_answer_s": 63.64639268799874,
-            "mean_total_s": 67.00510533399938,
-            "mean_reasoning_tokens_retokenized": 633,
-            "mean_answer_tokens_retokenized": 35,
-            "weighted_generation_tokens_per_s": 10.399717968676274,
-            "mean_prompt_tokens_per_s": 63.64710314373843
+            "mean_score": 8,
+            "mean_ttft_s": 2.56064690300506,
+            "mean_first_answer_s": 62.043271195000365,
+            "mean_total_s": 65.58322086166784,
+            "mean_reasoning_tokens_retokenized": 616.6666666666666,
+            "mean_answer_tokens_retokenized": 36.666666666666664,
+            "weighted_generation_tokens_per_s": 10.400951954075085,
+            "mean_prompt_tokens_per_s": 63.75233771379326
           }
         }
       },
       "comparison_summary": {
         "pass_totals": [
           39,
+          40,
           40
         ],
-        "mean_score": 39.5,
+        "mean_score": 39.666666666666664,
         "score_range": [
           39,
           40
         ],
-        "completed_answers": 10,
-        "graded_answers": 10,
-        "weighted_generation_tokens_per_s": 9.983850932769233,
+        "completed_answers": 15,
+        "graded_answers": 15,
+        "weighted_generation_tokens_per_s": 9.993965323558617,
         "tasks": {
           "access": {
             "scores": [
               7,
-              7
-            ],
-            "mean_score": 7,
-            "mean_ttft_s": 25.176244583501102,
-            "mean_first_answer_s": 255.94834195850126,
-            "mean_total_s": 289.03505812500225,
-            "mean_reasoning_tokens_retokenized": 2299,
-            "mean_answer_tokens_retokenized": 325.5,
-            "weighted_generation_tokens_per_s": 9.954769663252193,
-            "mean_prompt_tokens_per_s": 80.37282525555105
-          },
-          "compression": {
-            "scores": [
-              11,
-              12
-            ],
-            "mean_score": 11.5,
-            "mean_ttft_s": 42.22233504150063,
-            "mean_first_answer_s": 270.05898831300146,
-            "mean_total_s": 376.7167272084953,
-            "mean_reasoning_tokens_retokenized": 2236,
-            "mean_answer_tokens_retokenized": 1037.5,
-            "weighted_generation_tokens_per_s": 9.792836623443367,
-            "mean_prompt_tokens_per_s": 80.85218427934025
-          },
-          "family_backup_note": {
-            "scores": [
-              6,
-              6
-            ],
-            "mean_score": 6,
-            "mean_ttft_s": 2.2203443335056363,
-            "mean_first_answer_s": 94.78782797900567,
-            "mean_total_s": 103.19066870850293,
-            "mean_reasoning_tokens_retokenized": 941,
-            "mean_answer_tokens_retokenized": 88,
-            "weighted_generation_tokens_per_s": 10.212478061980994,
-            "mean_prompt_tokens_per_s": 69.02285667821889
-          },
-          "two_section_backup_checklist": {
-            "scores": [
               7,
               7
             ],
             "mean_score": 7,
-            "mean_ttft_s": 2.2183421664994967,
-            "mean_first_answer_s": 86.14514645849704,
-            "mean_total_s": 92.46018385450225,
-            "mean_reasoning_tokens_retokenized": 857,
-            "mean_answer_tokens_retokenized": 63.5,
-            "weighted_generation_tokens_per_s": 10.224245546762825,
-            "mean_prompt_tokens_per_s": 70.90192439288859
+            "mean_ttft_s": 25.475144277668733,
+            "mean_first_answer_s": 245.15668988900143,
+            "mean_total_s": 278.59103133333457,
+            "mean_reasoning_tokens_retokenized": 2183.6666666666665,
+            "mean_answer_tokens_retokenized": 330,
+            "weighted_generation_tokens_per_s": 9.939392095555293,
+            "mean_prompt_tokens_per_s": 79.45109049708068
+          },
+          "compression": {
+            "scores": [
+              11,
+              12,
+              12
+            ],
+            "mean_score": 11.666666666666666,
+            "mean_ttft_s": 42.19457591633545,
+            "mean_first_answer_s": 243.39544023633547,
+            "mean_total_s": 346.2198463889969,
+            "mean_reasoning_tokens_retokenized": 1977.3333333333333,
+            "mean_answer_tokens_retokenized": 1002.3333333333334,
+            "weighted_generation_tokens_per_s": 9.807791158096926,
+            "mean_prompt_tokens_per_s": 80.9061140367309
+          },
+          "family_backup_note": {
+            "scores": [
+              6,
+              6,
+              6
+            ],
+            "mean_score": 6,
+            "mean_ttft_s": 2.2197001390037863,
+            "mean_first_answer_s": 90.69488134700562,
+            "mean_total_s": 99.16173941667027,
+            "mean_reasoning_tokens_retokenized": 902.3333333333334,
+            "mean_answer_tokens_retokenized": 87.66666666666667,
+            "weighted_generation_tokens_per_s": 10.234524734679573,
+            "mean_prompt_tokens_per_s": 69.04141687340473
+          },
+          "two_section_backup_checklist": {
+            "scores": [
+              7,
+              7,
+              7
+            ],
+            "mean_score": 7,
+            "mean_ttft_s": 2.2199342913348423,
+            "mean_first_answer_s": 74.27113456933391,
+            "mean_total_s": 80.53690375000345,
+            "mean_reasoning_tokens_retokenized": 739,
+            "mean_answer_tokens_retokenized": 63,
+            "weighted_generation_tokens_per_s": 10.267925331322001,
+            "mean_prompt_tokens_per_s": 70.85318653593902
           },
           "family_text_lines": {
             "scores": [
               8,
+              8,
               8
             ],
             "mean_score": 8,
-            "mean_ttft_s": 2.5645784585030924,
-            "mean_first_answer_s": 63.64639268799874,
-            "mean_total_s": 67.00510533399938,
-            "mean_reasoning_tokens_retokenized": 633,
-            "mean_answer_tokens_retokenized": 35,
-            "weighted_generation_tokens_per_s": 10.399717968676274,
-            "mean_prompt_tokens_per_s": 63.64710314373843
+            "mean_ttft_s": 2.56064690300506,
+            "mean_first_answer_s": 62.043271195000365,
+            "mean_total_s": 65.58322086166784,
+            "mean_reasoning_tokens_retokenized": 616.6666666666666,
+            "mean_answer_tokens_retokenized": 36.666666666666664,
+            "weighted_generation_tokens_per_s": 10.400951954075085,
+            "mean_prompt_tokens_per_s": 63.75233771379326
           }
         }
       }
@@ -4122,7 +5305,12 @@
   ],
   "execution_scope": {
     "rounds": [
-      2
+      3
+    ],
+    "comparison_rounds": [
+      1,
+      2,
+      3
     ],
     "tasks": [
       "access",
@@ -4135,12 +5323,10 @@
       "finance",
       "apache"
     ],
-    "deferred_rounds": [
-      3
-    ],
+    "deferred_rounds": [],
     "target_answers": 25,
-    "instruction": "Pause Apache and Finance; finish round two of the other five tasks for all five models, then stop.",
-    "updated_at": 1792525473.805713
+    "instruction": "Run round three of all five finishable tasks on all five local models at xhigh, then stop.",
+    "updated_at": 1792546517.724174
   },
   "comparison": {
     "tasks": [
@@ -4152,7 +5338,8 @@
     ],
     "rounds": [
       1,
-      2
+      2,
+      3
     ],
     "score_max": 40
   },
