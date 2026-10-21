@@ -1,7 +1,7 @@
 {
   "experiment_id": "qwen38-openrouter-heavy-xhigh-20261020",
-  "status": "in_progress",
-  "planned_requests": 2,
+  "status": "complete",
+  "planned_requests": 3,
   "suite": "qwen-family-full-xhigh@1.0",
   "tasks": [
     "apache",
@@ -9,12 +9,96 @@
   ],
   "purpose": "Hosted stock-Qwen completion and quality baseline; excluded from local speed rankings.",
   "limits": [
-    "Apache completed on DeepInfra BF16; Finance is rerun on ModelRun FP4 after Near AI FP8 exhausted its 64K output cap. Earlier attempts are retained separately.",
-    "Provider context is 262K; generation caps are 128K DeepInfra and 235929 ModelRun. ModelRun does not expose top_k or seed.",
+    "Apache compares ModelRun FP4 against the preserved DeepInfra BF16 result, both with 128K output caps. Finance uses ModelRun FP4 after Near AI FP8 exhausted its 64K output cap.",
+    "Provider context is 262K; the Finance ModelRun output cap is 235929. ModelRun does not expose top_k or seed.",
     "Identical task and xhigh system prompts; provider internal template and kernels are not observable.",
     "Network and hosted timings do not measure Mac inference speed."
   ],
   "records": [
+    {
+      "task": "apache",
+      "model": "qwen/qwen3.8-27b",
+      "provider_requested": "modelrun/fp4",
+      "provider": "ModelRun",
+      "id": "gen-1792544531-7DeW4hOJhVc0U9Io2UXy",
+      "prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f",
+      "reasoning_effort": "xhigh",
+      "sampling_note": "ModelRun FP4 exposes temperature/top_p; top_k and seed are not exposed. Quantization differs from the local MLX 8-bit baseline.",
+      "max_tokens": 131072,
+      "context_tokens": 262144,
+      "wall_limit_s": 3600,
+      "started_at": 1792544531.152398,
+      "finish_reason": "stop",
+      "ttft_s": 0.924472208993393,
+      "first_answer_s": 309.4900180419936,
+      "total_s": 321.69397366700287,
+      "prompt_tokens": 48873,
+      "generation_tokens": 98350,
+      "reasoning_tokens_provider": 94622,
+      "reasoning_tokens_retokenized": 94619,
+      "answer_tokens_retokenized": 3757,
+      "cost_usd": 0.2502992,
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/qwen38-apache.result.json",
+      "billing_total_cost_usd": 0.2502992,
+      "provider_generation_time_ms": 320989,
+      "cached_prompt_tokens": 48640,
+      "billing_evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/qwen38-apache.result.generation.json",
+      "semantic_grade": {
+        "score": 10,
+        "max_score": 10,
+        "substantive_failures": [],
+        "presentation_differences": [
+          "Minor character-encoding mojibake appears where em dashes were intended."
+        ],
+        "strengths": [
+          "Covers all requested sections with detailed counts, evidence, client categories, security findings, and three actionable recommendations."
+        ],
+        "explanation": "The candidate satisfies all ten rubric checks and does not invert the core security or server findings.",
+        "pass": true
+      }
+    },
+    {
+      "task": "finance",
+      "model": "qwen/qwen3.8-27b",
+      "provider_requested": "modelrun/fp4",
+      "provider": "ModelRun",
+      "id": "gen-1792538264-kSF2QdHPpDDOrXVxcOgX",
+      "prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f",
+      "reasoning_effort": "xhigh",
+      "sampling_note": "ModelRun FP4 exposes temperature/top_p; top_k and seed are not exposed. Quantization differs from the local MLX 8-bit baseline.",
+      "max_tokens": 235929,
+      "context_tokens": 262144,
+      "wall_limit_s": 3600,
+      "started_at": 1792538263.92007,
+      "finish_reason": "stop",
+      "ttft_s": 0.9324397500022314,
+      "first_answer_s": 301.7854457920039,
+      "total_s": 311.01191333300085,
+      "prompt_tokens": 5770,
+      "generation_tokens": 78192,
+      "reasoning_tokens_provider": 75340,
+      "reasoning_tokens_retokenized": 75369,
+      "answer_tokens_retokenized": 2855,
+      "cost_usd": 0.196634,
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/qwen38-finance.result.json",
+      "semantic_grade": {
+        "score": 12,
+        "max_score": 12,
+        "substantive_failures": [],
+        "presentation_differences": [
+          "One apostrophe appears with a character-encoding artifact: `sample\u00e2\u0080\u0099s`."
+        ],
+        "strengths": [
+          "Includes all seven required sections.",
+          "Reports the core performance, volatility, trading-day, trend, drawdown, and risk-adjusted metrics accurately.",
+          "Uses readable professional Markdown tables and provides qualitative interpretation."
+        ],
+        "explanation": "The candidate satisfies all 12 rubric checks. Its minor encoding artifact is presentational only and does not affect the financial content.",
+        "pass": true
+      }
+    }
+  ],
+  "previous_attempts": [
     {
       "task": "apache",
       "model": "qwen/qwen3.8-27b",
@@ -38,7 +122,11 @@
       "reasoning_tokens_retokenized": 61441,
       "answer_tokens_retokenized": 3278,
       "cost_usd": 0.128679075,
-      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/qwen38-apache.result.json",
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/deepinfra-bf16-apache-128k/qwen38-apache.result.json",
+      "billing_total_cost_usd": 0.128679075,
+      "provider_generation_time_ms": 3529747,
+      "cached_prompt_tokens": 0,
+      "billing_evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/deepinfra-bf16-apache-128k/qwen38-apache.result.generation.json",
       "semantic_grade": {
         "score": 9,
         "max_score": 10,
@@ -54,9 +142,65 @@
         "explanation": "The answer is comprehensive and substantively accurate overall, but its client-error category table reports 19 invalid-method entries; the supplied log contains 18.",
         "pass": false
       }
-    }
-  ],
-  "previous_attempts": [
+    },
+    {
+      "task": "apache",
+      "model": "qwen/qwen3.8-27b",
+      "provider_requested": "modelrun/fp4",
+      "provider": "ModelRun",
+      "id": "gen-1792544181-WA2cRMycKI4Yp5VlxdI1",
+      "prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f",
+      "reasoning_effort": "xhigh",
+      "sampling_note": "ModelRun FP4 exposes temperature/top_p; top_k and seed are not exposed. Quantization differs from the local MLX 8-bit baseline.",
+      "max_tokens": 131072,
+      "context_tokens": 262144,
+      "wall_limit_s": 3600,
+      "started_at": 1792544180.7834308,
+      "finish_reason": "error",
+      "ttft_s": 2.736072415995295,
+      "first_answer_s": null,
+      "total_s": 55.88239733299997,
+      "prompt_tokens": null,
+      "generation_tokens": null,
+      "reasoning_tokens_provider": null,
+      "reasoning_tokens_retokenized": 14059,
+      "answer_tokens_retokenized": 0,
+      "cost_usd": null,
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/modelrun-apache-upstream-error-attempt1/qwen38-apache.result.json",
+      "billing_total_cost_usd": 0,
+      "provider_generation_time_ms": 55056,
+      "cached_prompt_tokens": 0,
+      "billing_evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/modelrun-apache-upstream-error-attempt1/qwen38-apache.result.generation.json"
+    },
+    {
+      "task": "apache",
+      "model": "qwen/qwen3.8-27b",
+      "provider_requested": "modelrun/fp4",
+      "provider": "ModelRun",
+      "id": "gen-1792544332-6ZMHlnkPzkkLXzhWJnu5",
+      "prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f",
+      "reasoning_effort": "xhigh",
+      "sampling_note": "ModelRun FP4 exposes temperature/top_p; top_k and seed are not exposed. Quantization differs from the local MLX 8-bit baseline.",
+      "max_tokens": 131072,
+      "context_tokens": 262144,
+      "wall_limit_s": 3600,
+      "started_at": 1792544332.597208,
+      "finish_reason": "error",
+      "ttft_s": 2.6503223330073524,
+      "first_answer_s": null,
+      "total_s": 85.46547512500547,
+      "prompt_tokens": null,
+      "generation_tokens": null,
+      "reasoning_tokens_provider": null,
+      "reasoning_tokens_retokenized": 26755,
+      "answer_tokens_retokenized": 0,
+      "cost_usd": null,
+      "evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/modelrun-apache-upstream-error-attempt2/qwen38-apache.result.json",
+      "billing_total_cost_usd": 0,
+      "provider_generation_time_ms": 84725,
+      "cached_prompt_tokens": 0,
+      "billing_evidence": "results/qwen-family-full-xhigh-20261020/openrouter-baseline/modelrun-apache-upstream-error-attempt2/qwen38-apache.result.generation.json"
+    },
     {
       "task": "finance",
       "model": "qwen/qwen3.8-27b",

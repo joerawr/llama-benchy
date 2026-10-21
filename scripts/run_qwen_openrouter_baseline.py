@@ -17,6 +17,8 @@ DIRECTORY = OUT / 'openrouter-baseline'
 MODEL = 'qwen/qwen3.8-27b'
 PROVIDER = 'modelrun/fp4'
 MAX_TOKENS = 235929
+CONTEXT = 262144
+SAMPLING_NOTE = 'ModelRun FP4 exposes temperature/top_p; top_k and seed are not exposed. Quantization differs from the local MLX 8-bit baseline.'
 SYSTEM = ('Reasoning effort is set to xhigh. Please think carefully through the task, '
           'validate key assumptions, consider plausible alternatives, and prioritize '
           'correctness, consistency, and clarity in the final answer.')
@@ -54,13 +56,16 @@ def dashboard():
     write_dashboard()
 
 
-def request_payload(task):
-    return {'model': MODEL, 'messages': [{'role': 'system', 'content': SYSTEM},
+def request_payload(task, max_tokens=MAX_TOKENS):
+    request = {'model': MODEL, 'messages': [{'role': 'system', 'content': SYSTEM},
                                            {'role': 'user', 'content': task.prompt}],
                'stream': True, 'stream_options': {'include_usage': True},
                'reasoning': {'effort': 'xhigh', 'exclude': False},
                'provider': {'only': [PROVIDER], 'allow_fallbacks': False, 'require_parameters': True},
-               'max_tokens': MAX_TOKENS, 'temperature': 1.0, 'top_p': .95}
+               'max_tokens': max_tokens, 'temperature': 1.0, 'top_p': .95}
+    if PROVIDER == 'cerebras/fp16':
+        request['seed'] = 20261020
+    return request
 
 
 def run(task_name, tokenizer):
@@ -69,17 +74,18 @@ def run(task_name, tokenizer):
     path = DIRECTORY / f'qwen38-{task_name}.result.json'
     if path.exists():
         return path
-    request = request_payload(task)
+    max_tokens = 131072 if task_name == 'apache' else MAX_TOKENS
+    request = request_payload(task, max_tokens)
     save(DIRECTORY / f'{task_name}.request.json', request)
     row = {'task': task_name, 'model': MODEL, 'provider_requested': PROVIDER,
            'prompt_sha256': sha(task.prompt.encode()), 'reasoning_effort': 'xhigh',
-           'max_tokens': MAX_TOKENS, 'context_tokens': 262144, 'wall_limit_s': 3600,
-           'sampling_note': 'ModelRun FP4 exposes temperature/top_p; top_k and seed are not exposed. Quantization differs from the local MLX 8-bit baseline.',
+           'max_tokens': max_tokens, 'context_tokens': CONTEXT, 'wall_limit_s': 3600,
+           'sampling_note': SAMPLING_NOTE,
            'started_at': time.time(), 'answer': '', 'reasoning': '', 'ttft_s': None,
            'first_answer_s': None, 'finish_reason': None,
            'timing_note': 'Network and hosted inference; not comparable to local tok/s.'}
     live = {'task': task_name, 'status': 'running', 'started_at': row['started_at'],
-            'provider_requested': PROVIDER, 'max_tokens': MAX_TOKENS}
+            'provider_requested': PROVIDER, 'max_tokens': max_tokens}
     save(DIRECTORY / 'live.json', live)
     dashboard()
     started = time.monotonic()
@@ -91,6 +97,7 @@ def run(task_name, tokenizer):
                            headers={'Authorization': 'Bearer ' + openrouter_api_key(),
                                     'X-OpenRouter-Title': 'Qwen family heavy-task baseline'},
                            json=request, stream=True, timeout=(30, 300)) as response:
+            response.encoding = 'utf-8'
             if response.status_code != 200:
                 raise RuntimeError(f'HTTP {response.status_code}: {response.text[:2000]}')
             with (DIRECTORY / f'{task_name}.events.jsonl').open('w') as events:
@@ -142,6 +149,8 @@ def self_check():
     request = request_payload(tasks()['finance'])
     assert request['provider']['only'] == ['modelrun/fp4'] and not request['provider']['allow_fallbacks']
     assert request['max_tokens'] == 235929 and request['reasoning']['effort'] == 'xhigh'
+    apache = request_payload(tasks()['apache'], 131072)
+    assert apache['max_tokens'] == 131072 and apache['messages'][-1]['content'] == tasks()['apache'].prompt
     assert not {'top_k', 'seed', 'min_p', 'presence_penalty', 'frequency_penalty', 'repetition_penalty'} & request.keys()
     row = {'answer': '', 'reasoning': '', 'ttft_s': None, 'first_answer_s': None}
     apply_event(row, {'choices': [{'delta': {'reasoning': 'abc', 'reasoning_details': [
@@ -163,18 +172,22 @@ def self_check():
 
 
 def summarize():
-    records = []
     fields = ['task', 'model', 'provider_requested', 'provider', 'id', 'prompt_sha256', 'reasoning_effort', 'sampling_note',
               'max_tokens', 'context_tokens', 'wall_limit_s', 'started_at', 'finish_reason',
               'ttft_s', 'first_answer_s', 'total_s', 'prompt_tokens', 'generation_tokens',
               'reasoning_tokens_provider', 'reasoning_tokens_retokenized', 'answer_tokens_retokenized', 'cost_usd']
-    for task in ['apache', 'finance']:
-        path = DIRECTORY / f'qwen38-{task}.result.json'
-        if not path.exists():
-            continue
+    def collect(path):
         raw = json.loads(path.read_text())
         row = {field: raw.get(field) for field in fields}
         row['evidence'] = str(path.relative_to(ROOT))
+        billing_path = path.with_suffix('.generation.json')
+        if billing_path.exists():
+            billing = json.loads(billing_path.read_text()).get('data', {})
+            assert billing.get('id') == raw.get('id'), 'Billing metadata does not match this request'
+            row['billing_total_cost_usd'] = billing.get('total_cost')
+            row['provider_generation_time_ms'] = billing.get('generation_time')
+            row['cached_prompt_tokens'] = billing.get('native_tokens_cached')
+            row['billing_evidence'] = str(billing_path.relative_to(ROOT))
         grade_path = path.with_suffix('.grade.json')
         if grade_path.exists():
             grade = json.loads(grade_path.read_text())
@@ -187,17 +200,17 @@ def summarize():
             else:
                 row['grading_status'] = 'incomplete'
                 row['grading_error'] = grade['semantic_grade'].get('error')
-        records.append(row)
-    previous = []
-    for path in sorted(DIRECTORY.glob('*/qwen38-finance.result.json')):
-        raw = json.loads(path.read_text())
-        previous.append({**{field: raw.get(field) for field in fields}, 'evidence': str(path.relative_to(ROOT))})
+        return row
+    records = [collect(path) for task in ['apache', 'finance']
+               if (path := DIRECTORY / f'qwen38-{task}.result.json').exists()]
+    previous = [collect(path) for path in sorted(DIRECTORY.glob('*/qwen38-*.result.json'))]
     record = {'experiment_id': 'qwen38-openrouter-heavy-xhigh-20261020',
-              'status': 'complete' if len(records) == 2 else 'in_progress', 'planned_requests': 2,
+              'status': 'complete' if len(records) == 2 else 'in_progress',
+              'planned_requests': 3 if (DIRECTORY / 'deepinfra-bf16-apache-128k').exists() else 2,
               'suite': 'qwen-family-full-xhigh@1.0', 'tasks': ['apache', 'finance'],
               'purpose': 'Hosted stock-Qwen completion and quality baseline; excluded from local speed rankings.',
-              'limits': ['Apache completed on DeepInfra BF16; Finance is rerun on ModelRun FP4 after Near AI FP8 exhausted its 64K output cap. Earlier attempts are retained separately.',
-                         'Provider context is 262K; generation caps are 128K DeepInfra and 235929 ModelRun. ModelRun does not expose top_k or seed.',
+              'limits': ['Apache compares ModelRun FP4 against the preserved DeepInfra BF16 result, both with 128K output caps. Finance uses ModelRun FP4 after Near AI FP8 exhausted its 64K output cap.',
+                         'Provider context is 262K; the Finance ModelRun output cap is 235929. ModelRun does not expose top_k or seed.',
                          'Identical task and xhigh system prompts; provider internal template and kernels are not observable.',
                          'Network and hosted timings do not measure Mac inference speed.'],
               'records': records, 'previous_attempts': previous}
