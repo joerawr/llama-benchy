@@ -2,7 +2,7 @@
   "experiment_id": "qwen-heavy-cross-checks-128k-20261020",
   "suite": "qwen-family-full-xhigh@1.0",
   "planned_requests": 2,
-  "status": "in_progress",
+  "status": "complete",
   "thinking": "on, xhigh",
   "context_tokens": 131072,
   "wall_limit_s": 3600,
@@ -19,5 +19,46 @@
   "limits": [
     "One new attempt per model/task; earlier attempts remain in the original campaign."
   ],
-  "records": []
+  "records": [
+    {
+      "model": "twin709-ultra-q8",
+      "task": "finance",
+      "seed": 20261020,
+      "context_tokens": 131072,
+      "request_wall_timeout_s": 3600,
+      "finish_reason": "error",
+      "prompt_sha256": "d98e434e4b1e127fdab631b462782ca89018591376c8de4cd2d5dd0891dd4d2f",
+      "rendered_sha256": "11da20d64786b491e2b5e3a663482acd568890d7f1da143755a54b14d1db63d5",
+      "ttft_s": 50.30707704099768,
+      "first_answer_s": null,
+      "reasoning_tokens_retokenized": 30078,
+      "answer_tokens_retokenized": 0,
+      "generation_tokens": 30078,
+      "generation_tokens_per_s": 8.473163426311855,
+      "prompt_tokens": 5732,
+      "prompt_tokens_per_s": 114.06400188456338,
+      "total_s": 3600.062468749995,
+      "evidence": "results/qwen-family-full-xhigh-20261020/heavy-cross-checks-128k/twin709-ultra-q8-pass1-finance.result.json"
+    },
+    {
+      "model": "turbo735-q8",
+      "task": "apache",
+      "seed": 20261020,
+      "context_tokens": 131072,
+      "request_wall_timeout_s": 3600,
+      "finish_reason": "error",
+      "prompt_sha256": "4623484c56c47de4593940ac4be7272b00af1a9a584f7329903b00ee8c262e4f",
+      "rendered_sha256": "a18305c90f5d98b246170ba3950ea1fe5c5171a5f5de587c5740cef7cbd826a6",
+      "ttft_s": 525.7282287499984,
+      "first_answer_s": null,
+      "reasoning_tokens_retokenized": 22663,
+      "answer_tokens_retokenized": 0,
+      "generation_tokens": 22663,
+      "generation_tokens_per_s": 7.371423129919239,
+      "prompt_tokens": 48835,
+      "prompt_tokens_per_s": 92.90297764706229,
+      "total_s": 3600.035385541996,
+      "evidence": "results/qwen-family-full-xhigh-20261020/heavy-cross-checks-128k/turbo735-q8-pass1-apache.result.json"
+    }
+  ]
 }
