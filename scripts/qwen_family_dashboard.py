@@ -75,7 +75,7 @@ def snapshot(directory=OUT):
                               'record': r, 'finished': bool(raw), 'delivered': delivered, 'active': active, 'in_scope': in_scope})
     finished = sum(s['finished'] for s in slots)
     for folder in ['openrouter-baseline', 'heavy-cross-checks-128k', 'cerebras-five-task']:
-        for path in (directory / folder).glob('*.result.json'):
+        for path in (directory / folder).rglob('*.result.json'):
             last_result = max(last_result or 0, path.stat().st_mtime)
     live_matches = any(s['active'] for s in slots)
     started = live.get('started_at')
@@ -257,12 +257,25 @@ def cerebras_section(directory):
     costs = [row.get('cost_usd') for _, row, _, _ in entries]
     cost = '$' + number(sum(costs), 5) if all(c is not None for c in costs) else '-'
     elapsed = sum(row.get('total_s', 0) for _, row, _, _ in entries)
+    repeat_note = ''
+    if (folder / 'compression-repeat-2').exists():
+        repeat = hosted_result(directory, 'compression', results_subdir='cerebras-five-task/compression-repeat-2')
+        entries.append(('compression', *repeat))
+        saved = int(bool(repeat[0]))
+        repeat_note = ('<p>Focused Compression repeat: ' + str(saved) + '/1 tests saved; ' +
+                       str(1 - saved) + '/1 remaining. Identical request settings, including the seed. '
+                       'The repeat appears below; the original five-task total and cost above remain unchanged.</p>')
+        comparison = read_json(folder / 'compression-repeat-2/comparison.json')
+        if comparison.get('interpretation'):
+            repeat_note += '<p>' + html.escape(comparison['interpretation']) + '</p>'
     rows = []
-    for task, row, score, status in entries:
+    for index, (task, row, score, status) in enumerate(entries):
         running = status == 'Running'
-        timing = live if running else row
-        wall = time.time() - live['started_at'] if running else row.get('total_s')
-        cells = [TASK_NAMES[task], status, f'{score}/{MAXIMA[task]}' if score is not None else '-',
+        task_live = read_json(folder / 'compression-repeat-2/live.json') if index == 5 else live
+        timing = task_live if running else row
+        wall = time.time() - task_live['started_at'] if running else row.get('total_s')
+        name = TASK_NAMES[task] + (' (repeat 2)' if index == 5 else '')
+        cells = [name, status, f'{score}/{MAXIMA[task]}' if score is not None else '-',
                  number(wall), number(row.get('cost_usd'), 5), number(hosted_speed(row)),
                  number(timing.get('first_answer_s')), number(timing.get('ttft_s')),
                  number(row.get('reasoning_tokens_provider'), 0), number(row.get('reasoning_tokens_retokenized'), 0),
@@ -277,7 +290,7 @@ def cerebras_section(directory):
             '64K context, 32K generation cap, temperature 1, top_p 0.95, seed 20261020. Cerebras does not expose top_k. '
             'Costs and times cover these API requests; subsequent Luna xhigh quality grading is separate. '
             'Observed tok/s includes network behavior and stays separate from local performance.</p>'
-            '<div class="wrap"><table><thead><tr>' + ''.join('<th>' + h + '</th>' for h in headers) +
+            + repeat_note + '<div class="wrap"><table><thead><tr>' + ''.join('<th>' + h + '</th>' for h in headers) +
             '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div></section>')
 
 
@@ -375,7 +388,7 @@ def signature():
     paths += [OUT / name for name in ['state.json', 'live.json', 'protocol.json', 'control.json', 'publication.json']]
     paths += list((OUT / 'openrouter-baseline').glob('*.json'))
     paths += list((OUT / 'heavy-cross-checks-128k').glob('*.json'))
-    paths += list((OUT / 'cerebras-five-task').glob('*.json'))
+    paths += list((OUT / 'cerebras-five-task').rglob('*.json'))
     return [(p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in sorted(paths) if p.exists()]
 
 
@@ -453,6 +466,20 @@ def self_test():
         section = cerebras_section(p)
         assert '5/5 tests saved; 0/5 remaining' in section and 'Quality: 40/40' in section
         assert 'API request cost: $0.00000' in section and 'PRIVATE CEREBRAS' not in section
+        repeat = cerebras / 'compression-repeat-2'
+        repeat.mkdir()
+        repeat_path = repeat / 'qwen38-compression.result.json'
+        repeat_path.write_text(json.dumps({'finish_reason': 'stop', 'answer': 'PRIVATE REPEAT',
+            'cost_usd': 1, 'total_s': 2}))
+        repeat_grade = dict(cg, source_sha256=hashlib.sha256(repeat_path.read_bytes()).hexdigest(),
+                            semantic_grade={'score': 10, 'max_score': 12})
+        repeat_path.with_suffix('.grade.json').write_text(json.dumps(repeat_grade))
+        section = cerebras_section(p)
+        assert 'Compression (repeat 2)' in section and '10/12' in section
+        assert 'Quality: 40/40' in section and 'API request cost: $0.00000' in section
+        assert '1/1 tests saved; 0/1 remaining' in section and 'PRIVATE REPEAT' not in section
+        (repeat / 'comparison.json').write_text(json.dumps({'interpretation': 'Same model content; grading varies.'}))
+        assert 'Same model content; grading varies.' in cerebras_section(p)
         (cerebras / 'qwen38-access.result.grade.json').unlink()
         assert 'Quality: awaiting complete grading' in cerebras_section(p)
         hosted = p / 'openrouter-baseline'

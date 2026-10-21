@@ -116,8 +116,65 @@ def self_check():
     print('Cerebras checks passed: five tasks only, exact prompts, xhigh, seed, supported controls and context fit.')
 
 
+def repeat_compression():
+    configure()
+    folder = DIRECTORY / 'compression-repeat-2'
+    folder.mkdir(parents=True, exist_ok=True)
+    hosted.DIRECTORY = folder
+    original_request = json.loads((DIRECTORY / 'compression.request.json').read_text())
+    assert hosted.request_payload(tasks()['compression'], hosted.MAX_TOKENS) == original_request
+    tokenizer = Tokenizer.from_file(str(Path.home() / 'models/mlx-community/Qwen3.8-27B-8bit/tokenizer.json'))
+    path = hosted.run('compression', tokenizer)
+    row = json.loads(path.read_text())
+    if row['finish_reason'] == 'stop' and row['answer'].strip() and not path.with_suffix('.grade.json').exists():
+        with path.with_suffix('.judge.log').open('a') as log:
+            subprocess.run([str(PYTHON), str(SCRIPT), 'judge', '--result', str(path)],
+                           stdout=log, stderr=subprocess.STDOUT, timeout=900, check=True)
+    records = []
+    for attempt, subdir in [(1, 'cerebras-five-task'), (2, 'cerebras-five-task/compression-repeat-2')]:
+        result, score, status = hosted_result(OUT, 'compression', results_subdir=subdir)
+        source = OUT / subdir / 'qwen38-compression.result.json'
+        fields = ['task', 'model', 'provider_requested', 'provider', 'id', 'prompt_sha256', 'reasoning_effort',
+                  'max_tokens', 'context_tokens', 'sampling_note', 'started_at', 'finish_reason', 'ttft_s',
+                  'first_answer_s', 'total_s', 'prompt_tokens', 'generation_tokens', 'reasoning_tokens_provider',
+                  'reasoning_tokens_retokenized', 'answer_tokens_retokenized', 'cost_usd']
+        record = {field: result.get(field) for field in fields}
+        record.update(attempt=attempt, semantic_score=score, semantic_max=12, status=status,
+                      observed_generation_tokens_per_s=hosted_speed(result),
+                      evidence=str(source.relative_to(ROOT)), source_sha256=sha(source.read_bytes()))
+        grade = source.with_suffix('.grade.json')
+        if grade.exists():
+            record.update(grade_evidence=str(grade.relative_to(ROOT)), grade_sha256=sha(grade.read_bytes()))
+        records.append(record)
+    original = json.loads((DIRECTORY / 'qwen38-compression.result.json').read_text())
+    comparison = {'request_bodies_identical': original_request == json.loads((folder / 'compression.request.json').read_text())}
+    for field in ['answer', 'reasoning']:
+        try:
+            repaired = original[field].encode('latin1').decode('utf8')
+        except UnicodeError:
+            repaired = original[field]
+        comparison[field + '_identical_after_legacy_utf8_repair'] = repaired == row[field]
+    comparison['interpretation'] = (
+        'The original stream had UTF-8 decoded as Latin-1; the repeat uses the corrected decoder. '
+        'After repairing that historical encoding, answer and reasoning match exactly. '
+        'The score difference reflects grading/decoding variation, not changed model content.'
+        if all(comparison.values()) else 'See preserved outputs before attributing score differences to model variation.')
+    save(folder / 'comparison.json', comparison)
+    save(ROOT / 'benchmarks/runs/qwen38-cerebras-compression-repeat-xhigh-20261020.json', {
+        'experiment_id': 'qwen38-cerebras-compression-repeat-xhigh-20261020',
+        'suite': 'qwen-family-full-xhigh@1.0', 'judge': {
+            'model': 'gpt-5.6-luna', 'effort': 'xhigh', 'protocol': 'source-aware-v2'},
+        'purpose': 'One Compression repeat with the identical request body, including seed 20261020.',
+        'limitations': ['Two observations only; the original five-task pass total remains unchanged.'],
+        'comparison': comparison,
+        'records': records})
+    hosted.dashboard()
+    print(json.dumps(records, indent=2), flush=True)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--self-check', action='store_true')
+    parser.add_argument('--repeat-compression', action='store_true')
     args = parser.parse_args()
-    self_check() if args.self_check else run()
+    self_check() if args.self_check else repeat_compression() if args.repeat_compression else run()
