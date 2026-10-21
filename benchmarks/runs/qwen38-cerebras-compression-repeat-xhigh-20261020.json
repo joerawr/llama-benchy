@@ -8,7 +8,7 @@
   },
   "purpose": "One Compression repeat with the identical request body, including seed 20261020.",
   "limitations": [
-    "Two observations only; the original five-task pass total remains unchanged."
+    "Two observations only; the dashboard retains the 11/12 repeat at the user's request."
   ],
   "comparison": {
     "request_bodies_identical": true,
@@ -44,9 +44,9 @@
       "semantic_max": 12,
       "status": "Graded",
       "observed_generation_tokens_per_s": 1973.8194953639313,
-      "evidence": "results/qwen-family-full-xhigh-20261020/cerebras-five-task/qwen38-compression.result.json",
+      "evidence": "results/qwen-family-full-xhigh-20261020/cerebras-five-task/compression-original-10of12/qwen38-compression.result.json",
       "source_sha256": "754aedd55db55ed39d5f99733677cefbcb384cf15454d0bd4e89431315d89f54",
-      "grade_evidence": "results/qwen-family-full-xhigh-20261020/cerebras-five-task/qwen38-compression.result.grade.json",
+      "grade_evidence": "results/qwen-family-full-xhigh-20261020/cerebras-five-task/compression-original-10of12/qwen38-compression.result.grade.json",
       "grade_sha256": "cb15b83c6f8ea0856b066c31eec2c06ee604e637611ff73ac345e598834c386c"
     },
     {

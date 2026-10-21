@@ -61,7 +61,7 @@ def summarize():
         'status': 'complete' if len(records) == 5 else 'in_progress',
         'score_max': 40, 'score': sum(scores) if len(scores) == 5 and all(s is not None for s in scores) else None,
         'cost_usd': sum(costs) if len(costs) == 5 and all(c is not None for c in costs) else None,
-        'limitations': ['One sequential pass, xhigh, 64K context and 32K maximum generated tokens.',
+        'limitations': ['Five retained task results, xhigh, 64K context and 32K maximum generated tokens; Compression uses the 11/12 repeat selected by the user.',
                         'Hosted timings and costs include provider behavior; local runtime results remain separate.',
                         'Top-k is not exposed; prompts match the thinking-on variant, including compression.'],
         'records': records})
@@ -118,6 +118,9 @@ def self_check():
 
 def repeat_compression():
     configure()
+    original_folder = DIRECTORY / 'compression-original-10of12'
+    if not original_folder.exists():
+        original_folder = DIRECTORY
     folder = DIRECTORY / 'compression-repeat-2'
     folder.mkdir(parents=True, exist_ok=True)
     hosted.DIRECTORY = folder
@@ -131,7 +134,7 @@ def repeat_compression():
             subprocess.run([str(PYTHON), str(SCRIPT), 'judge', '--result', str(path)],
                            stdout=log, stderr=subprocess.STDOUT, timeout=900, check=True)
     records = []
-    for attempt, subdir in [(1, 'cerebras-five-task'), (2, 'cerebras-five-task/compression-repeat-2')]:
+    for attempt, subdir in [(1, str(original_folder.relative_to(OUT))), (2, 'cerebras-five-task/compression-repeat-2')]:
         result, score, status = hosted_result(OUT, 'compression', results_subdir=subdir)
         source = OUT / subdir / 'qwen38-compression.result.json'
         fields = ['task', 'model', 'provider_requested', 'provider', 'id', 'prompt_sha256', 'reasoning_effort',
@@ -146,7 +149,7 @@ def repeat_compression():
         if grade.exists():
             record.update(grade_evidence=str(grade.relative_to(ROOT)), grade_sha256=sha(grade.read_bytes()))
         records.append(record)
-    original = json.loads((DIRECTORY / 'qwen38-compression.result.json').read_text())
+    original = json.loads((original_folder / 'qwen38-compression.result.json').read_text())
     comparison = {'request_bodies_identical': original_request == json.loads((folder / 'compression.request.json').read_text())}
     for field in ['answer', 'reasoning']:
         try:
@@ -165,7 +168,7 @@ def repeat_compression():
         'suite': 'qwen-family-full-xhigh@1.0', 'judge': {
             'model': 'gpt-5.6-luna', 'effort': 'xhigh', 'protocol': 'source-aware-v2'},
         'purpose': 'One Compression repeat with the identical request body, including seed 20261020.',
-        'limitations': ['Two observations only; the original five-task pass total remains unchanged.'],
+        'limitations': ['Two observations only; the dashboard retains the 11/12 repeat at the user\'s request.'],
         'comparison': comparison,
         'records': records})
     hosted.dashboard()
