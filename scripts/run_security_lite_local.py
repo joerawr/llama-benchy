@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One local xhigh pass of the six frozen operational/security candidates."""
+"""One local xhigh pass of the two selected operational/security candidates."""
 import fcntl,inspect,json,shutil,time
 from pathlib import Path
 import run_qwen_family_xhigh as bench
@@ -9,10 +9,11 @@ from report_security_lite import report
 
 LOCAL=OUT/'local'
 LABEL='unsloth-v31-q4xl'
+SELECTED=['apache-ops-v4','security-untrusted-log-v4']
 IDENTITY=bench.ROOT/'results/qwen-v31-20261114/baseline-xhigh'/f'{LABEL}-download.json'
 
 def state(status,task=None,error=None):
-    bench.save(LOCAL/'state.json',{'status':status,'task':task,'planned':6,'saved':sum((OUT/f'{c[0]}.local.result.json').exists() for c in cases()),'updated_at':time.time(),'error':error})
+    bench.save(LOCAL/'state.json',{'status':status,'task':task,'planned':len(SELECTED),'selected':SELECTED,'saved':sum((OUT/f'{name}.local.result.json').exists() for name in SELECTED),'updated_at':time.time(),'error':error})
     report()
 
 def run():
@@ -47,10 +48,10 @@ def run():
                 state('running',task)
             return row
         bench.gguf_request=request
-        task_names=[c[0] for c in cases()]
+        task_names=[name for name in SELECTED if not (OUT/f'{name}.local.result.json').exists()]
         # A saved inference is never repeated; missing grades are recovered separately.
         state('loading')
-        bench.gguf_round(LABEL,1,task_names=task_names)
+        if task_names:bench.gguf_round(LABEL,1,task_names=task_names)
         for task,a in artifacts.items():
             path=OUT/f'{task}.local.result.json';gp=path.with_suffix('.grade.json')
             if path.exists() and not gp.exists():
