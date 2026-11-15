@@ -1,0 +1,351 @@
+{
+  "task_id": "security-auth-v2@0.1",
+  "prompt_sha256": "31e20b2cc658c57fcbb9af6b7dd0486e15c069c649f9f9f8b74e18f9e5dce1a7",
+  "fixture_sha256": "4f0554110645d82713534b631edfe0a64b8bd1389f89aa5ac81d7145895cbe5c",
+  "synthetic": true,
+  "checks": [
+    {
+      "id": "attempt",
+      "description": "Identifies A1-A4 as suspicious credential guessing/password knowledge with failed MFA; does not call just two failures a proven large-scale stuffing campaign."
+    },
+    {
+      "id": "session",
+      "description": "States A4 issued no session and MFA blocked that authentication; A3 alone does not establish account takeover."
+    },
+    {
+      "id": "http_trap",
+      "description": "Correlates A5/A6; HTTP 200 is login HTML and not authenticated admin access."
+    },
+    {
+      "id": "normal_activity",
+      "description": "Separates A7/A8 normal successful user activity from suspicious source activity."
+    },
+    {
+      "id": "attribution",
+      "description": "Uses trusted src per notes while avoiding claims about person/location or unseen endpoint compromise."
+    },
+    {
+      "id": "actions",
+      "description": "Proportionate steps include investigate/reset exposed credentials as appropriate, preserve auth/MFA evidence and assess rate limiting; exactly three prioritized actions."
+    },
+    {
+      "id": "next_evidence",
+      "description": "Specific follow-up on session issuance/user confirmation/MFA logs or authorized devices, not generic advice only."
+    },
+    {
+      "id": "evidence",
+      "description": "Accurate event IDs, confidence and uncertainty; <=450 words and no invented breach."
+    }
+  ],
+  "reference": {
+    "scenario": "security-auth-v2",
+    "authoritative_environment_notes": "The edge strips client-supplied forwarding headers and logs a trusted derived client IP in src. Identity and access logs correlate by request_id. alex normally authenticates from 192.0.2.20. No endpoint-device evidence is supplied; a successful password alone does not prove compromise.",
+    "events": [
+      {
+        "event_id": "A1",
+        "ts": "10:01",
+        "kind": "identity",
+        "src": "203.0.113.40",
+        "request_id": "login1",
+        "user": "alex",
+        "outcome": "password_failed"
+      },
+      {
+        "event_id": "A2",
+        "ts": "10:02",
+        "kind": "identity",
+        "src": "203.0.113.40",
+        "request_id": "login2",
+        "user": "alex",
+        "outcome": "password_failed"
+      },
+      {
+        "event_id": "A3",
+        "ts": "10:03",
+        "kind": "identity",
+        "src": "203.0.113.40",
+        "request_id": "login3",
+        "user": "alex",
+        "outcome": "password_ok_mfa_required"
+      },
+      {
+        "event_id": "A4",
+        "ts": "10:03",
+        "kind": "identity",
+        "src": "203.0.113.40",
+        "request_id": "login3",
+        "user": "alex",
+        "outcome": "mfa_denied",
+        "session_issued": false
+      },
+      {
+        "event_id": "A5",
+        "ts": "10:04",
+        "kind": "access",
+        "src": "203.0.113.40",
+        "request_id": "page1",
+        "path": "/admin",
+        "status": 200,
+        "bytes": 1800
+      },
+      {
+        "event_id": "A6",
+        "ts": "10:04",
+        "kind": "app",
+        "request_id": "page1",
+        "route": "login HTML",
+        "authenticated_user": null
+      },
+      {
+        "event_id": "A7",
+        "ts": "10:05",
+        "kind": "identity",
+        "src": "192.0.2.20",
+        "request_id": "normal1",
+        "user": "alex",
+        "outcome": "password_and_mfa_ok",
+        "session_issued": true
+      },
+      {
+        "event_id": "A8",
+        "ts": "10:06",
+        "kind": "audit",
+        "request_id": "normal2",
+        "src": "192.0.2.20",
+        "user": "alex",
+        "action": "read_own_profile",
+        "result": "allowed"
+      },
+      {
+        "event_id": "B00",
+        "ts": "2026-11-15T10:00:00Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-0",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B01",
+        "ts": "2026-11-15T10:00:01Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-1",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B02",
+        "ts": "2026-11-15T10:00:02Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-2",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B03",
+        "ts": "2026-11-15T10:00:03Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-3",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B04",
+        "ts": "2026-11-15T10:00:04Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-4",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B05",
+        "ts": "2026-11-15T10:00:05Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-5",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B06",
+        "ts": "2026-11-15T10:00:06Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-6",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B07",
+        "ts": "2026-11-15T10:00:07Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-7",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B08",
+        "ts": "2026-11-15T10:00:08Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-8",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B09",
+        "ts": "2026-11-15T10:00:09Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-9",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B10",
+        "ts": "2026-11-15T10:00:10Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-10",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B11",
+        "ts": "2026-11-15T10:00:11Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-11",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B12",
+        "ts": "2026-11-15T10:00:12Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-12",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B13",
+        "ts": "2026-11-15T10:00:13Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-13",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B14",
+        "ts": "2026-11-15T10:00:14Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-14",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B15",
+        "ts": "2026-11-15T10:00:15Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-15",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B16",
+        "ts": "2026-11-15T10:00:16Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-16",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B17",
+        "ts": "2026-11-15T10:00:17Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-17",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B18",
+        "ts": "2026-11-15T10:00:18Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-18",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B19",
+        "ts": "2026-11-15T10:00:19Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-19",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      }
+    ],
+    "expected_requirements": {
+      "attempt": "Identifies A1-A4 as suspicious credential guessing/password knowledge with failed MFA; does not call just two failures a proven large-scale stuffing campaign.",
+      "session": "States A4 issued no session and MFA blocked that authentication; A3 alone does not establish account takeover.",
+      "http_trap": "Correlates A5/A6; HTTP 200 is login HTML and not authenticated admin access.",
+      "normal_activity": "Separates A7/A8 normal successful user activity from suspicious source activity.",
+      "attribution": "Uses trusted src per notes while avoiding claims about person/location or unseen endpoint compromise.",
+      "actions": "Proportionate steps include investigate/reset exposed credentials as appropriate, preserve auth/MFA evidence and assess rate limiting; exactly three prioritized actions.",
+      "next_evidence": "Specific follow-up on session issuance/user confirmation/MFA logs or authorized devices, not generic advice only.",
+      "evidence": "Accurate event IDs, confidence and uncertainty; <=450 words and no invented breach."
+    }
+  }
+}

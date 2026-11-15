@@ -113,8 +113,11 @@ Definitions: daily move=P[t]/P[t-1]-1, assigned to the later date; total return=
  assert kind!='apache' or sum(ref['client_categories'].values())==ref['client_entries']
  return prompt,artifact
 
-def run(kind,version):
- OUT.mkdir(parents=True,exist_ok=True);prompt,artifact=build(kind,version);path=OUT/f'{kind}-v{version}.result.json'
+def run(kind,version,prompt=None,artifact=None,stem=None):
+ OUT.mkdir(parents=True,exist_ok=True)
+ if prompt is None:prompt,artifact=build(kind,version)
+ stem=stem or f'{kind}-v{version}'
+ path=OUT/f'{stem}.result.json'
  if not path.exists():
   endpoint=requests.get('https://openrouter.ai/api/v1/models/qwen/qwen3.8-27b/endpoints',timeout=30).json()
   provider=next(e for e in endpoint['data']['endpoints'] if e['tag']=='wafer/fp8');save(OUT/'endpoint.json',provider)
@@ -122,7 +125,7 @@ def run(kind,version):
   upper=12288*float(provider['pricing']['completion'])+len(prompt.encode())*float(provider['pricing']['prompt'])
   assert prior+upper<2,'Calibration safety budget $2 exceeded'
   body={'model':'qwen/qwen3.8-27b','messages':[{'role':'system','content':SYSTEM},{'role':'user','content':prompt}],'provider':{'only':['wafer/fp8'],'allow_fallbacks':False,'require_parameters':True},'reasoning':{'effort':'xhigh','exclude':False},'temperature':1,'top_p':.95,'top_k':20,'min_p':0,'seed':20261115,'max_tokens':12288,'stream':True,'stream_options':{'include_usage':True}}
-  save(OUT/f'{kind}-v{version}.request.json',body)
+  save(OUT/f'{stem}.request.json',body)
   row={'task':artifact['task_id'],'prompt_sha256':artifact['prompt_sha256'],'started_at':time.time(),'answer':'','reasoning':'','ttft_s':None,'first_answer_s':None,'finish_reason':None};start=time.monotonic()
   try:
    with requests.post('https://openrouter.ai/api/v1/chat/completions',headers={'Authorization':'Bearer '+openrouter_api_key()},json=body,stream=True,timeout=(30,120)) as resp:

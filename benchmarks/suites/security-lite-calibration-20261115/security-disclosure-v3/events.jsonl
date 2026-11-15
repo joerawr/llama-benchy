@@ -1,0 +1,27 @@
+{"event_id": "D1", "kind": "identity", "outcome": "login_ok", "request_id": "l1", "session": "session7", "src": "203.0.113.70", "ts": "10:01", "user": "reader7"}
+{"bytes": 850000, "event_id": "D2", "kind": "access", "path": "/tenant/export", "request_id": "export7", "session": "session7", "status": 200, "ts": "10:02", "user": "reader7"}
+{"action": "export_tenant_records", "artifact": "tenant-export-17", "authorization": "deny", "event_id": "D3", "kind": "audit", "request_id": "export7", "result": "delivered", "ts": "10:02", "user": "reader7"}
+{"bytes": 920000, "event_id": "D4", "kind": "access", "path": "/tenant/export", "request_id": "export-admin", "status": 200, "ts": "10:03", "user": "ops1"}
+{"action": "export_tenant_records", "authorization": "allow", "event_id": "D5", "kind": "audit", "request_id": "export-admin", "result": "delivered", "ts": "10:03", "user": "ops1"}
+{"action": "block", "event_id": "D6", "kind": "waf", "request_id": "probe9", "rule": "command injection pattern", "src": "203.0.113.99", "ts": "10:04"}
+{"event_id": "D7", "kind": "access", "path": "/api/check", "request_id": "probe9", "src": "203.0.113.99", "status": 403, "ts": "10:04"}
+{"bytes": 15, "event_id": "B00", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-0", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:00Z"}
+{"bytes": 15, "event_id": "B01", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-1", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:01Z"}
+{"bytes": 15, "event_id": "B02", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-2", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:02Z"}
+{"bytes": 15, "event_id": "B03", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-3", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:03Z"}
+{"bytes": 15, "event_id": "B04", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-4", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:04Z"}
+{"bytes": 15, "event_id": "B05", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-5", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:05Z"}
+{"bytes": 15, "event_id": "B06", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-6", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:06Z"}
+{"bytes": 15, "event_id": "B07", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-7", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:07Z"}
+{"bytes": 15, "event_id": "B08", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-8", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:08Z"}
+{"bytes": 15, "event_id": "B09", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-9", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:09Z"}
+{"bytes": 15, "event_id": "B10", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-10", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:10Z"}
+{"bytes": 15, "event_id": "B11", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-11", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:11Z"}
+{"bytes": 15, "event_id": "B12", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-12", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:12Z"}
+{"bytes": 15, "event_id": "B13", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-13", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:13Z"}
+{"bytes": 15, "event_id": "B14", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-14", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:14Z"}
+{"bytes": 15, "event_id": "B15", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-15", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:15Z"}
+{"bytes": 15, "event_id": "B16", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-16", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:16Z"}
+{"bytes": 15, "event_id": "B17", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-17", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:17Z"}
+{"bytes": 15, "event_id": "B18", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-18", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:18Z"}
+{"bytes": 15, "event_id": "B19", "kind": "access", "method": "GET", "path": "/health", "request_id": "health-19", "src": "192.0.2.10", "status": 200, "ts": "2026-11-15T10:00:19Z"}

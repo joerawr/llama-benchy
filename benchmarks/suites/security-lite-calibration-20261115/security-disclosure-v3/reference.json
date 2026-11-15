@@ -1,0 +1,346 @@
+{
+  "task_id": "security-disclosure-v3@0.1",
+  "prompt_sha256": "0ede7ece124c8d9c3fc528d1d1091eec5126fe9f8648da4284e3a38419ab34b2",
+  "fixture_sha256": "61431084358bcb25f259c6ed50c87371858401fb657a2ddd1c496917b527c9ee",
+  "synthetic": true,
+  "checks": [
+    {
+      "id": "confirmed_issue",
+      "description": "Identifies D2/D3 policy-denied but delivered tenant export by reader7 as observed unauthorized disclosure with high confidence."
+    },
+    {
+      "id": "correlation",
+      "description": "Uses request_id export7 and audit artifact/authorization to distinguish evidence of delivery from a bare HTTP 200."
+    },
+    {
+      "id": "benign_export",
+      "description": "Recognizes D4/D5 ops1 export as authorized; does not classify every large export as malicious."
+    },
+    {
+      "id": "blocked_attempt",
+      "description": "Treats D6/D7 as separate blocked injection attempt; does not infer shell execution."
+    },
+    {
+      "id": "priority",
+      "description": "Prioritizes unauthorized export over blocked probe and routine health traffic."
+    },
+    {
+      "id": "actions",
+      "description": "Exactly three prioritized defensive actions cover containment/session or export access, evidence preservation/scope, and authorization-control remediation/validation."
+    },
+    {
+      "id": "scope",
+      "description": "Names actual known scope (one reader7 artifact) and seeks additional audit/delivery/session evidence rather than claiming all tenant data or a specific attacker identity."
+    },
+    {
+      "id": "evidence",
+      "description": "Cites matching event IDs and calibrated confidence, <=450 words; no exploitation instructions needed."
+    }
+  ],
+  "reference": {
+    "scenario": "security-disclosure-v3",
+    "authoritative_environment_notes": "Authorization policy: user reader7 may read own profile only and must not export tenant data. Admin ops1 may export. audit result=delivered confirms the named artifact was sent; bytes from access logs refer to response body. request_id joins sources. No evidence of shell execution is supplied.",
+    "events": [
+      {
+        "event_id": "D1",
+        "ts": "10:01",
+        "kind": "identity",
+        "request_id": "l1",
+        "user": "reader7",
+        "src": "203.0.113.70",
+        "session": "session7",
+        "outcome": "login_ok"
+      },
+      {
+        "event_id": "D2",
+        "ts": "10:02",
+        "kind": "access",
+        "request_id": "export7",
+        "user": "reader7",
+        "session": "session7",
+        "path": "/tenant/export",
+        "status": 200,
+        "bytes": 850000
+      },
+      {
+        "event_id": "D3",
+        "ts": "10:02",
+        "kind": "audit",
+        "request_id": "export7",
+        "user": "reader7",
+        "action": "export_tenant_records",
+        "authorization": "deny",
+        "result": "delivered",
+        "artifact": "tenant-export-17"
+      },
+      {
+        "event_id": "D4",
+        "ts": "10:03",
+        "kind": "access",
+        "request_id": "export-admin",
+        "user": "ops1",
+        "path": "/tenant/export",
+        "status": 200,
+        "bytes": 920000
+      },
+      {
+        "event_id": "D5",
+        "ts": "10:03",
+        "kind": "audit",
+        "request_id": "export-admin",
+        "user": "ops1",
+        "authorization": "allow",
+        "result": "delivered",
+        "action": "export_tenant_records"
+      },
+      {
+        "event_id": "D6",
+        "ts": "10:04",
+        "kind": "waf",
+        "request_id": "probe9",
+        "src": "203.0.113.99",
+        "action": "block",
+        "rule": "command injection pattern"
+      },
+      {
+        "event_id": "D7",
+        "ts": "10:04",
+        "kind": "access",
+        "request_id": "probe9",
+        "src": "203.0.113.99",
+        "status": 403,
+        "path": "/api/check"
+      },
+      {
+        "event_id": "B00",
+        "ts": "2026-11-15T10:00:00Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-0",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B01",
+        "ts": "2026-11-15T10:00:01Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-1",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B02",
+        "ts": "2026-11-15T10:00:02Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-2",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B03",
+        "ts": "2026-11-15T10:00:03Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-3",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B04",
+        "ts": "2026-11-15T10:00:04Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-4",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B05",
+        "ts": "2026-11-15T10:00:05Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-5",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B06",
+        "ts": "2026-11-15T10:00:06Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-6",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B07",
+        "ts": "2026-11-15T10:00:07Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-7",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B08",
+        "ts": "2026-11-15T10:00:08Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-8",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B09",
+        "ts": "2026-11-15T10:00:09Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-9",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B10",
+        "ts": "2026-11-15T10:00:10Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-10",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B11",
+        "ts": "2026-11-15T10:00:11Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-11",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B12",
+        "ts": "2026-11-15T10:00:12Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-12",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B13",
+        "ts": "2026-11-15T10:00:13Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-13",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B14",
+        "ts": "2026-11-15T10:00:14Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-14",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B15",
+        "ts": "2026-11-15T10:00:15Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-15",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B16",
+        "ts": "2026-11-15T10:00:16Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-16",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B17",
+        "ts": "2026-11-15T10:00:17Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-17",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B18",
+        "ts": "2026-11-15T10:00:18Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-18",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B19",
+        "ts": "2026-11-15T10:00:19Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-19",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      }
+    ],
+    "expected_requirements": {
+      "confirmed_issue": "Identifies D2/D3 policy-denied but delivered tenant export by reader7 as observed unauthorized disclosure with high confidence.",
+      "correlation": "Uses request_id export7 and audit artifact/authorization to distinguish evidence of delivery from a bare HTTP 200.",
+      "benign_export": "Recognizes D4/D5 ops1 export as authorized; does not classify every large export as malicious.",
+      "blocked_attempt": "Treats D6/D7 as separate blocked injection attempt; does not infer shell execution.",
+      "priority": "Prioritizes unauthorized export over blocked probe and routine health traffic.",
+      "actions": "Exactly three prioritized defensive actions cover containment/session or export access, evidence preservation/scope, and authorization-control remediation/validation.",
+      "scope": "Names actual known scope (one reader7 artifact) and seeks additional audit/delivery/session evidence rather than claiming all tenant data or a specific attacker identity.",
+      "evidence": "Cites matching event IDs and calibrated confidence, <=450 words; no exploitation instructions needed."
+    }
+  }
+}

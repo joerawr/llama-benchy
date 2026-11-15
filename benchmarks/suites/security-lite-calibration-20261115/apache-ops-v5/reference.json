@@ -1,0 +1,339 @@
+{
+  "task_id": "apache-ops-v5@0.1",
+  "prompt_sha256": "f618253b64f2b4b14626f62feb3111e073d01be222ed44d243899978c245d39c",
+  "fixture_sha256": "6bd2de528f6e0897d44fd9238ee8ecf8e9a54eaab4874a998b61f05449cf2a1e",
+  "synthetic": true,
+  "checks": [
+    {
+      "id": "cause",
+      "description": "Links deploy-17 wrong upstream port to O3/O4/O7 checkout failure; distinguishes evidence from unproven causation."
+    },
+    {
+      "id": "impact",
+      "description": "Recognizes checkout availability incident despite green static /health; O5 is insufficient proof of application health."
+    },
+    {
+      "id": "security",
+      "description": "Treats O6 as blocked probing with no evidence it caused outage or authenticated access."
+    },
+    {
+      "id": "timeline",
+      "description": "Correct chronology: successful request, target change, refused connections and 502s."
+    },
+    {
+      "id": "priority",
+      "description": "Prioritizes restoring checkout/upstream configuration over blocking the isolated probing IP."
+    },
+    {
+      "id": "actions",
+      "description": "Three actionable steps include verify/restore correct upstream and validate checkout end to end; preserves diagnostic evidence."
+    },
+    {
+      "id": "validation",
+      "description": "Requests matching proxy/app request IDs or deployment/config diff as focused validation."
+    },
+    {
+      "id": "restraint",
+      "description": "No unsupported breach, data-loss, database-down or exact outage scope claims; <=450 words."
+    }
+  ],
+  "reference": {
+    "scenario": "apache-ops-v5",
+    "authoritative_environment_notes": "deploy-17 changed the upstream target from port 9000 to 9001 at 10:03. The web worker was confirmed listening on 9000 throughout. Availability probes are from an internal monitor. No changes to authentication were deployed.",
+    "events": [
+      {
+        "event_id": "O1",
+        "ts": "10:02",
+        "kind": "access",
+        "request_id": "a1",
+        "path": "/checkout",
+        "status": 200,
+        "upstream": "127.0.0.1:9000"
+      },
+      {
+        "event_id": "O2",
+        "ts": "10:03",
+        "kind": "change",
+        "deployment": "deploy-17",
+        "upstream": "127.0.0.1:9001"
+      },
+      {
+        "event_id": "O3",
+        "ts": "10:04",
+        "kind": "proxy_error",
+        "request_id": "a2",
+        "message": "connect() failed: connection refused",
+        "upstream": "127.0.0.1:9001"
+      },
+      {
+        "event_id": "O4",
+        "ts": "10:04",
+        "kind": "access",
+        "request_id": "a2",
+        "path": "/checkout",
+        "status": 502
+      },
+      {
+        "event_id": "O5",
+        "ts": "10:04",
+        "kind": "monitor",
+        "path": "/health",
+        "status": 200,
+        "notes": "static health page served by proxy"
+      },
+      {
+        "event_id": "O6",
+        "ts": "10:05",
+        "kind": "access",
+        "src": "203.0.113.9",
+        "path": "/admin",
+        "status": 403
+      },
+      {
+        "event_id": "O7",
+        "ts": "10:06",
+        "kind": "app",
+        "listen": "127.0.0.1:9000",
+        "message": "ready"
+      },
+      {
+        "event_id": "O8",
+        "ts": "10:07",
+        "kind": "access",
+        "request_id": "a3",
+        "path": "/checkout",
+        "status": 502
+      },
+      {
+        "event_id": "B00",
+        "ts": "2026-11-15T10:00:00Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-0",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B01",
+        "ts": "2026-11-15T10:00:01Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-1",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B02",
+        "ts": "2026-11-15T10:00:02Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-2",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B03",
+        "ts": "2026-11-15T10:00:03Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-3",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B04",
+        "ts": "2026-11-15T10:00:04Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-4",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B05",
+        "ts": "2026-11-15T10:00:05Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-5",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B06",
+        "ts": "2026-11-15T10:00:06Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-6",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B07",
+        "ts": "2026-11-15T10:00:07Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-7",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B08",
+        "ts": "2026-11-15T10:00:08Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-8",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B09",
+        "ts": "2026-11-15T10:00:09Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-9",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B10",
+        "ts": "2026-11-15T10:00:10Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-10",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B11",
+        "ts": "2026-11-15T10:00:11Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-11",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B12",
+        "ts": "2026-11-15T10:00:12Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-12",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B13",
+        "ts": "2026-11-15T10:00:13Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-13",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B14",
+        "ts": "2026-11-15T10:00:14Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-14",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B15",
+        "ts": "2026-11-15T10:00:15Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-15",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B16",
+        "ts": "2026-11-15T10:00:16Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-16",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B17",
+        "ts": "2026-11-15T10:00:17Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-17",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B18",
+        "ts": "2026-11-15T10:00:18Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-18",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      },
+      {
+        "event_id": "B19",
+        "ts": "2026-11-15T10:00:19Z",
+        "kind": "access",
+        "src": "192.0.2.10",
+        "request_id": "health-19",
+        "method": "GET",
+        "path": "/health",
+        "status": 200,
+        "bytes": 15
+      }
+    ],
+    "expected_requirements": {
+      "cause": "Links deploy-17 wrong upstream port to O3/O4/O7 checkout failure; distinguishes evidence from unproven causation.",
+      "impact": "Recognizes checkout availability incident despite green static /health; O5 is insufficient proof of application health.",
+      "security": "Treats O6 as blocked probing with no evidence it caused outage or authenticated access.",
+      "timeline": "Correct chronology: successful request, target change, refused connections and 502s.",
+      "priority": "Prioritizes restoring checkout/upstream configuration over blocking the isolated probing IP.",
+      "actions": "Three actionable steps include verify/restore correct upstream and validate checkout end to end; preserves diagnostic evidence.",
+      "validation": "Requests matching proxy/app request IDs or deployment/config diff as focused validation.",
+      "restraint": "No unsupported breach, data-loss, database-down or exact outage scope claims; <=450 words."
+    }
+  }
+}
