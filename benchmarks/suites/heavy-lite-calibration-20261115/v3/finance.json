@@ -1,0 +1,67 @@
+{
+  "task_id": "finance_lite@0.3",
+  "source": "benchmarks-files/pinchbench/assets/csvs/apple_stock_2014.csv",
+  "source_sha256": "c79621f01a1c68006e3f697b35114eff7ae813aea425ef297097c277251a9a9e",
+  "data_file": "finance_lite.csv",
+  "prompt_sha256": "cd4133e1c07f50acab8e669cfb2ff489a3616c0b0ea0d9d65295a80a342529dd",
+  "reference": {
+    "trading_days": 40,
+    "start_date": "2014-02-14",
+    "start_price": 76.05688873,
+    "end_date": "2014-04-11",
+    "end_price": 72.7644772,
+    "total_return": -0.04328880111948796,
+    "high_date": "2014-03-26",
+    "high_price": 76.62498351,
+    "low_date": "2014-02-27",
+    "low_price": 72.50368071,
+    "annualized_vol": 0.17375997284844383,
+    "best_date": "2014-02-28",
+    "best_return": 0.02309528969567265,
+    "worst_date": "2014-04-11",
+    "worst_return": -0.021975129021285178,
+    "up_streak": {
+      "length": 4,
+      "start": "2014-03-20",
+      "end": "2014-03-26"
+    },
+    "down_streak": {
+      "length": 5,
+      "start": "2014-04-02",
+      "end": "2014-04-09"
+    },
+    "max_drawdown": -0.052875861475208064,
+    "max_drawdown_start": "2014-02-18",
+    "max_drawdown_end": "2014-02-27",
+    "daily_mean": -0.0010755894991201676,
+    "daily_sample_std": 0.01094584942795995,
+    "return_over_annual_vol": -0.2491298796256439
+  },
+  "checks": [
+    {
+      "id": "sample",
+      "description": "Correct row count and first/last dates and adjusted prices (price tolerance 0.02)."
+    },
+    {
+      "id": "return",
+      "description": "Correct total sample return within 0.05 percentage points."
+    },
+    {
+      "id": "extrema",
+      "description": "Correct high/low prices and dates (price tolerance 0.02)."
+    },
+    {
+      "id": "daily_extremes",
+      "description": "Correct single best/worst daily percentage returns and their ending dates within 0.05 percentage points."
+    },
+    {
+      "id": "drawdown",
+      "description": "Correct maximum drawdown within 0.05 percentage points and correct peak/trough dates."
+    },
+    {
+      "id": "interpretation",
+      "description": "Requested three sections, at most 400 words, cautious evidence-based interpretation recognizing the short sample; no invented external explanations."
+    }
+  ],
+  "selection": "Consecutive trading rows 31 through 70"
+}

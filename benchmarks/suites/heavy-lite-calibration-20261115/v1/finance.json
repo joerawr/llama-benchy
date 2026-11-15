@@ -1,0 +1,83 @@
+{
+  "task_id": "finance_lite@0.1",
+  "source": "benchmarks-files/pinchbench/assets/csvs/apple_stock_2014.csv",
+  "source_sha256": "c79621f01a1c68006e3f697b35114eff7ae813aea425ef297097c277251a9a9e",
+  "data_file": "finance_lite.csv",
+  "prompt_sha256": "f907106ac8dbcf3fac6182196357964db0e2c4f6c0e12f4bd8fd5b8d65d3dc3c",
+  "reference": {
+    "trading_days": 30,
+    "start_date": "2014-01-02",
+    "start_price": 77.44539475,
+    "end_date": "2014-02-13",
+    "end_price": 74.9602296,
+    "total_return": -0.032089256669454835,
+    "high_date": "2014-01-02",
+    "high_price": 77.44539475,
+    "low_date": "2014-01-31",
+    "low_price": 69.00470795,
+    "annualized_vol": 0.3184736228565252,
+    "best_date": "2014-01-15",
+    "best_return": 0.028441847043241042,
+    "worst_date": "2014-01-28",
+    "worst_return": -0.07507299400460432,
+    "up_streak": {
+      "length": 5,
+      "start": "2014-01-31",
+      "end": "2014-02-07"
+    },
+    "down_streak": {
+      "length": 5,
+      "start": "2014-01-24",
+      "end": "2014-01-31"
+    },
+    "max_drawdown": -0.10898887954858039,
+    "max_drawdown_start": "2014-01-02",
+    "max_drawdown_end": "2014-01-31",
+    "daily_mean": -0.0009250711245900065,
+    "daily_sample_std": 0.020061952505050988,
+    "return_over_annual_vol": -0.1007595429148344
+  },
+  "checks": [
+    {
+      "id": "sample",
+      "description": "Correct row count and first/last dates and adjusted prices (price tolerance 0.02)."
+    },
+    {
+      "id": "return",
+      "description": "Correct total sample return within 0.05 percentage points."
+    },
+    {
+      "id": "extrema",
+      "description": "Correct high/low prices and dates (price tolerance 0.02)."
+    },
+    {
+      "id": "daily_extremes",
+      "description": "Correct single best/worst daily percentage returns and their ending dates within 0.05 percentage points."
+    },
+    {
+      "id": "daily_stats",
+      "description": "Mean daily return and sample SD both within 0.05 percentage points of reference."
+    },
+    {
+      "id": "annual_vol",
+      "description": "Annualized volatility within 0.15 percentage points of reference using sqrt(252)."
+    },
+    {
+      "id": "streaks",
+      "description": "Correct longest up/down streak lengths and start/end dates using the defined change-count convention."
+    },
+    {
+      "id": "drawdown",
+      "description": "Correct maximum drawdown within 0.05 percentage points and correct peak/trough dates."
+    },
+    {
+      "id": "ratio",
+      "description": "Correct total-return/annualized-volatility ratio within 0.02; does not mislabel it an annualized Sharpe ratio."
+    },
+    {
+      "id": "interpretation",
+      "description": "Requested three sections, at most 650 words, cautious evidence-based interpretation recognizing the short sample; no invented external explanations."
+    }
+  ],
+  "selection": "First 30 consecutive trading days"
+}

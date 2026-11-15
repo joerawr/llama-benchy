@@ -1,0 +1,36 @@
+Analyze only the supplied adjusted-close CSV. No tools are available. Return Markdown with three headings: Summary, Metrics, Risks. Keep the answer within 650 words. This is a short sample, not a full year; do not invent missing periods or external causes.
+Report row count and first/last dates and prices; total return; high/low with dates; single best/worst close-to-close daily percentage return with dates; mean daily return, sample standard deviation and annualized volatility; longest up/down streak lengths and start/end dates; maximum drawdown with peak/trough dates; total-return/annualized-volatility ratio; a brief cautious interpretation.
+Definitions: r[t]=P[t]/P[t-1]-1, N-1 daily returns; sample SD uses divisor (number of returns-1); annualized volatility=sample SD*sqrt(252). Total return=last/first-1. Drawdown=P[t]/highest preceding-or-current price-1; report the most negative value. A streak counts consecutive positive/negative daily changes, zeros break it; dates span the prior close through the last change. Use earliest occurrence for ties. Round percentages to two decimals, prices to two decimals, ratios to two decimals. The ratio is not an annualized Sharpe ratio.
+<CSV>
+Date,AdjustedClose
+2014-01-02,77.44539475
+2014-01-03,77.04557544
+2014-01-06,74.89697204
+2014-01-07,75.856461
+2014-01-08,75.09194679
+2014-01-09,76.20263178
+2014-01-10,75.2301837
+2014-01-13,73.84891755
+2014-01-14,75.0113527
+2014-01-15,77.14481412
+2014-01-16,77.33058367
+2014-01-17,76.85652616
+2014-01-21,75.39394758
+2014-01-22,76.7763823
+2014-01-23,76.64038513
+2014-01-24,77.20512022
+2014-01-27,76.66007339
+2014-01-28,70.90497216
+2014-01-29,70.23598702
+2014-01-30,70.03463724
+2014-01-31,69.00470795
+2014-02-03,70.04050186
+2014-02-04,70.50025256
+2014-02-05,70.599595
+2014-02-06,71.50652865
+2014-02-07,73.09834283
+2014-02-10,72.71181988
+2014-02-11,74.38994589
+2014-02-12,75.2743945
+2014-02-13,74.9602296
+</CSV>

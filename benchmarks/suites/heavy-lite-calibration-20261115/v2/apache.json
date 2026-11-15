@@ -1,0 +1,154 @@
+{
+  "task_id": "apache_lite@0.2",
+  "source": "benchmarks-files/pinchbench/assets/logs/apache_error.log",
+  "source_sha256": "b10ad2ee1537d155a8bd770d08d324060ea5dda3405306e71ae5373bfe8708d2",
+  "data_file": "apache_lite.log",
+  "prompt_sha256": "26122da89a7ef7715478eabeef2011697c05e86cadc7f7dfdb3b1da7d17fad76",
+  "reference": {
+    "entries": 80,
+    "error": 63,
+    "notice": 17,
+    "date_start": "2005-06-09 06:07:04",
+    "date_end": "2005-06-16 01:06:31",
+    "client_entries": 54,
+    "unique_client_ips": 36,
+    "client_categories": {
+      "directory_index": 14,
+      "missing_file": 16,
+      "missing_script": 12,
+      "invalid_method": 9,
+      "other_client": 3
+    },
+    "top_client_ips": [
+      [
+        "202.133.98.6",
+        14
+      ],
+      [
+        "212.238.198.203",
+        3
+      ],
+      [
+        "194.116.250.2",
+        2
+      ]
+    ],
+    "source_line_indices_zero_based": [
+      0,
+      7,
+      17,
+      21,
+      35,
+      42,
+      47,
+      84,
+      85,
+      86,
+      106,
+      109,
+      123,
+      129,
+      158,
+      170,
+      187,
+      191,
+      213,
+      234,
+      237,
+      251,
+      255,
+      257,
+      279,
+      292,
+      317,
+      319,
+      340,
+      351,
+      381,
+      389,
+      396,
+      404,
+      425,
+      453,
+      465,
+      468,
+      469,
+      489,
+      515,
+      553,
+      564,
+      574,
+      592,
+      594,
+      596,
+      602,
+      615,
+      617,
+      631,
+      638,
+      653,
+      659,
+      665,
+      694,
+      702,
+      711,
+      719,
+      723,
+      728,
+      743,
+      787,
+      800,
+      808,
+      840,
+      851,
+      852,
+      872,
+      881,
+      902,
+      906,
+      936,
+      957,
+      960,
+      985,
+      989,
+      992,
+      998,
+      999
+    ]
+  },
+  "checks": [
+    {
+      "id": "overview",
+      "description": "Exact total, error and notice counts agree with reference."
+    },
+    {
+      "id": "date_range",
+      "description": "Correct earliest and latest timestamps (equivalent date formats accepted)."
+    },
+    {
+      "id": "server_faults",
+      "description": "Correctly identifies JK/createBean configuration faults and distinguishes them from client probes; startup notices are not attacks."
+    },
+    {
+      "id": "worm_traversal",
+      "description": "Identifies cmd.exe/root.exe worm-style probing and encoded traversal with at least one matching IP/path example from the excerpt."
+    },
+    {
+      "id": "scanner",
+      "description": "Identifies awstats and openwebmail/FrontPage scanning with matching source IP/path evidence."
+    },
+    {
+      "id": "actions",
+      "description": "Exactly three prioritized actionable recommendations address JK connector config, directory-index noise, and hostile probes, each grounded in evidence."
+    },
+    {
+      "id": "uncertainty",
+      "description": "Explicitly says failed probes do not establish successful compromise, and adds no unsupported claims."
+    },
+    {
+      "id": "format",
+      "description": "Uses the requested three report sections and stays within 400 words; equivalent headings accepted."
+    }
+  ],
+  "selection": "Deterministic stratified excerpt"
+}

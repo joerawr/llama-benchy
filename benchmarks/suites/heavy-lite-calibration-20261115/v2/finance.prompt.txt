@@ -1,0 +1,36 @@
+Analyze only this adjusted-close price sample. No tools are available. Return a concise Markdown report, at most 400 words, under Summary, Metrics, Risks.
+Report row count and first/last dates and prices, total return, high/low with dates, the single best/worst daily percentage move with dates, and maximum drawdown with peak/trough dates. Briefly explain the trend and the main limitation of this short sample. Ground all statements in the data.
+Definitions: daily move=P[t]/P[t-1]-1, assigned to the later date; total return=last/first-1; drawdown=P[t]/highest preceding-or-current price-1. Maximum drawdown is the most negative drawdown. Use earliest occurrence for ties. Round percentages to two decimals and prices to two decimals. Do not invent external causes or imply the short sample establishes a full-year trend.
+<CSV>
+Date,AdjustedClose
+2014-01-02,77.44539475
+2014-01-03,77.04557544
+2014-01-06,74.89697204
+2014-01-07,75.856461
+2014-01-08,75.09194679
+2014-01-09,76.20263178
+2014-01-10,75.2301837
+2014-01-13,73.84891755
+2014-01-14,75.0113527
+2014-01-15,77.14481412
+2014-01-16,77.33058367
+2014-01-17,76.85652616
+2014-01-21,75.39394758
+2014-01-22,76.7763823
+2014-01-23,76.64038513
+2014-01-24,77.20512022
+2014-01-27,76.66007339
+2014-01-28,70.90497216
+2014-01-29,70.23598702
+2014-01-30,70.03463724
+2014-01-31,69.00470795
+2014-02-03,70.04050186
+2014-02-04,70.50025256
+2014-02-05,70.599595
+2014-02-06,71.50652865
+2014-02-07,73.09834283
+2014-02-10,72.71181988
+2014-02-11,74.38994589
+2014-02-12,75.2743945
+2014-02-13,74.9602296
+</CSV>

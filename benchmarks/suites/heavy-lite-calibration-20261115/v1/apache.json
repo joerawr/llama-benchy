@@ -1,0 +1,202 @@
+{
+  "task_id": "apache_lite@0.1",
+  "source": "benchmarks-files/pinchbench/assets/logs/apache_error.log",
+  "source_sha256": "b10ad2ee1537d155a8bd770d08d324060ea5dda3405306e71ae5373bfe8708d2",
+  "data_file": "apache_lite.log",
+  "prompt_sha256": "8cde36bea7f2366ddfb1ed732f441dff9418bef30b61399c252219c874a8574f",
+  "reference": {
+    "entries": 120,
+    "error": 94,
+    "notice": 26,
+    "date_start": "2005-06-09 06:07:04",
+    "date_end": "2005-06-16 01:06:31",
+    "client_entries": 81,
+    "unique_client_ips": 46,
+    "client_categories": {
+      "directory_index": 23,
+      "missing_file": 29,
+      "missing_script": 15,
+      "invalid_method": 11,
+      "other_client": 3
+    },
+    "top_client_ips": [
+      [
+        "202.133.98.6",
+        25
+      ],
+      [
+        "194.116.250.2",
+        3
+      ],
+      [
+        "202.118.167.71",
+        3
+      ]
+    ],
+    "source_line_indices_zero_based": [
+      0,
+      7,
+      17,
+      20,
+      21,
+      35,
+      42,
+      47,
+      63,
+      84,
+      85,
+      86,
+      105,
+      106,
+      109,
+      123,
+      127,
+      129,
+      148,
+      158,
+      169,
+      170,
+      187,
+      191,
+      212,
+      213,
+      233,
+      234,
+      237,
+      251,
+      254,
+      255,
+      257,
+      276,
+      279,
+      292,
+      297,
+      317,
+      318,
+      319,
+      339,
+      340,
+      351,
+      361,
+      381,
+      382,
+      389,
+      396,
+      403,
+      404,
+      425,
+      446,
+      453,
+      465,
+      467,
+      468,
+      469,
+      488,
+      489,
+      510,
+      515,
+      531,
+      552,
+      553,
+      564,
+      573,
+      574,
+      592,
+      594,
+      595,
+      596,
+      602,
+      615,
+      616,
+      617,
+      631,
+      637,
+      638,
+      653,
+      659,
+      665,
+      680,
+      694,
+      701,
+      702,
+      711,
+      719,
+      722,
+      723,
+      728,
+      743,
+      744,
+      765,
+      786,
+      787,
+      800,
+      808,
+      829,
+      840,
+      850,
+      851,
+      852,
+      871,
+      872,
+      881,
+      893,
+      902,
+      906,
+      914,
+      935,
+      936,
+      956,
+      957,
+      960,
+      978,
+      985,
+      989,
+      992,
+      998,
+      999
+    ]
+  },
+  "checks": [
+    {
+      "id": "overview",
+      "description": "Exact total, error and notice counts agree with reference."
+    },
+    {
+      "id": "date_range",
+      "description": "Correct earliest and latest timestamps (equivalent date formats accepted)."
+    },
+    {
+      "id": "client_totals",
+      "description": "Correct client-entry total and unique client-IP count."
+    },
+    {
+      "id": "categories",
+      "description": "All five mutually exclusive client-category counts match reference, including zero counts."
+    },
+    {
+      "id": "server_faults",
+      "description": "Correctly identifies JK/createBean configuration faults and distinguishes them from client probes; startup notices are not attacks."
+    },
+    {
+      "id": "worm_traversal",
+      "description": "Identifies cmd.exe/root.exe worm-style probing and encoded traversal with at least one matching IP/path example from the excerpt."
+    },
+    {
+      "id": "scanner",
+      "description": "Identifies awstats and openwebmail/FrontPage scanning with matching source IP/path evidence."
+    },
+    {
+      "id": "actions",
+      "description": "Exactly three prioritized actionable recommendations address JK connector config, directory-index noise, and hostile probes, each grounded in evidence."
+    },
+    {
+      "id": "uncertainty",
+      "description": "Explicitly says failed probes do not establish successful compromise, and adds no unsupported claims."
+    },
+    {
+      "id": "format",
+      "description": "Uses the requested three report sections and stays within 650 words; equivalent headings accepted."
+    }
+  ],
+  "selection": "Deterministic stratified excerpt"
+}
