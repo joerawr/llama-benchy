@@ -42,3 +42,9 @@ Generated output-token counts provide only rough local time projections; input p
 ```
 
 Existing result files prevent duplicate inference. Raw outputs/events and archived technical failures are ignored under `results/security-lite-calibration-20261115/`. The public structured record is `benchmarks/runs/security-lite-calibration-20261115.json`; the HTML view is `security-lite-calibration-results.html`. OpenRouter spending excludes separate Codex model/grading usage.
+
+## Local follow-up
+
+`scripts/run_security_lite_local.py` runs all six fixed prompts once on the downloaded Unsloth UD3.1 Q4_K_XL Qwen3.8-27B, sequentially on Metal. It uses xhigh, thinking enabled, seed 20261115, 128K declared context, native f16 KV, MTP off, the same 12,288-token output ceiling as Wafer, and a 1,800-second wall limit per inference request. Model/template and quant differences remain part of the comparison. Judging is separate from inference time. The disclosure case uses rubric revision 0.2, as do its audited hosted comparisons.
+
+Raw local outputs and per-model runtime details stay under `results/security-lite-calibration-20261115/local/`; canonical local result/grade references are included in the existing structured and HTML reports after each attempt. Missing or failed quality grades remain null. Refusal classification remains pending until the delivered local answers receive manual review. The background worker uses `org.llama-benchy.security-lite-local` and logs to `/private/tmp/security-lite-local.log`.
