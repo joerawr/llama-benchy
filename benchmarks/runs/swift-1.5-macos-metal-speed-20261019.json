@@ -1,0 +1,86 @@
+{
+  "experiment_id": "swift-1.5-five-minute-speed@1.0",
+  "date": "2026-10-19",
+  "status": "complete",
+  "purpose": "Throughput only; no quality grading.",
+  "hardware": {
+    "machine": "Apple M1 Max, 64GB",
+    "os": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+    "backend": "Metal",
+    "power_source": "Battery; 83% at completion"
+  },
+  "runtime": {
+    "project": "ggml-org/llama.cpp",
+    "commit": "9c2e0e491a822adae1f0b1c831adb4160057d24f",
+    "version": "version: 0.6.0-dev (build 11490, commit 9c2e0e491)\nbuilt with AppleClang 17.0.0.17000604 for Darwin arm64\n",
+    "gpu_inventory": "Available devices:\n  MTL0: Apple M1 Max (49152 MiB, 49151 MiB free)\n  BLAS: Accelerate (0 MiB, 0 MiB free)\n"
+  },
+  "task": {
+    "id": "family_text_lines",
+    "prompt_file": "benchmarks/suites/swift-speed-family-text-v1.txt",
+    "prompt_sha256": "9a8e6af7452ae51b085b2bda91baddd2b444088759fd00c2815a4546f56c42d0",
+    "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+    "chat_template_source": "Native template in both pinned GGUF files, independently verified identical."
+  },
+  "settings": {
+    "wall_seconds_per_model": 300,
+    "context": 32768,
+    "parallel": 1,
+    "batch": 128,
+    "microbatch": 128,
+    "cpu_threads": 4,
+    "gpu_layers_requested": 99,
+    "kv_precision": "f16/f16",
+    "thinking": true,
+    "reasoning_effort": "xhigh",
+    "reasoning_budget": -1,
+    "mtp": false,
+    "context_shift": false,
+    "completion_cap": null,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "seeds": "20261019 + request index (starting at 1); reset index for each model"
+  },
+  "models": {
+    "swift15-q6": {
+      "name": "Swift 1.5 Q6_K",
+      "repo": "ukisai/Swift-1.5-Qwen3.8-27B-GGUF",
+      "revision": "14bfe4b42be4a925d98816db830155f476c605e7",
+      "bytes": 23860565696,
+      "sha256": "cd2eb6597026ce4eb86100e830be24f01461f84b89d4708634c2ec3d43b67fa8",
+      "summary": {
+        "generated_tokens": 3112,
+        "generation_seconds": 283.774973,
+        "generation_tokens_per_s": 10.966435718769322,
+        "prompt_tokens": 1141,
+        "prompt_seconds": 15.656332,
+        "prompt_tokens_per_s": 72.8778618133545,
+        "requests": 7,
+        "completed_answers": 6
+      },
+      "probe_wall_seconds": 300.22890400886536
+    }
+  },
+  "comparison": {
+    "linux_record": "benchmarks/runs/swift-1.5-linux-vulkan-speed-20261019.json",
+    "linux_generation_tokens_per_s": 5.221466729185126,
+    "macos_generation_tokens_per_s": 10.966435718769322,
+    "generation_speedup": 2.100259618140049,
+    "linux_prompt_tokens_per_s": 17.60796989289205,
+    "macos_prompt_tokens_per_s": 72.8778618133545,
+    "prompt_speedup": 4.138913358931497
+  },
+  "notes": [
+    "Only Swift 1.5 Q6_K was tested on macOS in this run.",
+    "The final request was intentionally cut off at the five-minute boundary; its partial tokens contribute to throughput and have no quality score.",
+    "Process/GPU memory was not sampled by the existing macOS speed runner.",
+    "The current model server was stopped after the probe."
+  ],
+  "source_artifact": "results/swift-q6-five-minute-speed-20261019-darwin/report.json",
+  "source_sha256": "f0573747397aaf37ca84594c3bbbbdb39e2b3de594b6762ce7e9264f5e512853"
+}

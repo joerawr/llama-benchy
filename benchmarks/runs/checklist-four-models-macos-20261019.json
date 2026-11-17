@@ -1,0 +1,424 @@
+{
+  "experiment_id": "checklist-v1.1-four-models-macos-20261019",
+  "status": "complete",
+  "hardware": "Apple M1 Max, 64GB, macOS/Metal",
+  "source_commit": "5957da8afa5364175df8024186112062ce78d751",
+  "protocol": {
+    "task": "two_section_backup_checklist",
+    "suite": "1.1",
+    "prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+    "attempts": "One per model/mode; eight total. Earlier GGUF records retained; this table uses refreshed runs.",
+    "seed": 20261020,
+    "sampling": {
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0,
+      "presence_penalty": 0,
+      "repeat_penalty": 1.0
+    },
+    "mtp": false,
+    "prompt_cache_reuse": false,
+    "completion_token_cap": null,
+    "timeout_s": 600,
+    "rendered_prompts": "Byte-identical across all four variants for each effort setting, checked against saved renderings.",
+    "ttft": "First nonempty generated reasoning/answer text; model loading excluded.",
+    "first_answer": "First non-whitespace answer text after reasoning.",
+    "thinking_tokens": "Retokenized extracted reasoning, excluding control markers.",
+    "generation_rate": "Runtime backend generation rate, including reasoning and final/control tokens. MLX stream_generate metrics; GGUF predicted_n / predicted_ms.",
+    "gguf_runtime": "version: 0.7.0-dev (build 1, commit 3bb63cb)\nbuilt with AppleClang 17.0.0.17000604 for Darwin arm64\n",
+    "gguf_context": 32768,
+    "gguf_kv": "f16/f16",
+    "mlx_context": "Native unquantized nonrolling KV; no truncation; all attempts below 32K tokens.",
+    "mlx_prefill_step_size": 128,
+    "judge": "Assistant direct review of delivered answer content, ignoring surrounding whitespace. Hidden reasoning is not graded."
+  },
+  "models": {
+    "qwen38-q8xl": {
+      "filename": "Qwen3.8-27B-UD-Q8_K_XL.gguf",
+      "bytes": 31457991680,
+      "sha256": "af36ecb6b5db1407953345b746c14ac93f0657dda413910b4348683a2d990377",
+      "native_template_sha256": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce"
+    },
+    "swift15-q6": {
+      "filename": "Swift-1.5-Qwen3.8-27B-Q6_K.gguf",
+      "bytes": 23860565696,
+      "sha256": "cd2eb6597026ce4eb86100e830be24f01461f84b89d4708634c2ec3d43b67fa8",
+      "native_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+    },
+    "swift15-mlx5": {
+      "repo_id": "ukisai/Swift-1.5-5bit-MLX",
+      "revision": "79bf5dd3f3fde79409bd32b29ecf5fc557fd2ca1",
+      "runtime": {
+        "mlx": "0.32.2",
+        "mlx-metal": "0.32.2",
+        "mlx-lm": "0.32.0",
+        "transformers": "5.14.1",
+        "tokenizers": "0.22.2"
+      },
+      "model_class": "mlx_lm.models.qwen3_5_full.Model",
+      "model_config_override": {},
+      "native_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "files": [
+        {
+          "file": "model-00001-of-00004.safetensors",
+          "expected_bytes": 5360417859,
+          "actual_bytes": 5360417859,
+          "header_check": "PASS",
+          "sha256": "9da8750595ec42d8c5d2ff0ae0b695e387cbcb3c0beac40f262e6d9a7196b59d",
+          "sha256_check": "PASS"
+        },
+        {
+          "file": "model-00002-of-00004.safetensors",
+          "expected_bytes": 5338181777,
+          "actual_bytes": 5338181777,
+          "header_check": "PASS",
+          "sha256": "b592723bd4e9f01344335cd7d4b4f41a7c8cde98e2e074ad1d943cdb951a6835",
+          "sha256_check": "PASS"
+        },
+        {
+          "file": "model-00003-of-00004.safetensors",
+          "expected_bytes": 5355925620,
+          "actual_bytes": 5355925620,
+          "header_check": "PASS",
+          "sha256": "0027e7fe05310d5b2d960414221ed0872de9b511aa7e6b1c3a8f0e4647558412",
+          "sha256_check": "PASS"
+        },
+        {
+          "file": "model-00004-of-00004.safetensors",
+          "expected_bytes": 3227578201,
+          "actual_bytes": 3227578201,
+          "header_check": "PASS",
+          "sha256": "afec577f16805b327471561d6841662eb4acf7d866ad5e761c5ef8cd3149d8f4",
+          "sha256_check": "PASS"
+        }
+      ]
+    },
+    "qwen38-mlx8": {
+      "repo_id": "mlx-community/Qwen3.8-27B-8bit",
+      "revision": "815b83c0df8ffd1d1b5244cf75fd6ef14fca9ef9",
+      "runtime": {
+        "mlx": "0.32.2",
+        "mlx-metal": "0.32.2",
+        "mlx-lm": "0.32.0",
+        "transformers": "5.14.1",
+        "tokenizers": "0.22.2"
+      },
+      "model_class": "mlx_lm.models.qwen3_5.Model",
+      "model_config_override": {
+        "language_model_only": true
+      },
+      "native_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "files": [
+        {
+          "file": "model-00001-of-00006.safetensors",
+          "bytes": 5317707581,
+          "sha256": "c7921fe72af5c961c3c4230ea25068ed6d1e502d5ecb2b4a53b7c9c213effa0c"
+        },
+        {
+          "file": "model-00002-of-00006.safetensors",
+          "bytes": 5354102610,
+          "sha256": "e9d93d15495354045da281f102649b99793e5b6ed0e05852c58f46e6616b54a0"
+        },
+        {
+          "file": "model-00003-of-00006.safetensors",
+          "bytes": 5354184694,
+          "sha256": "7015f40310c86a18230e28644832b624532333d5dfbf7584e6c62341dbd8975e"
+        },
+        {
+          "file": "model-00004-of-00006.safetensors",
+          "bytes": 5337309653,
+          "sha256": "7dc8ae53ed51d153e6b59499cdf004bf6ef15aab6757c7604ed4834774abc2c2"
+        },
+        {
+          "file": "model-00005-of-00006.safetensors",
+          "bytes": 5292848464,
+          "sha256": "8817c22c01aebdcde54eac315e9766f705eb512ba7ba84ac47501c663f930ac5"
+        },
+        {
+          "file": "model-00006-of-00006.safetensors",
+          "bytes": 2845065477,
+          "sha256": "fce51843fc07e1c67c5ec6d19edb46e4fa8d2b51a1cb6c8316b0a7cc069c0eb4"
+        }
+      ]
+    }
+  },
+  "records": [
+    {
+      "model": "swift15-mlx5",
+      "mode": "off",
+      "ttft_s": 5.553710082999714,
+      "first_answer_s": 5.553710082999714,
+      "total_s": 10.323475125000186,
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 53,
+      "generation_tokens_per_s": 11.352365722045947,
+      "generation_tokens": 54,
+      "prompt_tokens": 117,
+      "prompt_tokens_per_s": 31.572338200058972,
+      "peak_mlx_memory_gb": 19.852565914,
+      "finish_reason": "stop",
+      "assistant_judgment": {
+        "pass": false,
+        "bullet_markers": false,
+        "item_word_counts": [
+          9,
+          8,
+          9,
+          9
+        ],
+        "backup_occurrences": 2,
+        "failures": [
+          "Four bare lines instead of bullet points."
+        ]
+      }
+    },
+    {
+      "model": "swift15-mlx5",
+      "mode": "xhigh",
+      "ttft_s": 2.2632104580006853,
+      "first_answer_s": 54.87630458300009,
+      "total_s": 59.96030312499988,
+      "reasoning_tokens_retokenized": 580,
+      "answer_tokens_retokenized": 57,
+      "generation_tokens_per_s": 11.077696435419083,
+      "generation_tokens": 639,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 69.46325845492582,
+      "peak_mlx_memory_gb": 19.891841387,
+      "finish_reason": "stop",
+      "assistant_judgment": {
+        "pass": true,
+        "bullet_markers": true,
+        "item_word_counts": [
+          9,
+          9,
+          9,
+          8
+        ],
+        "backup_occurrences": 2,
+        "failures": []
+      }
+    },
+    {
+      "model": "qwen38-mlx8",
+      "mode": "off",
+      "ttft_s": 3.988219916000162,
+      "first_answer_s": 3.988219916000162,
+      "total_s": 8.819160166000074,
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 52,
+      "generation_tokens_per_s": 10.99990151186405,
+      "generation_tokens": 53,
+      "prompt_tokens": 117,
+      "prompt_tokens_per_s": 63.60491021752919,
+      "peak_mlx_memory_gb": 29.021890944,
+      "finish_reason": "stop",
+      "assistant_judgment": {
+        "pass": false,
+        "bullet_markers": false,
+        "item_word_counts": [
+          9,
+          8,
+          9,
+          8
+        ],
+        "backup_occurrences": 2,
+        "failures": [
+          "Four bare lines instead of bullet points."
+        ]
+      }
+    },
+    {
+      "model": "qwen38-mlx8",
+      "mode": "xhigh",
+      "ttft_s": 2.3723300840001684,
+      "first_answer_s": 79.55885054200007,
+      "total_s": 84.91500591699969,
+      "reasoning_tokens_retokenized": 823,
+      "answer_tokens_retokenized": 57,
+      "generation_tokens_per_s": 10.686996360288319,
+      "generation_tokens": 882,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 66.23428640439937,
+      "peak_mlx_memory_gb": 29.048644373,
+      "finish_reason": "stop",
+      "assistant_judgment": {
+        "pass": true,
+        "bullet_markers": true,
+        "item_word_counts": [
+          9,
+          9,
+          8,
+          8
+        ],
+        "backup_occurrences": 2,
+        "failures": []
+      }
+    },
+    {
+      "model": "qwen38-q8xl",
+      "mode": "off",
+      "ttft_s": 1.291176458999871,
+      "first_answer_s": 1.291176458999871,
+      "total_s": 6.480421209000269,
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 51,
+      "generation_tokens_per_s": 10.022722668758075,
+      "finish_reason": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 117,
+        "prompt_ms": 1281.262,
+        "prompt_per_token_ms": 10.950957264957264,
+        "prompt_per_second": 91.31621791639805,
+        "predicted_n": 52,
+        "predicted_ms": 5188.211,
+        "predicted_per_token_ms": 101.7296274509804,
+        "predicted_per_second": 9.829978002051188
+      },
+      "assistant_judgment": {
+        "pass": false,
+        "bullet_markers": false,
+        "item_word_counts": [
+          9,
+          7,
+          9,
+          9
+        ],
+        "backup_occurrences": 1,
+        "failures": [
+          "Four bare lines instead of bullet points.",
+          "Second item has seven words, below the eight-word minimum.",
+          "backup appears once rather than twice."
+        ]
+      }
+    },
+    {
+      "model": "qwen38-q8xl",
+      "mode": "xhigh",
+      "ttft_s": 1.9172940839998773,
+      "first_answer_s": 114.96281083399936,
+      "total_s": 120.87362029199994,
+      "reasoning_tokens_retokenized": 1109,
+      "answer_tokens_retokenized": 56,
+      "generation_tokens_per_s": 9.818679669871443,
+      "finish_reason": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 157,
+        "prompt_ms": 1871.815,
+        "prompt_per_token_ms": 11.922388535031848,
+        "prompt_per_second": 83.87581037655964,
+        "predicted_n": 1168,
+        "predicted_ms": 118956.931,
+        "predicted_per_token_ms": 101.93395972579263,
+        "predicted_per_second": 9.810273266044499
+      },
+      "assistant_judgment": {
+        "pass": true,
+        "bullet_markers": true,
+        "item_word_counts": [
+          9,
+          8,
+          8,
+          8
+        ],
+        "backup_occurrences": 2,
+        "failures": []
+      }
+    },
+    {
+      "model": "swift15-q6",
+      "mode": "off",
+      "ttft_s": 1.4157424999993964,
+      "first_answer_s": 1.4157424999993964,
+      "total_s": 6.437557541999922,
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 50,
+      "generation_tokens_per_s": 10.156507802289038,
+      "finish_reason": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 117,
+        "prompt_ms": 1411.384,
+        "prompt_per_token_ms": 12.06311111111111,
+        "prompt_per_second": 82.89735465330484,
+        "predicted_n": 51,
+        "predicted_ms": 5021.411,
+        "predicted_per_token_ms": 100.42822,
+        "predicted_per_second": 9.957360590479448
+      },
+      "assistant_judgment": {
+        "pass": false,
+        "bullet_markers": false,
+        "item_word_counts": [
+          8,
+          8,
+          8,
+          9
+        ],
+        "backup_occurrences": 2,
+        "failures": [
+          "Four bare lines instead of bullet points."
+        ]
+      }
+    },
+    {
+      "model": "swift15-q6",
+      "mode": "xhigh",
+      "ttft_s": 2.4530343749993335,
+      "first_answer_s": 118.12061424999956,
+      "total_s": 125.00011712499963,
+      "reasoning_tokens_retokenized": 1135,
+      "answer_tokens_retokenized": 67,
+      "generation_tokens_per_s": 9.832896653440944,
+      "finish_reason": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 157,
+        "prompt_ms": 2419.578,
+        "prompt_per_token_ms": 15.411324840764332,
+        "prompt_per_second": 64.88734812434234,
+        "predicted_n": 1205,
+        "predicted_ms": 122547.815,
+        "predicted_per_token_ms": 101.78389950166112,
+        "predicted_per_second": 9.82473657323062
+      },
+      "assistant_judgment": {
+        "pass": true,
+        "bullet_markers": true,
+        "item_word_counts": [
+          11,
+          10,
+          11,
+          11
+        ],
+        "backup_occurrences": 2,
+        "failures": []
+      }
+    }
+  ],
+  "source_artifacts": [
+    {
+      "path": "results/checklist-mlx-comparison-20261019/swift15-mlx5-report.json",
+      "sha256": "d90bff7324481ea4185d14af71f6dd33b2546184fbbda829d8959ca10312bf62"
+    },
+    {
+      "path": "results/checklist-mlx-comparison-20261019/qwen38-mlx8-report.json",
+      "sha256": "a65af88e12cff1bdf99d85f6b68a06a3d1f23305ae48173c9f63fcb30e65581b"
+    },
+    {
+      "path": "results/checklist-gguf-refreshed-20261019/report.json",
+      "sha256": "c2b0f969e7c5a9df60883e63d69d527d7cd60779b8733e272d6f89de24ca0091"
+    }
+  ],
+  "limitations": [
+    "One stochastic attempt per configuration; no full-suite accuracy or reliability conclusion.",
+    "MLX native streaming and GGUF HTTP streaming have different token-rate accounting and interface overhead.",
+    "First-use kernel setup can affect TTFT; no inference warmup was performed.",
+    "Qwen download ran concurrently with the earlier Swift MLX and some GGUF attempts; download/hash work ended before Qwen MLX.",
+    "Qwen MLX uses the stock text loader with language_model_only=true in memory, discarding unused vision/MTP entries through native sanitization; checkpoint files were not changed. Swift uses its required full-architecture patch.",
+    "Native MLX KV precision follows its architecture; GGUF uses f16 KV."
+  ]
+}

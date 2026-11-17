@@ -164,7 +164,7 @@ def main():
         parser.error("Output already contains a report; select a fresh --out to preserve evidence")
     devices = subprocess.run([args.server, "--list-devices"], capture_output=True, text=True, check=True)
     inventory = devices.stdout + devices.stderr
-    if (sys.platform == "darwin" and "Metal" not in inventory) or (args.device and args.device not in inventory):
+    if (sys.platform == "darwin" and "Metal" not in inventory and "MTL0:" not in inventory) or (args.device and args.device not in inventory):
         raise RuntimeError(f"Requested GPU backend absent: {inventory}")
     version = subprocess.run([args.server, "--version"], capture_output=True, text=True, check=True)
     if args.prepare_only:

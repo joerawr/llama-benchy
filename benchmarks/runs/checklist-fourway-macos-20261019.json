@@ -1,0 +1,184 @@
+{
+  "experiment_id": "checklist-v1.1-fourway-macos-20261019",
+  "status": "complete",
+  "protocol": {
+    "task": "two_section_backup_checklist",
+    "suite": "1.1",
+    "prompt_sha256": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+    "attempts": "One per model/mode; four total; judge is the requesting assistant",
+    "context": 32768,
+    "kv": "f16/f16",
+    "mtp": false,
+    "timeout_s": 600,
+    "completion_token_cap": null,
+    "ttft": "First nonempty streamed reasoning or answer delta; empty role events excluded",
+    "first_answer": "First non-whitespace answer delta",
+    "thinking_tokens": "Retokenized extracted reasoning, excluding control tokens",
+    "generation_rate": "Backend predicted_n / predicted_ms; includes thinking and answer/control tokens; excludes loading/tokenization",
+    "runtime": "version: 0.6.0-dev (build 11490, commit 9c2e0e491)\nbuilt with AppleClang 17.0.0.17000604 for Darwin arm64\n"
+  },
+  "hardware": "Apple M1 Max, 64GB, macOS/Metal",
+  "models": {
+    "qwen38-q8xl": {
+      "filename": "Qwen3.8-27B-UD-Q8_K_XL.gguf",
+      "bytes": 31457991680,
+      "sha256": "af36ecb6b5db1407953345b746c14ac93f0657dda413910b4348683a2d990377",
+      "native_template_sha256": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce"
+    },
+    "swift15-q6": {
+      "filename": "Swift-1.5-Qwen3.8-27B-Q6_K.gguf",
+      "bytes": 23860565696,
+      "sha256": "cd2eb6597026ce4eb86100e830be24f01461f84b89d4708634c2ec3d43b67fa8",
+      "native_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+    }
+  },
+  "judge": "Assistant direct review of delivered answers; hidden reasoning not judged; diagnostic grader is supporting evidence only.",
+  "records": [
+    {
+      "model": "qwen38-q8xl",
+      "mode": "off",
+      "ttft_s": 1.4283426670003792,
+      "first_answer_s": 1.4283426670003792,
+      "total_s": 6.654224917000192,
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 51,
+      "generation_tokens_per_s": 9.95134938383924,
+      "finish_reason": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 117,
+        "prompt_ms": 1421.789,
+        "prompt_per_token_ms": 12.152042735042736,
+        "prompt_per_second": 82.29069151611104,
+        "predicted_n": 52,
+        "predicted_ms": 5225.422,
+        "predicted_per_token_ms": 102.45925490196078,
+        "predicted_per_second": 9.75997728030387
+      },
+      "assistant_judgment": {
+        "pass": false,
+        "bullet_markers": false,
+        "item_word_counts": [
+          9,
+          7,
+          9,
+          9
+        ],
+        "backup_occurrences": 1,
+        "failures": [
+          "Four bare lines instead of bullet points.",
+          "Second item has seven words, below the eight-word minimum.",
+          "backup appears once rather than twice."
+        ]
+      }
+    },
+    {
+      "model": "qwen38-q8xl",
+      "mode": "xhigh",
+      "ttft_s": 2.1882078329999786,
+      "first_answer_s": 119.60902512499979,
+      "total_s": 125.47530645799998,
+      "reasoning_tokens_retokenized": 1109,
+      "answer_tokens_retokenized": 56,
+      "generation_tokens_per_s": 9.473555648160643,
+      "finish_reason": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 157,
+        "prompt_ms": 2140.283,
+        "prompt_per_token_ms": 13.632375796178342,
+        "prompt_per_second": 73.35478532511821,
+        "predicted_n": 1168,
+        "predicted_ms": 123290.562,
+        "predicted_per_token_ms": 105.64743958868895,
+        "predicted_per_second": 9.465444727228999
+      },
+      "assistant_judgment": {
+        "pass": true,
+        "bullet_markers": true,
+        "item_word_counts": [
+          9,
+          8,
+          8,
+          8
+        ],
+        "backup_occurrences": 2,
+        "failures": []
+      }
+    },
+    {
+      "model": "swift15-q6",
+      "mode": "off",
+      "ttft_s": 1.4318699999998898,
+      "first_answer_s": 1.4318699999998898,
+      "total_s": 6.032734584000082,
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 50,
+      "generation_tokens_per_s": 11.08384340746034,
+      "finish_reason": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 117,
+        "prompt_ms": 1426.426,
+        "prompt_per_token_ms": 12.191675213675213,
+        "prompt_per_second": 82.02318241535139,
+        "predicted_n": 51,
+        "predicted_ms": 4601.292,
+        "predicted_per_token_ms": 92.02584,
+        "predicted_per_second": 10.866513144568959
+      },
+      "assistant_judgment": {
+        "pass": false,
+        "bullet_markers": false,
+        "item_word_counts": [
+          8,
+          8,
+          8,
+          9
+        ],
+        "backup_occurrences": 2,
+        "failures": [
+          "Four bare lines instead of bullet points."
+        ]
+      }
+    },
+    {
+      "model": "swift15-q6",
+      "mode": "xhigh",
+      "ttft_s": 2.3395577920000505,
+      "first_answer_s": 107.94151712500025,
+      "total_s": 114.35036612500016,
+      "reasoning_tokens_retokenized": 1135,
+      "answer_tokens_retokenized": 67,
+      "generation_tokens_per_s": 10.757585986277533,
+      "finish_reason": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 157,
+        "prompt_ms": 2297.156,
+        "prompt_per_token_ms": 14.631566878980891,
+        "prompt_per_second": 68.34538011349687,
+        "predicted_n": 1205,
+        "predicted_ms": 112013.978,
+        "predicted_per_token_ms": 93.03486544850499,
+        "predicted_per_second": 10.74865852902751
+      },
+      "assistant_judgment": {
+        "pass": true,
+        "bullet_markers": true,
+        "item_word_counts": [
+          11,
+          10,
+          11,
+          11
+        ],
+        "backup_occurrences": 2,
+        "failures": []
+      }
+    }
+  ],
+  "source_artifact": "results/checklist-fourway-20261019/report.json",
+  "source_sha256": "8ea1b73964831599c77b8d9d7e69faf19937af7431ee25f2236358649efcd2dc",
+  "source_commit": "5957da8afa5364175df8024186112062ce78d751",
+  "limitation": "One attempt per configuration; not a /62 suite comparison."
+}

@@ -1,0 +1,654 @@
+{
+  "experiment_id": "swift-mlx5-tuning@1.0",
+  "date": "2026-10-19",
+  "status": "complete_under_user_narrowed_scope",
+  "purpose": "Compare Swift MLX kernel, prefill and 8-bit KV on contrasting canonical workloads; no full-suite quality score.",
+  "source_commit": "5957da8afa5364175df8024186112062ce78d751",
+  "model": {
+    "repo": "ukisai/Swift-1.5-5bit-MLX",
+    "revision": "79bf5dd3f3fde79409bd32b29ecf5fc557fd2ca1",
+    "weight_bytes": 19282103457,
+    "class": "mlx_lm.models.qwen3_5_full.Model",
+    "quantization": "native MLX 5-bit"
+  },
+  "hardware": {
+    "default_device": "Device(gpu, 0)",
+    "device_info": {
+      "device_name": "Apple M1 Max",
+      "max_recommended_working_set_size": 51539607552,
+      "memory_size": 68719476736,
+      "architecture": "applegpu_g13s",
+      "max_buffer_length": 38654705664,
+      "resource_limit": 499000
+    }
+  },
+  "runtime": {
+    "mlx": "0.32.2",
+    "mlx-metal": "0.32.2",
+    "mlx-lm": "0.32.0",
+    "transformers": "5.14.1",
+    "tokenizers": "0.22.2"
+  },
+  "runtime_patch_provenance": "results/swift-mlx-setup-20261019/setup-report.json",
+  "tasks": {
+    "checklist": {
+      "suite_version": "1.1",
+      "prompt_file": "benchmarks/suites/checklist-v1.1.txt",
+      "prompt_tokens": 157,
+      "reasoning": "xhigh"
+    },
+    "compression": {
+      "source_file": "benchmarks-files/compression/ai-frontier-access-risk-fable-gpt56-glm52-2026-06-26.md",
+      "prompt_template": "scripts/long_file_compression.py:PROMPT_TEMPLATE",
+      "prompt_tokens": 3377,
+      "reasoning": "off; original /no_think retained"
+    }
+  },
+  "prompt_sha256": {
+    "checklist": "7a6557de275a6f2e2f6650d4f4ce79f8da250c0c2406aa611d32523d10f130c3",
+    "compression": "f4bc87310db926f2cee9e6f2c8f2c4331aa42a089b25a555d8129bc77ba6af0d"
+  },
+  "protocol": {
+    "suite": "1.1",
+    "seeds": [
+      20261020
+    ],
+    "timeout_s": 600,
+    "completion_token_cap": null,
+    "warmup": "None; two focused KV trials requested, no repeated warmup passes.",
+    "sampling": {
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0,
+      "presence_penalty": 0,
+      "repetition_penalty": 1
+    },
+    "reasoning": {
+      "checklist": "xhigh",
+      "compression": "off; canonical /no_think directive retained"
+    },
+    "mtp": false,
+    "prompt_cache_reuse": false,
+    "kv_group_size": 64,
+    "quantized_kv_start": 0
+  },
+  "profiles": {
+    "baseline": {
+      "settings": {
+        "id": "baseline",
+        "packed": 1,
+        "prefill": 128,
+        "kv_bits": null
+      },
+      "status": "complete",
+      "warmup_count": 2,
+      "source_artifact": "results/swift-mlx-tuning-20261019/baseline-report.json",
+      "source_sha256": "88b169ea4b95371265e8b1e9bbb143bf6f8b0d5215f083ed2b00b7f0b738c0af"
+    },
+    "unpacked": {
+      "settings": {
+        "id": "unpacked",
+        "packed": 0,
+        "prefill": 128,
+        "kv_bits": null
+      },
+      "status": "complete",
+      "warmup_count": 2,
+      "source_artifact": "results/swift-mlx-tuning-20261019/unpacked-report.json",
+      "source_sha256": "e59de4b77b435b1a4661cc729bedae9196615440c2c60ef0d3086d9d949aa962"
+    },
+    "prefill512": {
+      "settings": {
+        "id": "prefill512",
+        "packed": 1,
+        "prefill": 512,
+        "kv_bits": null
+      },
+      "status": "complete",
+      "warmup_count": 2,
+      "source_artifact": "results/swift-mlx-tuning-20261019/prefill512-report.json",
+      "source_sha256": "fd5ecc6a5f52311054432c852939e30a667311be01c007a9fadf42241bcc1814"
+    },
+    "prefill1024": {
+      "settings": {
+        "id": "prefill1024",
+        "packed": 1,
+        "prefill": 1024,
+        "kv_bits": null
+      },
+      "status": "stopped_by_user",
+      "warmup_count": 1,
+      "source_artifact": "results/swift-mlx-tuning-20261019/prefill1024-report.json",
+      "source_sha256": "df45c7c3c4ea60c5eb94273f51c2b6d5f921291a9a072acb82575b2b99717b93"
+    },
+    "kv8-focused": {
+      "settings": {
+        "id": "kv8-focused",
+        "packed": 1,
+        "prefill": 512,
+        "kv_bits": 8,
+        "seeds": [
+          20261020
+        ],
+        "warmup": false,
+        "tasks": [
+          "checklist",
+          "compression"
+        ]
+      },
+      "status": "complete",
+      "warmup_count": 0,
+      "source_artifact": "results/swift-mlx-tuning-20261019/kv8-focused-report.json",
+      "source_sha256": "dee8937690a483e20f84994fc211ba3d3f266dac0eb719e7b67813030254770d"
+    }
+  },
+  "records": [
+    {
+      "profile": "baseline",
+      "task": "compression",
+      "seed": 20261020,
+      "ttft_s": 43.20967670800019,
+      "first_answer_s": 43.20967670800019,
+      "total_s": 143.5056921250016,
+      "generation_tokens": 1093,
+      "generation_tokens_per_s": 10.899211118240336,
+      "prompt_tokens": 3377,
+      "prompt_tokens_per_s": 78.16495504309232,
+      "peak_mlx_memory_gb": 20.154571875,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 1092,
+      "answer_sha256": "bdaaa669ca39286962cb59f8a29caf2971f1c8407d7c4d483705d3741e0c2d1f",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/baseline-compression-20261020.result.json",
+      "source_sha256": "e1ce8dbaed715a941dcde3afa910b17f84a75b57c71f5bce2edc353494d1e40d"
+    },
+    {
+      "profile": "baseline",
+      "task": "compression",
+      "seed": 20261021,
+      "ttft_s": 43.17237974999989,
+      "first_answer_s": 43.17237974999989,
+      "total_s": 112.08763933299997,
+      "generation_tokens": 752,
+      "generation_tokens_per_s": 10.914062857185025,
+      "prompt_tokens": 3377,
+      "prompt_tokens_per_s": 78.23356993183226,
+      "peak_mlx_memory_gb": 20.154571875,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 751,
+      "answer_sha256": "b0331e730a744e56bd879e24e8d4be5c2fb4c075295da809b66e904416cf0163",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/baseline-compression-20261021.result.json",
+      "source_sha256": "1cf5e97f8a9662c0b3d84c47b8aa8d1d352c77955931ac27c6db0507dac67513"
+    },
+    {
+      "profile": "baseline",
+      "task": "checklist",
+      "seed": 20261020,
+      "ttft_s": 2.2533157090001623,
+      "first_answer_s": 54.765352874999735,
+      "total_s": 59.884321499999714,
+      "generation_tokens": 639,
+      "generation_tokens_per_s": 11.09030760028992,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 69.76376171098111,
+      "peak_mlx_memory_gb": 19.891136479,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 580,
+      "answer_tokens_retokenized": 57,
+      "answer_sha256": "b8b57e2713f69670c5dac208c10bda6ecdac50f500a33f2b272eb8e1978b782f",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/baseline-checklist-20261020.result.json",
+      "source_sha256": "069a52b95fc99f57db0f8d1e46f3f8f108ddc9e869eb7f72661d1235c2861bfe"
+    },
+    {
+      "profile": "baseline",
+      "task": "checklist",
+      "seed": 20261021,
+      "ttft_s": 2.2546442089987977,
+      "first_answer_s": 72.335215916999,
+      "total_s": 78.08476387500014,
+      "generation_tokens": 837,
+      "generation_tokens_per_s": 11.039724404376887,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 69.71705165400255,
+      "peak_mlx_memory_gb": 19.891136479,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 771,
+      "answer_tokens_retokenized": 64,
+      "answer_sha256": "d93c4f32f731c1416d74a92add677ab0e482e73af92cb5acdd85e5c3100a0c34",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/baseline-checklist-20261021.result.json",
+      "source_sha256": "beb5f04523b37110a71042cb38e3ccc208c7a8ca811b48db224d64bf7b4b80d3"
+    },
+    {
+      "profile": "unpacked",
+      "task": "compression",
+      "seed": 20261020,
+      "ttft_s": 43.4883394160006,
+      "first_answer_s": 43.4883394160006,
+      "total_s": 143.69723120799972,
+      "generation_tokens": 1093,
+      "generation_tokens_per_s": 10.908694637579424,
+      "prompt_tokens": 3377,
+      "prompt_tokens_per_s": 77.6665260533163,
+      "peak_mlx_memory_gb": 20.154571875,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 1092,
+      "answer_sha256": "bdaaa669ca39286962cb59f8a29caf2971f1c8407d7c4d483705d3741e0c2d1f",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/unpacked-compression-20261020.result.json",
+      "source_sha256": "fe5cc6fb6a3597f938db3c4ce8757795d22c8bd4d113cde8cca90e7904b4c9f3"
+    },
+    {
+      "profile": "unpacked",
+      "task": "compression",
+      "seed": 20261021,
+      "ttft_s": 43.4850496250001,
+      "first_answer_s": 43.4850496250001,
+      "total_s": 112.20705954199912,
+      "generation_tokens": 752,
+      "generation_tokens_per_s": 10.944740868773799,
+      "prompt_tokens": 3377,
+      "prompt_tokens_per_s": 77.6711369509928,
+      "peak_mlx_memory_gb": 20.154571875,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 751,
+      "answer_sha256": "b0331e730a744e56bd879e24e8d4be5c2fb4c075295da809b66e904416cf0163",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/unpacked-compression-20261021.result.json",
+      "source_sha256": "a80bd444d6e4acdf14a9bbc6fde2c596674c7968d29f4146ca293d5ce222cc0a"
+    },
+    {
+      "profile": "unpacked",
+      "task": "checklist",
+      "seed": 20261020,
+      "ttft_s": 2.265400291998958,
+      "first_answer_s": 54.657254082998406,
+      "total_s": 59.749322166999264,
+      "generation_tokens": 639,
+      "generation_tokens_per_s": 11.11872200295665,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 69.39026782709621,
+      "peak_mlx_memory_gb": 19.891136479,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 580,
+      "answer_tokens_retokenized": 57,
+      "answer_sha256": "b8b57e2713f69670c5dac208c10bda6ecdac50f500a33f2b272eb8e1978b782f",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/unpacked-checklist-20261020.result.json",
+      "source_sha256": "d8e6f6c0fab357cabe78c09220c68df348b1b93cfb9f00df06916a29b22e68d7"
+    },
+    {
+      "profile": "unpacked",
+      "task": "checklist",
+      "seed": 20261021,
+      "ttft_s": 2.274070583000139,
+      "first_answer_s": 71.99593091600036,
+      "total_s": 77.73134674999892,
+      "generation_tokens": 837,
+      "generation_tokens_per_s": 11.094335984377611,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 69.12063636768806,
+      "peak_mlx_memory_gb": 19.891136479,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 771,
+      "answer_tokens_retokenized": 64,
+      "answer_sha256": "d93c4f32f731c1416d74a92add677ab0e482e73af92cb5acdd85e5c3100a0c34",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/unpacked-checklist-20261021.result.json",
+      "source_sha256": "d5961c31f51b2beb29843254a9d5f9401e6746b4ab5f7bf49390b286e82eaf66"
+    },
+    {
+      "profile": "prefill512",
+      "task": "compression",
+      "seed": 20261020,
+      "ttft_s": 42.07218058299986,
+      "first_answer_s": 42.07218058299986,
+      "total_s": 130.39122545800092,
+      "generation_tokens": 963,
+      "generation_tokens_per_s": 10.90530268810922,
+      "prompt_tokens": 3377,
+      "prompt_tokens_per_s": 80.27996916226192,
+      "peak_mlx_memory_gb": 20.828343199,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 962,
+      "answer_sha256": "629a18b9076152013c1bdf390d509b131ba473c4d3057e1af9113db01d84673e",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/prefill512-compression-20261020.result.json",
+      "source_sha256": "55a9c6c4a1ff55d687c38cc6d0ab35b8e092b4bd0c45ec15e2a9b2cbb7b8b0f3"
+    },
+    {
+      "profile": "prefill512",
+      "task": "compression",
+      "seed": 20261021,
+      "ttft_s": 42.03892466599973,
+      "first_answer_s": 42.03892466599973,
+      "total_s": 112.82836424999914,
+      "generation_tokens": 774,
+      "generation_tokens_per_s": 10.93587954953374,
+      "prompt_tokens": 3377,
+      "prompt_tokens_per_s": 80.34275188634244,
+      "peak_mlx_memory_gb": 20.828343199,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 773,
+      "answer_sha256": "ad7db2a8da450e572874336b3825ea3c38b9995dd264e79f0a86b9e7a25c7c75",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/prefill512-compression-20261021.result.json",
+      "source_sha256": "7728d34e0e58775bb22ccac25aac0ab31e228acaea12e1f5fb15239d39a2e439"
+    },
+    {
+      "profile": "prefill512",
+      "task": "checklist",
+      "seed": 20261020,
+      "ttft_s": 2.2268245840004965,
+      "first_answer_s": 70.21642320899991,
+      "total_s": 76.31482816700009,
+      "generation_tokens": 823,
+      "generation_tokens_per_s": 11.11042080973112,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 70.58176157405137,
+      "peak_mlx_memory_gb": 19.974178973,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 753,
+      "answer_tokens_retokenized": 68,
+      "answer_sha256": "e784d1bf25fbda7d7d83b311ecf90eb0ea71ca7f9861424e64a776f2955d1adf",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/prefill512-checklist-20261020.result.json",
+      "source_sha256": "b43b312812d9bc16cd93960bcbae5e3b68e60242c78d57b2771eaa855ab36752"
+    },
+    {
+      "profile": "prefill512",
+      "task": "checklist",
+      "seed": 20261021,
+      "ttft_s": 2.214973916999952,
+      "first_answer_s": 89.3076877500007,
+      "total_s": 94.55530020900005,
+      "generation_tokens": 1022,
+      "generation_tokens_per_s": 11.069320849578101,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 70.9583232276662,
+      "peak_mlx_memory_gb": 19.974178973,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 961,
+      "answer_tokens_retokenized": 59,
+      "answer_sha256": "d4e928edef6b8c13edddd9c7e792b14e3ee7a7058fa376f6046d6865bc9ddaec",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/prefill512-checklist-20261021.result.json",
+      "source_sha256": "9dd2d912aa0b20f5a8f7f1dd9604d3b56d47204b4396ec4788f56d9151d548ef"
+    },
+    {
+      "profile": "prefill1024",
+      "task": "compression",
+      "seed": 20261020,
+      "ttft_s": 41.62926029099981,
+      "first_answer_s": 41.62926029099981,
+      "total_s": 124.95392150000043,
+      "generation_tokens": 911,
+      "generation_tokens_per_s": 10.934877868406993,
+      "prompt_tokens": 3377,
+      "prompt_tokens_per_s": 81.13342424586922,
+      "peak_mlx_memory_gb": 21.521677163,
+      "cache_types": {
+        "ArraysCache": 48,
+        "KVCache": 16
+      },
+      "attention_kv_dtype": "mlx.core.bfloat16",
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 910,
+      "answer_sha256": "1e0dd68df5e50e5911cf658e982322721deb8396d8d002181c58f5a00ecb1e24",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/prefill1024-compression-20261020.result.json",
+      "source_sha256": "ed7ed503e46b5988309c2914940fda48392740da718bdba96486501495654a81"
+    },
+    {
+      "profile": "kv8-focused",
+      "task": "checklist",
+      "seed": 20261020,
+      "ttft_s": 3.7806475830002455,
+      "first_answer_s": 74.12858437499926,
+      "total_s": 79.80940949999967,
+      "generation_tokens": 811,
+      "generation_tokens_per_s": 10.668746959821934,
+      "prompt_tokens": 157,
+      "prompt_tokens_per_s": 66.51732631537449,
+      "peak_mlx_memory_gb": 19.974178936,
+      "cache_types": {
+        "ArraysCache": 48,
+        "QuantizedKVCache": 16
+      },
+      "attention_kv_dtype": "packed-8bit",
+      "reasoning_tokens_retokenized": 748,
+      "answer_tokens_retokenized": 61,
+      "answer_sha256": "c982bdf01764148135e8944ce6c2a9d7fb1281025fdc4fee7b6a83f49050b407",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/kv8-focused-checklist-20261020.result.json",
+      "source_sha256": "4f70f69661622d623d740dc620ae3d572c4f1714d9a5d90920934101a2f80ff6"
+    },
+    {
+      "profile": "kv8-focused",
+      "task": "compression",
+      "seed": 20261020,
+      "ttft_s": 42.85317420799947,
+      "first_answer_s": 42.85317420799947,
+      "total_s": 140.5562051249999,
+      "generation_tokens": 1001,
+      "generation_tokens_per_s": 10.24669740356858,
+      "prompt_tokens": 3377,
+      "prompt_tokens_per_s": 78.81982847597513,
+      "peak_mlx_memory_gb": 20.779733943,
+      "cache_types": {
+        "ArraysCache": 48,
+        "QuantizedKVCache": 16
+      },
+      "attention_kv_dtype": "packed-8bit",
+      "reasoning_tokens_retokenized": 0,
+      "answer_tokens_retokenized": 1000,
+      "answer_sha256": "7df88e40956f394cb9199ed7444bc34293bc8270ba0cb91da8396a449e26ef8d",
+      "finish_reason": "stop",
+      "source_artifact": "results/swift-mlx-tuning-20261019/kv8-focused-compression-20261020.result.json",
+      "source_sha256": "c376f510f251145333df251435ff0420e807e4c703fb4b482daf9887c7c2b74f"
+    }
+  ],
+  "aggregates": [
+    {
+      "profile": "baseline",
+      "task": "checklist",
+      "completed_trials": 2,
+      "mean_ttft_s": 2.25397995899948,
+      "mean_first_answer_s": 63.55028439599937,
+      "weighted_generation_tokens_per_s": 11.061566475027789,
+      "mean_peak_mlx_memory_gb": 19.891136479
+    },
+    {
+      "profile": "baseline",
+      "task": "compression",
+      "completed_trials": 2,
+      "mean_ttft_s": 43.19102822900004,
+      "mean_first_answer_s": 43.19102822900004,
+      "weighted_generation_tokens_per_s": 10.905259627304057,
+      "mean_peak_mlx_memory_gb": 20.154571875
+    },
+    {
+      "profile": "unpacked",
+      "task": "checklist",
+      "completed_trials": 2,
+      "mean_ttft_s": 2.2697354374995484,
+      "mean_first_answer_s": 63.326592499499384,
+      "weighted_generation_tokens_per_s": 11.104880203122308,
+      "mean_peak_mlx_memory_gb": 19.891136479
+    },
+    {
+      "profile": "unpacked",
+      "task": "compression",
+      "completed_trials": 2,
+      "mean_ttft_s": 43.48669452050035,
+      "mean_first_answer_s": 43.48669452050035,
+      "weighted_generation_tokens_per_s": 10.923357947563975,
+      "mean_peak_mlx_memory_gb": 20.154571875
+    },
+    {
+      "profile": "prefill512",
+      "task": "checklist",
+      "completed_trials": 2,
+      "mean_ttft_s": 2.2208992505002243,
+      "mean_first_answer_s": 79.7620554795003,
+      "weighted_generation_tokens_per_s": 11.087616698319625,
+      "mean_peak_mlx_memory_gb": 19.974178973
+    },
+    {
+      "profile": "prefill512",
+      "task": "compression",
+      "completed_trials": 2,
+      "mean_ttft_s": 42.055552624499796,
+      "mean_first_answer_s": 42.055552624499796,
+      "weighted_generation_tokens_per_s": 10.918906464188588,
+      "mean_peak_mlx_memory_gb": 20.828343199
+    },
+    {
+      "profile": "prefill1024",
+      "task": "compression",
+      "completed_trials": 1,
+      "mean_ttft_s": 41.62926029099981,
+      "mean_first_answer_s": 41.62926029099981,
+      "weighted_generation_tokens_per_s": 10.934877868406993,
+      "mean_peak_mlx_memory_gb": 21.521677163
+    },
+    {
+      "profile": "kv8-focused",
+      "task": "checklist",
+      "completed_trials": 1,
+      "mean_ttft_s": 3.7806475830002455,
+      "mean_first_answer_s": 74.12858437499926,
+      "weighted_generation_tokens_per_s": 10.668746959821934,
+      "mean_peak_mlx_memory_gb": 19.974178936
+    },
+    {
+      "profile": "kv8-focused",
+      "task": "compression",
+      "completed_trials": 1,
+      "mean_ttft_s": 42.85317420799947,
+      "mean_first_answer_s": 42.85317420799947,
+      "weighted_generation_tokens_per_s": 10.24669740356858,
+      "mean_peak_mlx_memory_gb": 20.779733943
+    }
+  ],
+  "kv8_paired_comparison": [
+    {
+      "task": "checklist",
+      "seed": 20261020,
+      "reference_profile": "prefill512",
+      "trial_profile": "kv8-focused",
+      "generation_rate_change_percent": -3.975311623861666,
+      "ttft_change_s": 1.553822998999749,
+      "first_answer_change_s": 3.9121611659993505,
+      "peak_mlx_memory_change_gb": -3.699999950868005e-08
+    },
+    {
+      "task": "compression",
+      "seed": 20261020,
+      "reference_profile": "prefill512",
+      "trial_profile": "kv8-focused",
+      "generation_rate_change_percent": -6.0393122811598925,
+      "ttft_change_s": 0.7809936249996099,
+      "first_answer_change_s": 0.7809936249996099,
+      "peak_mlx_memory_change_gb": -0.04860925599999888
+    }
+  ],
+  "assistant_quality_review": {
+    "baseline": {
+      "review": "Both checklist outputs satisfy the requested constraints. Both compression outputs preserve the main source facts, uncertainty, four requested sections, eight key-fact bullets and four verification bullets. No public numeric quality score assigned."
+    },
+    "unpacked": {
+      "review": "All four normalized answers are byte-identical to their paired baseline answers."
+    },
+    "prefill512/compression/20261020": {
+      "review": "Required sections and principal numbers retained; wording differs from baseline.",
+      "concerns": [
+        "Says practitioner adoption validates operational reliability beyond benchmarks; the source presents adoption as supporting evidence and still asks for real-world reliability verification.",
+        "Says the narrative lacks institutional-source validation, although the supplied note includes first-party, legal and institutional sources."
+      ]
+    },
+    "kv8-focused/checklist/20261020": {
+      "review": "Passes all requested checklist rules; correct Markdown bullets and headings. Reviewed by the assistant; no numeric semantic score."
+    },
+    "kv8-focused/compression/20261020": {
+      "review": "Required structure and length satisfied; principal facts and numbers preserved. Correctly labels partial restoration as reported, GPT rollout as rumor, and Polymarket numbers as probabilities. No recurrence of the paired native-KV claim that practitioner adoption proves reliability. Omits some source caveats, especially social-source concentration and licensing/support constraints. Broadly usable summary, not a complete preservation of every caveat; no numeric semantic score."
+    }
+  },
+  "decision": {
+    "packed_gdn": 1,
+    "prefill_step_size": 512,
+    "kv_bits": null,
+    "recommendation": "Keep default packed GDN, prefill512 and native BF16 attention KV. KV8 was slower on both focused trials with negligible peak-memory relief at these context lengths. No additional runs queued."
+  },
+  "limitations": [
+    "KV8 has one measured trial per task, without inference warmup. Earlier native-KV profiles were warmed; cold shader setup can affect KV8 TTFT and initial throughput.",
+    "Native-KV reference was measured before the travel pause, mostly on battery; KV8 was measured on AC power afterward. These are observations, not a controlled significance estimate.",
+    "Quantization and prefill chunking can change sampled text even at the same seed; completion duration mixes token throughput with output length.",
+    "Only 157- and 3377-token prompts were tested. No long-context memory or throughput conclusion is supported.",
+    "Thinking and answer token counts are retokenized separately; generation totals include backend control/EOS accounting and can differ.",
+    "Peak memory is MLX-reported decimal GB, including transient work. It is not an isolated KV allocation measurement.",
+    "This is a focused tuning experiment. Assistant review only; no source-aware-v2 semantic judge or full-suite score.",
+    "Remaining prefill1024 trials and extra KV repetitions were abandoned per user instruction; interrupted trace retained and excluded from completed measurements."
+  ],
+  "swap_before_kv8": "vm.swapusage: total = 0.00M  used = 0.00M  free = 0.00M  (encrypted)\n",
+  "swap_after_kv8": "vm.swapusage: total = 0.00M  used = 0.00M  free = 0.00M  (encrypted)\n",
+  "power_before_kv8": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t47%; charging; 1:19 remaining present: true\n",
+  "power_after_kv8": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=6881379)\t51%; charging; 1:57 remaining present: true\n"
+}
